@@ -47,7 +47,7 @@ skimr::skim(covid)
 
 Interprétation :
 
-Notre jeu de données est composé de septs variables dont 6 numériques et une caractère. On retrouve 2 valeurs manquantes.
+Notre jeu de données est composé de septs variables dont six numériques et une caractère. On retrouve deux valeurs manquantes.
 
 <!--% Ajoutez le nombre de chunks que vous souhaitez. Répartissez-vous le travail correctement. Structurez la section en partie avec des titres explicites de niveau trois.-->
 
