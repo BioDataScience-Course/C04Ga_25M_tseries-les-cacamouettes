@@ -20,7 +20,9 @@ lang: fr
 
 <!--% Rédigez une courte introduction de 3 ou 5 phrases qui présente vos données. Ajoutez une phrase de but. Vous devez citer la bibliographie en utilisant le formatage Markdown ad hoc et en incluant votre référence au format bibtex dans le fichier references.bib. -->
 
-... Introduction et but...
+De 2020 à 2022, la pandémie de Covid-19 a ébranlé le monde, forçant la population à limiter ses déplacements. L'économie du pays a de ce fait été fortement impactée, principalement en 2020. Les données utilisées ici présentent l'évolution de la mobilité pour différentes provinces de Wallonie, et ce pour différents lieux : commerces et loisirs, alimentation et pharmacie, parcs, arrêts de transports en commun, lieux de travail, et lieux de résidence. Les observations ont été récoltées du 2 octobre au 13 novembre 2020, du 15 octobre au 26 novembre 2021, et du 3 septembre au 15 octobre 2022.
+
+Dans cette étude, nous tenterons de quantifier l'impact qu'a eu le Covid-19 sur les déplacements de personnes en Belgique, Wallonie, de l'année 2020 à 2022.
 
 ## Matériel et méthodes
 
@@ -52,6 +54,12 @@ SciViews::R("ts")
 covid <- read("data/mobility_wallonia.rds")
 skimr::skim(covid)
 ```
+
+Interprétation :
+
+Notre jeu de données est composé de septs variables dont six numériques et une caractère. On retrouve deux valeurs manquantes.
+
+srename() pour renommer variable
 
 <!--% Ajoutez le nombre de chunks que vous souhaitez. Répartissez-vous le travail correctement. Structurez la section en partie avec des titres explicites de niveau trois.-->
 
