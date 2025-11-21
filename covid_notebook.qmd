@@ -26,7 +26,15 @@ lang: fr
 
 <!--% Indiquez ici d'où viennent les données et aussi quel logiciel (et version) vous utilisez pour les analyses. Inspirez-vous des projets déjà réalisés. -->
 
-...Matériel et méthodes...
+Les données proviennent de Google : <https://www.google.com/covid19/mobility/>
+
+De plus, elles sont accompagnées de descriptifs sous forme de trois rapports, chacun correspondant à une année de 2020 à 2022 : <https://www.gstatic.com/covid19/mobility/2020-11-13_BE_Wallonia_Mobility_Report_fr.pdf>
+
+<https://www.gstatic.com/covid19/mobility/2021-11-26_BE_Wallonia_Mobility_Report_fr.pdf>
+
+<https://www.gstatic.com/covid19/mobility/2022-10-15_BE_Wallonia_Mobility_Report_fr.pdf>
+
+L'analyse est réalisée avec la SciViews Box 2025 dans Saturn Cloud (Linux), utilisant le logiciel R (r R.version.string). Le package {pastecs} version r packageVersion("pastecs") est utilisé pour étudier la série temporelle.
 
 ## Analyses
 
