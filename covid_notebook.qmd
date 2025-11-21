@@ -40,6 +40,11 @@ if (!"tools:tests" %in% search())
 SciViews::R("ts")
 ```
 
+```{r import}
+read("data/mobility_wallonia.rds")
+```
+
+
 <!--% Ajoutez le nombre de chunks que vous souhaitez. Répartissez-vous le travail correctement. Structurez la section en partie avec des titres explicites de niveau trois.-->
 
 ## Conclusion
