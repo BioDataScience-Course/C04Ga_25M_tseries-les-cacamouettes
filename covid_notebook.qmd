@@ -1,6 +1,6 @@
 ---
 title: "___"
-author: "___"
+author: "Abraham Romane, Dechèvres Florine, Desterke Margot, Viseur Zoé"
 format:
   html:
     code-fold: true
