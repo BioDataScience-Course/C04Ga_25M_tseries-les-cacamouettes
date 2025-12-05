@@ -61,7 +61,16 @@ Interprétation :
 
 Notre jeu de données est composé de septs variables dont six numériques et une caractère. On retrouve deux valeurs manquantes.
 
-srename() pour renommer variable
+```{r}
+#rename variables
+srename(covid, 
+ shop_leisure = retail_and_recreation_percent_change_from_baseline,
+ grocerypharma = grocery_and_pharmacy_percent_change_from_baseline,
+ parks = parks_percent_change_from_baseline,
+ station = transit_stations_percent_change_from_baseline,
+workplaces =  workplaces_percent_change_from_baseline,
+ residential = residential_percent_change_from_baseline) -> covid
+```
 
 Graphique d'auto-correlation
 
