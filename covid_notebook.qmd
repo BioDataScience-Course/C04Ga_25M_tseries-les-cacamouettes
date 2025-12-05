@@ -80,26 +80,68 @@ Graphique d'auto-correlation
 
 ##Analyse par variable :
 
+Retenir les jours de la semaine :
+```{r semaine}
+
+ 
+# Copie de la série initiale sous une autre nom
+covidw <- covid
+# Calcul des jours de la semaine
+covidw$weekdays <- weekdays(as.POSIXct(covidw$date))
+# Les données du week-end sont remplacées par des valeurs manquantes
+covidw[covidw$weekdays == "Saturday" | covidw$weekdays == "Sunday" , 2:7] <- NA 
+```
+
+
+Retenir les jours du week-end : 
+```{r}
+# Copie de la série initiale sous une autre nom
+covidw <- covid
+# Calcul des jours de la semaine
+covidw$weekdays <- weekdays(as.POSIXct(covidw$date))
+# Les données du week-end sont remplacées par des valeurs manquantes
+covidw[covidw$weekdays == "Monday" | covidw$weekdays == "Tuesday" | covidw$weekdays == "Wednesday" | covidw$weekdays == "Thursday" | covidw$weekdays == "Friday", 2:7] <- NA 
+
+# Aggrégation par moyenne des valeurs par semaine
+#covidw_ts2 <- aggregate(covidw_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
+```
+
+
 ###Commerces et loisirs
 
-```{r}
-
+```{r serie 2020}
+shop_ts <- ts (covid$shop_leisure, start = c(2020, 46),end = c(2020, 366), frequency = 366 )
+plot (shop_ts)
 ```
 
 ###Lieux de travail
 
-```{r}
+```{r work 2020}
+ts_work <- ts(covid$workplaces, start = c(2020, 46), frequency = 366, end = c(2020, 365))
+plot(ts_work)
+tsp(ts_work)
+```
 
+```{r série semaine 2020}
+# La série temporelle est créée (début le 15 février 2020 = 46e jour de l'année 2020)
+covidw_ts <- ts(covidw$workplaces, start = c(2020, 46), frequency = 365,end = c(2020, 365))
+plot(covidw_ts)
+# Aggrégation par moyenne des valeurs par semaine
+covidwwork_ts2 <- aggregate(covidw_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
+plot(covidwwork_ts2)
 ```
 
 ###Alimentation et pharmacies
 
 ```{r}
-
+grocery_pharma_ts <- ts(covid$grocery_pharma, start = c(2020, 46), frequency = 366, end = c(2020, 366))
+plot(grocery_pharma_ts)
 ```
 
 ###Lieux de résidence
+
 #Année 2020
+
 ```{r}
 res_20 <- ts(covid[, "residential"], start = c(2020, 46), end = c(2020, 366), frequency = 366)
 class(res_20)
