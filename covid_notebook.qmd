@@ -102,7 +102,7 @@ covidy$weekdays <- weekdays(as.POSIXct(covidy$date))
 covidy[covidy$weekdays == "Monday" | covidy$weekdays == "Tuesday" | covidy$weekdays == "Wednesday" | covidy$weekdays == "Thursday" | covidy$weekdays == "Friday", 2:7] <- NA 
 
 # Aggrégation par moyenne des valeurs par semaine
-#covidy_ts2 <- aggregate(covidy_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
+# covidy_ts2 <- aggregate(covidy_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
 ```
 
 
@@ -114,8 +114,8 @@ plot (shop_ts)
 ```
 
 ```{r serie 2020 week}
-shopw_ts <- ts (covidw$shop_leisure, start = c(2020, 46),end = c(2020, 366), frequency = 366 )
-shopw_ts <- aggregate(covidw_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
+shopw_ts <- ts (covidy$shop_leisure, start = c(2020, 46),end = c(2020, 366), frequency = 366 )
+shopy_ts <- aggregate(covidy_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
 plot (shopw_ts)
 ```
 
