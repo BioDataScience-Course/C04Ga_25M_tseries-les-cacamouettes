@@ -98,7 +98,15 @@ plot(mobw_ts2)
 
 Retenir les jours du week-end : 
 ```{r}
+# Copie de la série initiale sous une autre nom
+covidw <- covid
+# Calcul des jours de la semaine
+covidw$weekdays <- weekdays(as.POSIXct(covidw$date))
+# Les données du week-end sont remplacées par des valeurs manquantes
+covidw[covidw$weekdays == "Monday" | covidw$weekdays == "Tuesday" | covidw$weekdays == "Wednesday" | covidw$weekdays == "Thursday" | covidw$weekdays == "Friday", 2:7] <- NA 
 
+# Aggrégation par moyenne des valeurs par semaine
+#covidw_ts2 <- aggregate(covidw_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
 ```
 
 ###Commerces et loisirs
