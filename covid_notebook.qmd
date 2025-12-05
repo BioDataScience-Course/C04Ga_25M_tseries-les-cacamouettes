@@ -140,7 +140,7 @@ plot(grocery_pharma_ts)
 
 ###Lieux de résidence
 
-#Année 2020
+####Année 2020
 
 ```{r}
 res_20 <- ts(covid[, "residential"], start = c(2020, 46), end = c(2020, 366), frequency = 366)
@@ -154,7 +154,7 @@ plot(res_20)
 ```
 A cette étape, il est encore très difficile d'interpréter la série chronologique. Cependant, nous observons une brusque augmentation de personnes restant chez elles début d'année 2020, illustrant l'arrivée soudaine de la quarantaine.
 
-#Année 2021
+####Année 2021
 ```{r}
 res_21 <- ts(covid[, "residential"], start = c(2021, 1), end = c(2021, 365), frequency = 365)
 class(res_21)
