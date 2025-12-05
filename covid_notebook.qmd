@@ -101,7 +101,9 @@ tsp(ts_work)
 ```
 
 ###Lieux de résidence
+
 #Année 2020
+
 ```{r}
 res_20 <- ts(covid, start = c(2020, 2, 15), end = c(2020, 12, 31), frequency = 42)
 class(res)
