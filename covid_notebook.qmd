@@ -147,6 +147,12 @@ plot(covidw_ts)
 covidw_gp_ts2 <- aggregate(covidw_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
 plot(covidw_gp_ts2)
 
+covidy_ts <- ts(covidy$grocery_pharma, start = c(2020, 46), frequency = 365,end = c(2020, 365))
+plot(covidw_ts)
+# Aggrégation par moyenne des valeurs par semaine
+covidy_gp_ts2 <- aggregate(covidy_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
+plot(covidy_gp_ts2)
+
 
 ```
 
