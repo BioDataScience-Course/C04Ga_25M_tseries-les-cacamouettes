@@ -76,35 +76,31 @@ Graphique d'auto-correlation
 
 ```
 
-Commerces et loisir
 
-Lieu de travail
-
-Lieu de résidence
-
-Alimentation et pharmacie
 
 <!--% Ajoutez le nombre de chunks que vous souhaitez. Répartissez-vous le travail correctement. Structurez la section en partie avec des titres explicites de niveau trois.-->
 
-Commerce et loisir
+#Analyse par variable : 
+
+##Commerces et loisirs
 
 ```{r}
 
 ```
 
-Lieu de travail
+##Lieux de travail
 
 ```{r}
 
 ```
 
-Alimentation et pharmacie
+##Alimentation et pharmacies
 
 ```{r}
 
 ```
 
-Lieu de résidence
+##Lieux de résidence
 
 ```{r}
 
