@@ -20,9 +20,9 @@ lang: fr
 
 <!--% Rédigez une courte introduction de 3 ou 5 phrases qui présente vos données. Ajoutez une phrase de but. Vous devez citer la bibliographie en utilisant le formatage Markdown ad hoc et en incluant votre référence au format bibtex dans le fichier references.bib. -->
 
-De 2020 à 2022, la pandémie de Covid-19 a ébranlé le monde, forçant la population à limiter ses déplacements. Les données fournies par les rapports de mobilité [@google_covid19_mobility] présentent l'évolution de la mobilité durant cette période pour différentes provinces de Wallonie, et ce pour différents lieux. Nous nous intéresserons ici aux commerces et loisirs, alimentation et pharmacie, lieux de résidence, et lieux de travail. Les observations ont été récoltées du 2 octobre au 13 novembre 2020 et du 15 octobre au 26 novembre 2021.
+De 2020 à 2022, la pandémie de Covid-19 a ébranlé le monde, forçant la population à limiter ses déplacements. Les données fournies par les rapports de mobilité [@google_covid19_mobility] présentent l'évolution de la mobilité durant cette période pour différentes provinces de Wallonie, et ce pour différents lieux. Nous nous intéresserons ici aux commerces et loisirs, alimentation et pharmacie, lieux de résidence, et lieux de travail.
 
-Dans cette étude, nous tenterons de quantifier l'impact qu'a eu le Covid-19 sur les déplacements de personnes en Belgique, Wallonie, de l'année 2020 à 2021.
+Dans cette étude, nous tenterons de quantifier l'impact qu'a eu le Covid-19 sur les déplacements de personnes en Belgique, Wallonie, du 15 février 2020 au 31 décembre 2021.
 
 ## Matériel et méthodes
 
@@ -102,8 +102,12 @@ tsp(grocery_pharma_ts)
 
 ###Lieux de résidence
 
+#Année 2020
 ```{r}
-
+res_20 <- ts(covid, start = c(2020, 2, 15), end = c(2020, 12, 31), frequency = 42)
+class(res)
+res1 <- ts(covid[, "residential"])
+class(res1)
 ```
 
 # Conclusion
