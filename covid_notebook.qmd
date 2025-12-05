@@ -82,14 +82,17 @@ Graphique d'auto-correlation
 
 ###Commerces et loisirs
 
-```{r}
-
+```{r serie 2020}
+shop_ts <- ts (covid$shop_leisure, start = c(2020, 46),end = c(2020, 366), frequency = 366 )
+plot (shop_ts)
 ```
 
 ###Lieux de travail
 
-```{r}
-
+```{r workts}
+ts_work <- ts(covid$workplaces, start = c(2020, 46), frequency = 366, end = c(2020, 366))
+plot(ts_work)
+tsp(ts_work)
 ```
 
 ###Alimentation et pharmacies
