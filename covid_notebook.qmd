@@ -80,7 +80,10 @@ Graphique d'auto-correlation
 
 ##Analyse par variable :
 
+Retenir les jours de la semaine :
 ```{r semaine}
+
+ 
 # Copie de la série initiale sous une autre nom
 covidw <- covid
 # Calcul des jours de la semaine
@@ -88,6 +91,13 @@ covidw$weekdays <- weekdays(as.POSIXct(covidw$date))
 # Les données du week-end sont remplacées par des valeurs manquantes
 covidw[covidw$weekdays == "Saturday" | covidw$weekdays == "Sunday" , 2:7] <- NA 
 ```
+
+
+Retenir les jours du week-end : 
+```{r}
+
+```
+
 
 ###Commerces et loisirs
 
