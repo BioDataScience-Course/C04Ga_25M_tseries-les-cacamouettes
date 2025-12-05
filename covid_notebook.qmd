@@ -80,6 +80,7 @@ Graphique d'auto-correlation
 
 ##Analyse par variable :
 
+Retenir les jours de la semaine : 
 ```{r}
 # Copie de la série initiale sous une autre nom
 covidw <- covid
@@ -95,6 +96,10 @@ mobw_ts2 <- aggregate(mobw_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
 plot(mobw_ts2)
 ```
 
+Retenir les jours du week-end : 
+```{r}
+
+```
 
 ###Commerces et loisirs
 
