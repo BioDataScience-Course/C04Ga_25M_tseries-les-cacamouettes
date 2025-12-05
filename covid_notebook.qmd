@@ -84,7 +84,6 @@ Retenir les jours de la semaine :
 
 ```{r semaine}
 
- 
 # Copie de la série initiale sous une autre nom
 covidw <- covid
 # Calcul des jours de la semaine
@@ -95,16 +94,19 @@ covidw[covidw$weekdays == "Saturday" | covidw$weekdays == "Sunday" , 2:7] <- NA
 
 Retenir les jours du week-end :
 
-```{r}
+
+
+Retenir les jours du week-end : 
+```{r weekend}
 # Copie de la série initiale sous une autre nom
-covidw <- covid
+covidy <- covid
 # Calcul des jours de la semaine
-covidw$weekdays <- weekdays(as.POSIXct(covidw$date))
+covidy$weekdays <- weekdays(as.POSIXct(covidy$date))
 # Les données du week-end sont remplacées par des valeurs manquantes
-covidw[covidw$weekdays == "Monday" | covidw$weekdays == "Tuesday" | covidw$weekdays == "Wednesday" | covidw$weekdays == "Thursday" | covidw$weekdays == "Friday", 2:7] <- NA 
+covidy[covidy$weekdays == "Monday" | covidy$weekdays == "Tuesday" | covidy$weekdays == "Wednesday" | covidy$weekdays == "Thursday" | covidy$weekdays == "Friday", 2:7] <- NA 
 
 # Aggrégation par moyenne des valeurs par semaine
-#covidw_ts2 <- aggregate(covidw_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
+# covidy_ts2 <- aggregate(covidy_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
 ```
 
 ###Commerces et loisirs
@@ -112,6 +114,12 @@ covidw[covidw$weekdays == "Monday" | covidw$weekdays == "Tuesday" | covidw$weekd
 ```{r serie 2020}
 shop_ts <- ts (covid$shop_leisure, start = c(2020, 46),end = c(2020, 366), frequency = 366 )
 plot (shop_ts)
+```
+
+```{r serie 2020 week}
+shopw_ts <- ts (covidy$shop_leisure, start = c(2020, 46),end = c(2020, 366), frequency = 366 )
+shopy_ts <- aggregate(covidy_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
+plot (shopw_ts)
 ```
 
 ###Lieux de travail
@@ -137,13 +145,27 @@ Nous voyons qu'en ne gardant que les jours de la semaine, le bruit de la série 
 ###Alimentation et pharmacies
 
 ```{r}
-grocery_pharma_ts <- ts(covid$grocery_pharma, start = c(2020, 46), frequency = 366, end = c(2020, 366))
+grocery_pharma_ts <- ts(covid$grocery_pharma, start = c(2020, 46), frequency = 365, end = c(2020, 365))
 plot(grocery_pharma_ts)
+
+covidw_ts <- ts(covidw$grocery_pharma, start = c(2020, 46), frequency = 365,end = c(2020, 365))
+plot(covidw_ts)
+# Aggrégation par moyenne des valeurs par semaine
+covidw_gp_ts2 <- aggregate(covidw_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
+plot(covidw_gp_ts2)
+
+covidy_ts <- ts(covidy$grocery_pharma, start = c(2020, 46), frequency = 365,end = c(2020, 365))
+plot(covidw_ts)
+# Aggrégation par moyenne des valeurs par semaine
+covidy_gp_ts2 <- aggregate(covidy_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
+plot(covidy_gp_ts2)
+
+
 ```
 
 ###Lieux de résidence
 
-#Année 2020
+####Année 2020
 
 ```{r}
 res_20 <- ts(covid[, "residential"], start = c(2020, 46), end = c(2020, 366), frequency = 366)
@@ -158,8 +180,12 @@ plot(res_20)
 
 A cette étape, il est encore très difficile d'interpréter la série chronologique. Cependant, nous observons une brusque augmentation de personnes restant chez elles début d'année 2020, illustrant l'arrivée soudaine de la quarantaine.
 
+<<<<<<< HEAD
 #Année 2021
 
+=======
+####Année 2021
+>>>>>>> 8dec2c4fc4f9a779eb1a734fa14620c19dac4d4b
 ```{r}
 res_21 <- ts(covid[, "residential"], start = c(2021, 1), end = c(2021, 365), frequency = 365)
 class(res_21)
