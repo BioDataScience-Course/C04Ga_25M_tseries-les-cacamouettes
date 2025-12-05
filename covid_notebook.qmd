@@ -100,12 +100,12 @@ tsp(ts_work)
 ```{r}
 grocery_pharma_ts <- ts(covid$grocery_pharma, start = c(2020, 46), frequency = 366, end = c(2020, 366))
 plot(grocery_pharma_ts)
-tsp(grocery_pharma_ts)
 ```
 
 ###Lieux de résidence
 
 #Année 2020
+
 ```{r}
 res_20 <- ts(covid, start = c(2020, 2, 15), end = c(2020, 12, 31), frequency = 42)
 class(res)
