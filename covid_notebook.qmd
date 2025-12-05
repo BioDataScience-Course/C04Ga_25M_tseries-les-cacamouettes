@@ -83,7 +83,6 @@ Graphique d'auto-correlation
 Retenir les jours de la semaine :
 ```{r semaine}
 
- 
 # Copie de la série initiale sous une autre nom
 covidw <- covid
 # Calcul des jours de la semaine
@@ -94,16 +93,16 @@ covidw[covidw$weekdays == "Saturday" | covidw$weekdays == "Sunday" , 2:7] <- NA
 
 
 Retenir les jours du week-end : 
-```{r}
+```{r weekend}
 # Copie de la série initiale sous une autre nom
-covidw <- covid
+covidy <- covid
 # Calcul des jours de la semaine
-covidw$weekdays <- weekdays(as.POSIXct(covidw$date))
+covidy$weekdays <- weekdays(as.POSIXct(covidy$date))
 # Les données du week-end sont remplacées par des valeurs manquantes
-covidw[covidw$weekdays == "Monday" | covidw$weekdays == "Tuesday" | covidw$weekdays == "Wednesday" | covidw$weekdays == "Thursday" | covidw$weekdays == "Friday", 2:7] <- NA 
+covidy[covidy$weekdays == "Monday" | covidy$weekdays == "Tuesday" | covidy$weekdays == "Wednesday" | covidy$weekdays == "Thursday" | covidy$weekdays == "Friday", 2:7] <- NA 
 
 # Aggrégation par moyenne des valeurs par semaine
-#covidw_ts2 <- aggregate(covidw_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
+#covidy_ts2 <- aggregate(covidy_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
 ```
 
 
@@ -112,6 +111,12 @@ covidw[covidw$weekdays == "Monday" | covidw$weekdays == "Tuesday" | covidw$weekd
 ```{r serie 2020}
 shop_ts <- ts (covid$shop_leisure, start = c(2020, 46),end = c(2020, 366), frequency = 366 )
 plot (shop_ts)
+```
+
+```{r serie 2020 week}
+shopw_ts <- ts (covidw$shop_leisure, start = c(2020, 46),end = c(2020, 366), frequency = 366 )
+shopw_ts <- aggregate(covidw_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
+plot (shopw_ts)
 ```
 
 ###Lieux de travail
