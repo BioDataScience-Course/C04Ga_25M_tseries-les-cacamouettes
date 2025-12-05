@@ -125,7 +125,6 @@ tsp(ts_work)
 ```{r série semaine 2020}
 # La série temporelle est créée (début le 15 février 2020 = 46e jour de l'année 2020)
 covidw_ts <- ts(covidw$workplaces, start = c(2020, 46), frequency = 365,end = c(2020, 365))
-plot(covidw_ts)
 # Aggrégation par moyenne des valeurs par semaine
 covidwwork_ts2 <- aggregate(covidw_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
 plot(covidwwork_ts2)
@@ -151,11 +150,27 @@ plot(covidw_gp_ts2)
 #Année 2020
 
 ```{r}
-res_20 <- ts(covid, start = c(2020, 2, 15), end = c(2020, 12, 31), frequency = 42)
-class(res)
-res1 <- ts(covid[, "residential"])
-class(res1)
+res_20 <- ts(covid[, "residential"], start = c(2020, 46), end = c(2020, 366), frequency = 366)
+class(res_20)
 ```
+
+Que ce soit pour le travail ou pour d'autres activités, la population quitte sa résidence globalement tous les jours de la semaine. Nous ne séparons donc pas les données entre jours de la semaine et jours de weekend. Jetons un oeil à cette série chronologique en imprimant son graphe.
+
+```{r}
+plot(res_20)
+```
+A cette étape, il est encore très difficile d'interpréter la série chronologique. Cependant, nous observons une brusque augmentation de personnes restant chez elles début d'année 2020, illustrant l'arrivée soudaine de la quarantaine.
+
+#Année 2021
+```{r}
+res_21 <- ts(covid[, "residential"], start = c(2021, 1), end = c(2021, 365), frequency = 365)
+class(res_21)
+```
+Imprimons le graphe de cette série chronologique.
+```{r}
+plot(res_21)
+```
+Tout comme pour l'année 2020, on observe une forte augmentation de personnes restant chez elles en début d'année, mais il est encore trop tôt dans l'analyse pour de plus amples interprétations.
 
 # Conclusion
 
