@@ -94,8 +94,10 @@ Commerces et loisirs
 
 Lieux de travail
 
-```{r}
-
+```{r workts}
+ts_work <- ts(covid$workplaces, start = c(2020, 46), frequency = 366, end = c(2020, 366))
+plot(ts_work)
+tsp(ts_work)
 ```
 
 Alimentation et pharmacies
