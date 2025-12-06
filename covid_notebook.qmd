@@ -81,6 +81,7 @@ Graphique d'auto-correlation
 ##Analyse par variable :
 
 Retenir les jours de la semaine :
+
 ```{r semaine}
 
 # Copie de la série initiale sous une autre nom
@@ -90,6 +91,9 @@ covidw$weekdays <- weekdays(as.POSIXct(covidw$date))
 # Les données du week-end sont remplacées par des valeurs manquantes
 covidw[covidw$weekdays == "Saturday" | covidw$weekdays == "Sunday" , 2:7] <- NA 
 ```
+
+Retenir les jours du week-end :
+
 
 
 Retenir les jours du week-end : 
@@ -104,7 +108,6 @@ covidy[covidy$weekdays == "Monday" | covidy$weekdays == "Tuesday" | covidy$weekd
 # Aggrégation par moyenne des valeurs par semaine
 # covidy_ts2 <- aggregate(covidy_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
 ```
-
 
 ###Commerces et loisirs
 
@@ -127,6 +130,8 @@ plot(ts_work)
 tsp(ts_work)
 ```
 
+La série concernant les déplacements vers les lieux de travail présente beaucoup de bruit ce risque risque de rendre l'analyse difficile. Nous allons donc tenter de garder uniquement les jours de la semaine :
+
 ```{r série semaine 2020}
 # La série temporelle est créée (début le 15 février 2020 = 46e jour de l'année 2020)
 covidw_ts <- ts(covidw$workplaces, start = c(2020, 46), frequency = 365,end = c(2020, 365))
@@ -134,6 +139,17 @@ covidw_ts <- ts(covidw$workplaces, start = c(2020, 46), frequency = 365,end = c(
 covidwwork_ts2 <- aggregate(covidw_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
 plot(covidwwork_ts2)
 ```
+
+Nous voyons qu'en ne gardant que les jours de la semaine, le bruit de la série est réduit. Nous continuerons donc nos analyses sur les déplacements au travail uniquement la semaine.
+
+```{r série semaine 2021}
+# La série temporelle est créée (début le 15 février 2020 = 46e jour de l'année 2020)
+covidw_ts <- ts(covidw$workplaces, start = c(2021, 1), frequency = 365,end = c(2021, 365))
+# Aggrégation par moyenne des valeurs par semaine
+covidwwork_ts2021 <- aggregate(covidw_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
+plot(covidwwork_ts2021)
+```
+
 
 ###Alimentation et pharmacies
 
@@ -172,17 +188,26 @@ Que ce soit pour le travail ou pour d'autres activités, la population quitte sa
 ```{r}
 plot(res_20)
 ```
+
 A cette étape, il est encore très difficile d'interpréter la série chronologique. Cependant, nous observons une brusque augmentation de personnes restant chez elles début d'année 2020, illustrant l'arrivée soudaine de la quarantaine.
 
+<<<<<<< HEAD
+#Année 2021
+
+=======
 ####Année 2021
+>>>>>>> 8dec2c4fc4f9a779eb1a734fa14620c19dac4d4b
 ```{r}
 res_21 <- ts(covid[, "residential"], start = c(2021, 1), end = c(2021, 365), frequency = 365)
 class(res_21)
 ```
+
 Imprimons le graphe de cette série chronologique.
+
 ```{r}
 plot(res_21)
 ```
+
 Tout comme pour l'année 2020, on observe une forte augmentation de personnes restant chez elles en début d'année, mais il est encore trop tôt dans l'analyse pour de plus amples interprétations.
 
 # Conclusion
