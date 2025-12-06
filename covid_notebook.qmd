@@ -153,10 +153,15 @@ plot(covidwwork_ts2021)
 
 ###Alimentation et pharmacies
 
+####Année 2020 
+
 ```{r}
 grocery_pharma_ts <- ts(covid$grocery_pharma, start = c(2020, 46), frequency = 365, end = c(2020, 365))
 plot(grocery_pharma_ts)
+```
+Ce graphique représente l'évolution des déplacements vers les supermarchés et les pharmacies durant l'année 2020 en période de covid. On aperçoit une chute brutale de la série un peu avant le mois de mars. Ensuite, la série se stabilise autour d'une tendance négative, puis, elle remonte légèrement à la fin de l'année. 
 
+```{r}
 covidw_ts <- ts(covidw$grocery_pharma, start = c(2020, 46), frequency = 365,end = c(2020, 365))
 plot(covidw_ts)
 # Aggrégation par moyenne des valeurs par semaine
@@ -173,6 +178,7 @@ par(mfrow = c(1, 2), mar = c(4, 4, 3, 1))
 plot(covidw_gp_ts2, main = "Covid W - Grocery Pharma (agrégé)")
 plot(covidy_gp_ts2, main = "Covid Y - Grocery Pharma (agrégé)")
 ```
+Lorsque l'on compare la variable alimentation et pharmacies entre la semaine et le week-end, on remarque que les deux séries évoluent de manière similaire. De ce fait, nous pouvons continuer les analyses en ne séparant pas les jours de la semaine et les week-end. On observe une forte chute un peu avant le mois de mars. Ensuite, les deux séries remontent pour se stabiliser autour d'une tendance négative puis elles remontent légèrement à la fin de l'année 2020. Cela suggère que les gens vont à la pharmacie et vont chercher des aliments tant le week-end que la semaine. Le moment de la chute correspond au début des premières mesures sanitaires prises vis-à-vis de ces virus avant la confinement officiel. Cela pourrait être lié à une peur collective quant à la gravité de la situation. 
 
 ###Lieux de résidence
 
