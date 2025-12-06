@@ -153,7 +153,9 @@ plot(covidw_ts)
 covidy_gp_ts2 <- aggregate(covidy_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
 plot(covidy_gp_ts2)
 
-
+par(mfrow = c(1, 2), mar = c(4, 4, 3, 1))
+plot(covidw_gp_ts2, main = "Covid W - Grocery Pharma (agrégé)")
+plot(covidy_gp_ts2, main = "Covid Y - Grocery Pharma (agrégé)")
 ```
 
 ###Lieux de résidence
