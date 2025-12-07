@@ -191,7 +191,7 @@ plot(work2020_window, ylab = "Déplacements entre février et juin", xlab = "Tem
 Les déplacements entre février et juin semble aller à la baisse.
 
 ```{r décomposition 2020 février-juin}
-workwindow2020_decomp <- tsd(work2020_window, method = "average", order = 5, times = 1)
+workwindow2020_decomp <- tsd(work2020_window, method = "average", order = 13, times = 1)
 plot(workwindow2020_decomp, col = 1:3)
 ```
 La composante filtrée semble présenter une tendance générale décroissante entre mi-février et fin juin. Par contre, les résidus ne semblent présenter que du bruit blanc.
@@ -200,7 +200,7 @@ La composante filtrée semble présenter une tendance générale décroissante e
 mts_windowwork2020 <- tseries(workwindow2020_decomp)
 trend.test(mts_windowwork2020[,"filtered"])
 ```
-La tendance générale est en effet décroissante avec une valeur \rho négative et significative car la p-value est tout juste inférieure au seuil \alpha de 5%.
+La tendance générale n'est pas significative car la p-value est supérieure au seuil \alpha de 5%.
 
 ```{r travail 2020 juin-décembre}
 work2020_window2 <-window(covidwork_2020, start = c(2020,21), end = c(2020, 45))
@@ -210,7 +210,7 @@ Les déplacements vers le travail entre fin juin et décembre 2020 semblent augm
 
 
 ```{r décomposition 2020 juin-décembre}
-workwindow22020_decomp <- tsd(work2020_window2, method = "average", order = 5, times = 1)
+workwindow22020_decomp <- tsd(work2020_window2, method = "average", order = 13, times = 1)
 plot(workwindow22020_decomp, col = 1:3)
 ```
 La composante filtrée semble montrer une tendance générale à la croissance, alors que les résidus semblent indiquer de potentiels cycles. 
@@ -227,7 +227,7 @@ Nous allons aussi nous intéresser à la deuxième partie de l'année :
 plot(covid_extract_2020jd,ylab = "Résidus", xlab = "Temps [mois]")
 spectrum(covid_extract_2020jd, spans = c(3,5))
 ```
-Les résidus ne présentent pas de cycle étant donné l'absence de cycle.
+Les résidus ne présentent pas de cycle étant donné l'absence de pics.
 ####Année 2021
 ```{r série semaine 2021}
 # La série temporelle est créée (début le 1er janvier 2021)
@@ -281,7 +281,7 @@ plot(work2021_window, ylab = "Déplacements entre janvier et juin", xlab = "Temp
 ```
 Il semble y avoir une nette diminution des déplacements au travail en début d'année avec une ré augmentation légère par la suite.
 ```{r décomposition 2021 janvier-juin}
-workwindow2021_decomp <- tsd(work2021_window, method = "average", order = 3, times = 1)
+workwindow2021_decomp <- tsd(work2021_window, method = "average", order = 13, times = 1)
 plot(workwindow2021_decomp, col = 1:3)
 ```
 La série filtrée suggère une diminution suivie d'une stabilisation. Les résidus ne présentent rien en particulier, si ce n'est du bruit.
@@ -299,12 +299,21 @@ plot(work2021_window2, ylab = "Déplacements", xlab = "Temps [mois]", main = "d�
 ```
 
 ```{r décomposition 2021 juin-décembre}
-workwindow2021jd_decomp <- tsd(work2021_window2, method = "average", order = 3, times = 1)
+workwindow2021jd_decomp <- tsd(work2021_window2, method = "average", order = 13, times = 1)
 plot(workwindow2021jd_decomp, col = 1:3)
 ```
+Selon la série filtrée, il semble y avoir une augmentation suivie d'une diminution, avec ensuite une augmentation à nouveau en fin d'année. Les résidus présentent uniquement du bruit.
+
+```{r test significativité travail 2021 juin-décembre}
+mts_windowwork2021jd<- tseries(workwindow2021jd_decomp)
+trend.test(mts_windowwork2021jd[,"filtered"])
+```
+La tendance générale est significative avec une p-value inférieure au seuil \alpha de 5% pour la période fin juin à décembre 2021. De plus, elle est décroissante car la valeur de \rho est négative.
 
 ####Comparaison lieux de travail 2020-2021
 Si nous nous intéressons à l'année entière, tant 2020 que 2021, les deux séries présentent une tendance générale à l'augmentation et une absence de cycle.
+Concernant les périodes de début d'année, commençant mi-février pour 2020 et en janvier pour 2021 et se terminant fin juin : il n'y a pas de tendance générale significative ni de cycle que ce soit pour 2020 ou 2021.
+Concernant la période entre fin juin et décembre. En 2020, il y a une tendance générale croissante alors qu'en 2021, il y a une tendance générale décroissante.
 
 ###Alimentation et pharmacies
 
