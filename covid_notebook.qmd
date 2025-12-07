@@ -158,7 +158,7 @@ plot(covidw2020, col = 1:3)
 La composante filtered qui représente la série d'origine sans les cycles, semblent présenter une tendance générale. De plus, les résidus semblent présenter des cycles.
 Nous convertissons notre objet en mts pour ensuite regarder l'autocorrélation de la composante filtrée.
 
-```{r tendance générale 2020}
+```{r tendance générale travail 2020}
  mts_2020 <- tseries(covidw2020)
 class(mts_2020)
 plot(mts_2020)
@@ -173,17 +173,14 @@ trend.test(mts_2020[,"filtered"])
 ```
 La p-value étant inférieure au seuil \alpha de 5% pour la composante filtrée,nous rejetons H0. La tendance générale à l'augmentation est donc significative.
 
-```{r}
-acfresidu_work_2020 <-acf(mts_2020[, "residuals"])
-```
-
+Nous allons maintenant vérifier si des cycles sont présents ou non comme le suggère les résidus obtenus après décomposition de la série :
 
 ```{r analyse résidus 2020}
  covid_extract_2020 <-extract(covidw2020, components = "residuals")
 plot(covid_extract_2020)
 spectrum(covid_extract_2020, spans = c(3,5))
 ```
-
+Le spectre ne présente aucun pic marqué et est assez plat, cela suggère qu'il n'y a aucun cycle.
 
 ####Année 2021
 ```{r série semaine 2021}
