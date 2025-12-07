@@ -123,32 +123,85 @@ plot (shopw_ts)
 ```
 
 ###Lieux de travail
-
-```{r work 2020}
+La variable Lieux de travail correspond aux déplacements de la population wallone, en Belgique, vers leur lieu de travail. Nous allons comparer ces déplacements pour l'année 2020 et 2021.
+####Année 2020
+```{r série travail 2020}
 ts_work <- ts(covid$workplaces, start = c(2020, 46), frequency = 366, end = c(2020, 365))
-plot(ts_work)
+plot(ts_work, xlab = "Temps [mois]", ylab = "Déplacements", main = "Année 2020 - Déplacements vers le lieu de travail")
 tsp(ts_work)
 ```
 
 La série concernant les déplacements vers les lieux de travail présente beaucoup de bruit ce risque risque de rendre l'analyse difficile. Nous allons donc tenter de garder uniquement les jours de la semaine :
 
-```{r série semaine 2020}
+```{r Aggrégation semaine 2020}
 # La série temporelle est créée (début le 15 février 2020 = 46e jour de l'année 2020)
 covidw_ts <- ts(covidw$workplaces, start = c(2020, 46), frequency = 365,end = c(2020, 365))
 # Aggrégation par moyenne des valeurs par semaine
-covidwwork_ts2 <- aggregate(covidw_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
-plot(covidwwork_ts2)
+covidwork_2020 <- aggregate(covidw_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
+plot(covidwork_2020, xlab = "Temps [mois]", ylab = "Déplacements", main = "Année 2020 - Déplacements vers le lieu de travail")
 ```
 
-Nous voyons qu'en ne gardant que les jours de la semaine, le bruit de la série est réduit. Nous continuerons donc nos analyses sur les déplacements au travail uniquement la semaine.
+Nous voyons qu'en ne gardant que les jours de la semaine, le bruit de la série est réduit. Nous continuerons donc nos analyses sur les valeurs moyennes de déplacements au travail uniquement la semaine autant pour 2020 que 2021.
+Nous voyons que début 2020, les déplacements vers les lieux de travail a chuté brutalement pour ensuite connaitre deux remontées progressives durant le printemps et jusqu'à la fin de l'été. Enfin, une rechute moins marquée que la première est observée vers la fin de l'été. Puis, les déplacements vers les lieux de travail réaugmente fin 2020.
 
+```{r acf travail 2020 }
+acf(covidwork_2020)
+```
+Ce graphique d'autocorrélation ne semble pas présenter de cycle. Par contre, les barres significatives au début décroissent, ce qui pourrait se traduire par une tendance générale décroissante. De plus, les autres barres sont non significatives.
+
+Nous réalisons une décomposition de la série afin d'analyser cette dernière plus en détail :
+
+```{r décomposition 2020}
+covidw2020 <- tsd(covidwork_2020, method = "average", type = "additive", order = 26, times = 3)
+plot(covidw2020, col = 1:3)
+```
+La composante filtered qui représente la série d'origine sans les cycles, semblent présenter une tendance générale. De plus, les résidus semblent présenter des cycles.
+Nous convertissons notre objet en mts pour ensuite regarder l'autocorrélation de la composante filtrée.
+
+```{r tendance générale 2020}
+ mts_2020 <- tseries(covidw2020)
+class(mts_2020)
+plot(mts_2020)
+ acffiltre_work_2020 <-acf(mts_2020[, "filtered"])
+```
+La série présente une tendance générale qui semble croissante lorsque l'on observe la composante filtrée.
+Quant au graphique de l'autocorrélation il semble présenter une autocorrélation significative et positive.
+Concernant les résidus, la série semble présenter des cycles.
+
+```{r}
+trend.test(mts_2020[,"filtered"])
+```
+La p-value étant inférieure au seuil \alpha de 5% pour la composante filtrée,nous rejetons H0. La tendance générale à l'augmentation est donc significative.
+
+```{r}
+acfresidu_work_2020 <-acf(mts_2020[, "residuals"])
+```
+
+
+```{r analyse résidus 2020}
+ covid_extract_2020 <-extract(covidw2020, components = "residuals")
+plot(covid_extract_2020)
+spectrum(covid_extract_2020, spans = c(3,5))
+```
+
+
+####Année 2021
 ```{r série semaine 2021}
-# La série temporelle est créée (début le 15 février 2020 = 46e jour de l'année 2020)
+# La série temporelle est créée (début le 1er janvier 2021)
 covidw_ts <- ts(covidw$workplaces, start = c(2021, 1), frequency = 365,end = c(2021, 365))
 # Aggrégation par moyenne des valeurs par semaine
-covidwwork_ts2021 <- aggregate(covidw_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
-plot(covidwwork_ts2021)
+covidwork_2021 <- aggregate(covidw_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
+plot(covidwork_2021, xlab = "Temps [mois]", ylab = "Déplacements", main = "Année 2021 - Déplacements vers le lieu de travail")
 ```
+La série présente une chute des déplacements envers les lieux de travail début 2021. Puis, cela augmente progressivement jusqu'au début de l'été. Pour ensuite rechuter, moins fort que la première fois et après remonter vers la fin de l'été. Ensuite, une autre rechute, plus forte que la dernière apparaît pour ensuite remonter à la fin de l'année 2021.
+
+
+```{r acf travail 2021 }
+acf(covidwork_2021)
+```
+Ce graphique d'autocorrélation est très semblable à celui de 2020. Il ne semble pas non plus y avoir de cycles. De plus, uniquement les deuxième et troisième barres sont significatives et diminuent, ce qui pourrait, comme 2020, se traduire par une tendance générale négative.
+
+
 
 
 ###Alimentation et pharmacies
