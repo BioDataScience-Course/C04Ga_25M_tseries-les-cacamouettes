@@ -258,6 +258,17 @@ plot(grocery_pharma_ts2, ylab = "déplacement supermarchés et pharmacies", xlab
 ```
 Lorsque l'on compare la forme générale de la série pour l'année 2020 et la série pour pour l'année 2021, l'aspect globale semble évoluer de manière similaire. En effet, même si la chute n'a pas lieu au même moment (2020 : février, 2021 : janvier), la baisse brutale de déplacement vers les supermarchés et les pharmacies est observable en début d'année dans les deux séries. Ensuite, tant pour 2020 que pour 2021, la série se stabilise autour d'une tendance générale pour, à la fin  de l'année, remonter légèrement. 
 
+```{r}
+#j'ai pas fini
+par(mfrow = c(1, 2))
+boxplot(as.numeric(grocery_pharma_ts), 
+  main = "déplacements supermarchés et pharmacies 2020")
+boxplot(as.numeric(grocery_pharma_ts2),
+  main = "déplacements supermarchés et pharmacies 2021")
+
+```
+
+
 ###Lieux de résidence
 
 ####Année 2020
