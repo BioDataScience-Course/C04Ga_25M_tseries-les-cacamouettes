@@ -394,50 +394,52 @@ Au niveau de la série filtrée, on observe une tendance générale positive. Da
 
 ####Année 2020
 
-```{r}
-res_20 <- ts(covid[, "residential"], start = c(2020, 46), end = c(2020, 366), frequency = 366)
+```{r série 2020}
+res_20 <- ts(covid$residential, start = c(2020, 46), end = c(2020, 366), frequency = 366)
 class(res_20)
 ```
 
 Que ce soit pour le travail ou pour d'autres activités, la population quitte sa résidence globalement tous les jours de la semaine. Nous ne séparons donc pas les données entre jours de la semaine et jours de weekend. Jetons un oeil à cette série chronologique en imprimant son graphe.
 
-```{r}
+```{r res20 plot}
 plot(res_20, xlab = "Temps [mois]", ylab = "Evolution du nombre de personnes restant à domicile [%]", main = "Lieux de résidence - 2020")
+tsp(res_20)
 ```
 
 A cette étape, il est encore très difficile d'interpréter la série chronologique. Cependant, nous observons une brusque augmentation de personnes restant chez elles début d'année 2020, illustrant l'arrivée soudaine de la quarantaine. On observe également une diminution durant l'été. Le cycle semble à première vue saisonnier.
 Vérifions l'autocorrélation.
-```{r}
+```{r acf 2020}
 acf(res_20)
 ```
 L'autocorrélation est forte. Toutes les barres sont significatives et positives. De plus, on distingue une décroissance, pouvant révéler une tendance générale à la diminution.
 Décomposons la série par les moyennes mobiles. L'amplitude des cycles semblant varier avec la tendance, nous utilisons un modèle multiplicatif.
-```{r}
+```{r tsd 2020}
 res_20_dec <- tsd(res_20, method = "average", type = "multiplicative", order = 30, times = 3)
 plot(res_20_dec, col = 1:3)
 ```
 On observe une tendance générale à l'augmentation début d'année 2020, suivie d'une diminution en été, pour réaugmenter fin d'année. Les résidus indiquent la présence d'un cycle.
 
 ####Année 2021
-```{r}
-res_21 <- ts(covid[, "residential"], start = c(2021, 1), end = c(2021, 365), frequency = 365)
+```{r série 2021}
+res_21 <- ts(covid$residential, start = c(2021, 1), end = c(2021, 365), frequency = 365)
 class(res_21)
 ```
 
 Imprimons le graphe de cette série chronologique.
 
-```{r}
+```{r res21 plot}
 plot(res_21, xlab = "Temps [mois]", ylab = "Evolution du nombre de personnes restant à domicile [%]", main = "Lieux de résidence - 2021")
+tsp(res_21)
 ```
 
 Tout comme pour l'année 2020, on observe une forte augmentation de personnes restant chez elles en début d'année, et une diminution en été, mais il est encore trop tôt dans l'analyse pour de plus amples interprétations. Le cycle semble saisonnier.
 Vérifions l'autocorrélation.
-```{r}
+```{r acf 2021}
 acf(res_21)
 ```
 On observe une forte autocorrélation, avec des barres toutes positives et significatives. Une tendance à la diminution est également observable.
 Décomposons la série par les moyennes mobiles pour en savoir plus. Comme pour 2020, nous devons utiliser un modèle multiplicatif.
-```{r}
+```{r tsd 2021}
 res_21_dec <- tsd(res_21, method = "average", type = "multiplicative", order = 30, times = 3)
 plot(res_21_dec, col = 1:3)
 ```
