@@ -406,7 +406,7 @@ plot(res_20, xlab = "Temps [mois]", ylab = "Evolution du nombre de personnes res
 tsp(res_20)
 ```
 
-A cette étape, il est encore très difficile d'interpréter la série chronologique. Cependant, nous observons une brusque augmentation de personnes restant chez elles début d'année 2020, illustrant l'arrivée soudaine de la quarantaine. On observe également une diminution durant l'été. Le cycle semble à première vue saisonnier.
+A cette étape, il est encore très difficile d'interpréter la série chronologique. Cependant, nous observons une brusque augmentation (+ 30%) de personnes restant chez elles début d'année 2020, illustrant l'arrivée soudaine de la quarantaine. On observe également une réduction de cette augmentation durant l'été. Le cycle semble à première vue saisonnier.
 Vérifions l'autocorrélation.
 ```{r acf 2020}
 acf(res_20, main = "Autocorrélation pour l'année 2020")
@@ -423,7 +423,7 @@ Regardons chaque composante de plus près.
 res_20_mts <- tseries(res_20_dec)
 class(res_20_mts)
 colnames(res_20_mts)
-plot(res_20_mts, main = "Composantes de la série - 2020", xlab = "Temps [jours]")
+plot(res_20_mts, main = "Composantes de la série - 2020", xlab = "Temps [mois]")
 ```
 ```{r acf mts 20}
 acf(res_20_mts[, "filtered"], main = "Autocorrélation de la tendance - 2020")
@@ -433,7 +433,7 @@ Qu'en est-il des cycles ?
 ```{r resid mts 20}
 plot(res_20_mts[, "residuals"], ylab = "Composante résiduelle", xlab = "Temps [mois]")
 ```
-
+La composante résiduelle étant stationnarisée, nous pouvons réaliser une analyse spectrale.
 ```{r spec20}
 spectrum(res_20_mts[, "residuals"], spans = c(3, 5), main = "Analyse spectrale - 2020", ylab = "Spectre", xlab = "Fréquence")
 ```
@@ -452,7 +452,7 @@ plot(res_21, xlab = "Temps [mois]", ylab = "Evolution du nombre de personnes res
 tsp(res_21)
 ```
 
-Tout comme pour l'année 2020, on observe une forte augmentation de personnes restant chez elles en début d'année, et une diminution en été, mais il est encore trop tôt dans l'analyse pour de plus amples interprétations. Le cycle semble saisonnier.
+Tout comme pour l'année 2020, on observe une forte augmentation de personnes restant chez elles en début d'année, et une augmentation réduite en été, mais il est encore trop tôt dans l'analyse pour de plus amples interprétations. Le cycle semble saisonnier.
 Vérifions l'autocorrélation.
 ```{r acf 2021}
 acf(res_21, main = "Autocorrélation pour l'année 2021")
@@ -464,6 +464,24 @@ res_21_dec <- tsd(res_21, method = "average", type = "multiplicative", order = 3
 plot(res_21_dec, col = 1:3, xlab = "Temps [jours]")
 ```
 La tendance générale est identique à celle de 2020. Les résidus indiquent également la présence d'un cycle.
+```{r mts 2021}
+res_21_mts <- tseries(res_21_dec)
+class(res_21_mts)
+colnames(res_21_mts)
+plot(res_21_mts, main = "Composantes de la série - 2021", xlab = "Temps [mois]")
+```
+
+```{r acf mts 21}
+acf(res_21_mts[, "filtered"], main = "Autocorrélation de la tendance - 2021")
+```
+
+```{r resid mts 21}
+plot(res_21_mts[, "residuals"], ylab = "Composante résiduelle", xlab = "Temps [mois]")
+```
+
+```{r spec21}
+spectrum(res_21_mts[, "residuals"], spans = c(3, 5), main = "Analyse spectrale - 2021", ylab = "Spectre", xlab = "Fréquence")
+```
 
 ####Comparaison des années 2020 et 2021
 
