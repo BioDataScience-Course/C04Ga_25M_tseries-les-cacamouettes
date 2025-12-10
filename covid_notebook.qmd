@@ -418,6 +418,26 @@ res_20_dec <- tsd(res_20, method = "average", type = "multiplicative", order = 3
 plot(res_20_dec, col = 1:3)
 ```
 On observe une tendance générale à l'augmentation début d'année 2020, suivie d'une diminution en été, pour réaugmenter fin d'année. Les résidus indiquent la présence d'un cycle.
+Regardons chaque composante de plus près.
+```{r mts 2020}
+res_20_mts <- tseries(res_20_dec)
+class(res_20_mts)
+colnames(res_20_mts)
+plot(res_20_mts)
+```
+```{r acf mts 20}
+acf(res_20_mts[, "filtered"])
+```
+On observe bien une tendance significative à la diminution.
+Qu'en est-il des cycles ?
+```{r resid mts 20}
+plot(res_20_mts[, "residuals"])
+```
+
+```{r spec20}
+spectrum(res_20_mts[, "residuals"], spans = c(3, 5))
+```
+
 
 ####Année 2021
 ```{r série 2021}
