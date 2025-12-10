@@ -406,6 +406,12 @@ plot(res_20, xlab = "Temps [mois]", ylab = "Evolution du nombre de personnes res
 ```
 
 A cette étape, il est encore très difficile d'interpréter la série chronologique. Cependant, nous observons une brusque augmentation de personnes restant chez elles début d'année 2020, illustrant l'arrivée soudaine de la quarantaine.
+Vérifions l'autocorrélation.
+```{r}
+acf(res_20)
+```
+L'autocorrélation est forte. Toutes les barres sont significatives et positives. De plus, on distingue une décroissance, pouvant révéler une tendance générale à la diminution.
+Décomposons la série.
 
 ####Année 2021
 ```{r}
@@ -420,6 +426,13 @@ plot(res_21, xlab = "Temps [mois]", ylab = "Evolution du nombre de personnes res
 ```
 
 Tout comme pour l'année 2020, on observe une forte augmentation de personnes restant chez elles en début d'année, mais il est encore trop tôt dans l'analyse pour de plus amples interprétations.
+Vérifions l'autocorrélation.
+```{r}
+acf(res_21)
+```
+On observe une forte autocorrélation, avec des barres toutes positives et significatives. Une tendance à la diminution est également observable.
+Décomposons la série pour en savoir plus.
+
 ####Comparaison des années 2020 et 2021
 
 # Conclusion
