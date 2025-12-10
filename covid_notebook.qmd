@@ -114,8 +114,9 @@ plot (shop_ts)
 ```
 
 ```{r serie 2020 week}
-shopw_ts <- ts (covidy$shop_leisure, start = c(2020, 46),end = c(2020, 366), frequency = 366 )
-shopy_ts <- aggregate(covidy_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
+covidy_ts <- ts (covidy$shop_leisure, start = c(2020, 46),end = c(2020, 366), frequency = 366 )
+# Aggrégation par moyenne des valeurs par semaine
+covidy_ts2 <- aggregate(covidy_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
 plot (shopw_ts)
 ```
 
