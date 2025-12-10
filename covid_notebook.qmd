@@ -402,17 +402,12 @@ class(res_20)
 Que ce soit pour le travail ou pour d'autres activités, la population quitte sa résidence globalement tous les jours de la semaine. Nous ne séparons donc pas les données entre jours de la semaine et jours de weekend. Jetons un oeil à cette série chronologique en imprimant son graphe.
 
 ```{r}
-plot(res_20)
+plot(res_20, xlab = "Temps [mois]", ylab = "Evolution du nombre de personnes restant à domicile [%]", main = "Lieux de résidence - 2020")
 ```
 
 A cette étape, il est encore très difficile d'interpréter la série chronologique. Cependant, nous observons une brusque augmentation de personnes restant chez elles début d'année 2020, illustrant l'arrivée soudaine de la quarantaine.
 
-<<<<<<< HEAD
-#Année 2021
-
-=======
 ####Année 2021
->>>>>>> 8dec2c4fc4f9a779eb1a734fa14620c19dac4d4b
 ```{r}
 res_21 <- ts(covid[, "residential"], start = c(2021, 1), end = c(2021, 365), frequency = 365)
 class(res_21)
@@ -421,10 +416,11 @@ class(res_21)
 Imprimons le graphe de cette série chronologique.
 
 ```{r}
-plot(res_21)
+plot(res_21, xlab = "Temps [mois]", ylab = "Evolution du nombre de personnes restant à domicile [%]", main = "Lieux de résidence - 2021")
 ```
 
 Tout comme pour l'année 2020, on observe une forte augmentation de personnes restant chez elles en début d'année, mais il est encore trop tôt dans l'analyse pour de plus amples interprétations.
+####Comparaison des années 2020 et 2021
 
 # Conclusion
 
