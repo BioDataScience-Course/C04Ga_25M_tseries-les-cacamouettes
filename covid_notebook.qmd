@@ -409,13 +409,13 @@ tsp(res_20)
 A cette étape, il est encore très difficile d'interpréter la série chronologique. Cependant, nous observons une brusque augmentation de personnes restant chez elles début d'année 2020, illustrant l'arrivée soudaine de la quarantaine. On observe également une diminution durant l'été. Le cycle semble à première vue saisonnier.
 Vérifions l'autocorrélation.
 ```{r acf 2020}
-acf(res_20)
+acf(res_20, main = "Autocorrélation pour l'année 2020")
 ```
 L'autocorrélation est forte. Toutes les barres sont significatives et positives. De plus, on distingue une décroissance, pouvant révéler une tendance générale à la diminution.
 Décomposons la série par les moyennes mobiles. L'amplitude des cycles semblant varier avec la tendance, nous utilisons un modèle multiplicatif.
 ```{r tsd 2020}
 res_20_dec <- tsd(res_20, method = "average", type = "multiplicative", order = 30, times = 3)
-plot(res_20_dec, col = 1:3)
+plot(res_20_dec, xlab = "Temps [jours]", col = 1:3)
 ```
 On observe une tendance générale à l'augmentation début d'année 2020, suivie d'une diminution en été, pour réaugmenter fin d'année. Les résidus indiquent la présence d'un cycle.
 Regardons chaque composante de plus près.
@@ -423,21 +423,21 @@ Regardons chaque composante de plus près.
 res_20_mts <- tseries(res_20_dec)
 class(res_20_mts)
 colnames(res_20_mts)
-plot(res_20_mts)
+plot(res_20_mts, main = "Composantes de la série - 2020", xlab = "Temps [jours]")
 ```
 ```{r acf mts 20}
-acf(res_20_mts[, "filtered"])
+acf(res_20_mts[, "filtered"], main = "Autocorrélation de la tendance - 2020")
 ```
 On observe bien une tendance significative à la diminution.
 Qu'en est-il des cycles ?
 ```{r resid mts 20}
-plot(res_20_mts[, "residuals"])
+plot(res_20_mts[, "residuals"], ylab = "Composante résiduelle", xlab = "Temps [mois]")
 ```
 
 ```{r spec20}
-spectrum(res_20_mts[, "residuals"], spans = c(3, 5))
+spectrum(res_20_mts[, "residuals"], spans = c(3, 5), main = "Analyse spectrale - 2020", ylab = "Spectre", xlab = "Fréquence")
 ```
-
+On observe trois pics significatifs : à environ 1, 50 et 100 jours. Autrement dit, nous avons un cycle journalier, mensuel et bimestriel.
 
 ####Année 2021
 ```{r série 2021}
@@ -455,13 +455,13 @@ tsp(res_21)
 Tout comme pour l'année 2020, on observe une forte augmentation de personnes restant chez elles en début d'année, et une diminution en été, mais il est encore trop tôt dans l'analyse pour de plus amples interprétations. Le cycle semble saisonnier.
 Vérifions l'autocorrélation.
 ```{r acf 2021}
-acf(res_21)
+acf(res_21, main = "Autocorrélation pour l'année 2021")
 ```
 On observe une forte autocorrélation, avec des barres toutes positives et significatives. Une tendance à la diminution est également observable.
 Décomposons la série par les moyennes mobiles pour en savoir plus. Comme pour 2020, nous devons utiliser un modèle multiplicatif.
 ```{r tsd 2021}
 res_21_dec <- tsd(res_21, method = "average", type = "multiplicative", order = 30, times = 3)
-plot(res_21_dec, col = 1:3)
+plot(res_21_dec, col = 1:3, xlab = "Temps [jours]")
 ```
 La tendance générale est identique à celle de 2020. Les résidus indiquent également la présence d'un cycle.
 
