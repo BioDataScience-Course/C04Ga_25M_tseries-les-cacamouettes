@@ -20,9 +20,9 @@ lang: fr
 
 <!--% Rédigez une courte introduction de 3 ou 5 phrases qui présente vos données. Ajoutez une phrase de but. Vous devez citer la bibliographie en utilisant le formatage Markdown ad hoc et en incluant votre référence au format bibtex dans le fichier references.bib. -->
 
-De 2020 à 2022, la pandémie de Covid-19 a ébranlé le monde, forçant la population à limiter ses déplacements. Les données fournies par les rapports de mobilité [@google_covid19_mobility] présentent l'évolution de la mobilité durant cette période pour différentes provinces de Wallonie, et ce pour différents lieux. Nous nous intéresserons ici aux commerces et loisirs, alimentation et pharmacie, lieux de résidence, et lieux de travail.
+De 2020 à 2022, la pandémie de Covid-19 a ébranlé le monde, forçant la population à limiter ses déplacements. Les données fournies par les rapports de mobilité [@google_covid19_mobility] présentent l'évolution de la mobilité durant cette période en Wallonie, et ce pour différents lieux. Nous nous intéresserons ici aux commerces et loisirs, alimentation et pharmacie, lieux de résidence, et lieux de travail.
 
-Dans cette étude, nous tenterons de quantifier l'impact qu'a eu le Covid-19 sur les déplacements de personnes en Belgique, Wallonie, du 15 février 2020 au 31 décembre 2021.
+Dans cette étude, nous tenterons de quantifier l'impact qu'a eu le Covid-19 sur les déplacements de personnes en Belgique, Wallonie, en comparant les années 2020 et 2021.
 
 ## Matériel et méthodes
 
