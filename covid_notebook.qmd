@@ -403,7 +403,7 @@ class(res_20)
 Que ce soit pour le travail ou pour d'autres activités, la population quitte sa résidence globalement tous les jours de la semaine. Nous ne séparons donc pas les données entre jours de la semaine et jours de weekend. Jetons un oeil à cette série chronologique en imprimant son graphe.
 
 ```{r res20 plot}
-plot(res_20, xlab = "Temps [mois]", ylab = "Evolution du nombre de personnes restant à domicile [%]", main = "Lieux de résidence - 2020")
+plot(res_20, xlab = "Temps [mois]", ylab = "Evolution du nombre de personnes [%]", main = "Lieux de résidence - 2020")
 tsp(res_20)
 ```
 
@@ -418,32 +418,12 @@ Afin de diminuer le bruit, décomposons la série avec un filtrage par les valeu
 res_20_dec <- tsd(res_20, method = "evf", lag = 20, axes = 1)
 plot(res_20_dec, xlab = "Temps [jours]", col = 1:3)
 ```
-On observe une tendance générale à l'augmentation début d'année 2020, suivie d'une diminution en été, pour réaugmenter fin d'année. Les résidus indiquent l'absence de cycle.
+La série est dominée par une tendance. On observe une tendance générale à l'augmentation début d'année 2020, suivie d'une diminution en été, pour réaugmenter fin d'année.
 Analysons ces changements de tendance avec la méthode des sommes cumulées.
 ```{r}
 res_20_lt <- local.trend(res_20, xlab = "Temps [mois]")
 ```
-On observe bien deux phases principales : une augmentation à partir du mois d'avril, suivie d'une diminution à la transition juin-juillet. Une nouvelle augmentation est observable début octobre.
-
-```{r mts 2020}
-res_20_mts <- tseries(res_20_dec)
-class(res_20_mts)
-colnames(res_20_mts)
-plot(res_20_mts, main = "Composantes de la série - 2020", xlab = "Temps [mois]")
-```
-```{r acf mts 20}
-acf(res_20_mts[, "filtered"], main = "Autocorrélation de la tendance - 2020")
-```
-On observe bien une tendance significative à la diminution.
-Qu'en est-il des cycles ?
-```{r resid mts 20}
-plot(res_20_mts[, "residuals"], ylab = "Composante résiduelle", xlab = "Temps [mois]")
-```
-La composante résiduelle étant stationnarisée, nous pouvons réaliser une analyse spectrale.
-```{r spec20}
-spectrum(res_20_mts[, "residuals"], spans = c(3, 5), main = "Analyse spectrale - 2020", ylab = "Spectre", xlab = "Fréquence")
-```
-On observe trois pics significatifs : à environ 1, 50 et 100 jours. Autrement dit, nous avons un cycle journalier, mensuel et bimestriel.
+On observe bien deux phases principales : une augmentation à partir du mois d'avril, suivie d'une diminution à la transition juin-juillet. Une nouvelle augmentation est également observable début octobre.
 
 ####Année 2021
 ```{r série 2021}
@@ -454,7 +434,7 @@ class(res_21)
 Imprimons le graphe de cette série chronologique.
 
 ```{r res21 plot}
-plot(res_21, xlab = "Temps [mois]", ylab = "Evolution du nombre de personnes restant à domicile [%]", main = "Lieux de résidence - 2021")
+plot(res_21, xlab = "Temps [mois]", ylab = "Evolution du nombre de personnes [%]", main = "Lieux de résidence - 2021")
 tsp(res_21)
 ```
 
