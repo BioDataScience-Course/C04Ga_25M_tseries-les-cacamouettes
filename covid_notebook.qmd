@@ -407,18 +407,18 @@ plot(res_20, xlab = "Temps [mois]", ylab = "Evolution du nombre de personnes res
 tsp(res_20)
 ```
 
-A cette étape, il est encore très difficile d'interpréter la série chronologique. Cependant, nous observons une brusque augmentation (+ 30%) de personnes restant chez elles début d'année 2020, illustrant l'arrivée soudaine de la quarantaine. On observe également une réduction de cette augmentation durant l'été. Le cycle semble à première vue saisonnier.
+A cette étape, il est encore très difficile d'interpréter la série chronologique. Il y a beaucoup de bruit. Cependant, nous observons une brusque augmentation (+ 30%) de personnes restant chez elles début d'année 2020, illustrant l'arrivée soudaine de la quarantaine. On observe également une réduction de cette augmentation durant l'été.
 Vérifions l'autocorrélation.
 ```{r acf 2020}
 acf(res_20, main = "Autocorrélation pour l'année 2020")
 ```
-L'autocorrélation est forte. Toutes les barres sont significatives et positives. De plus, on distingue une décroissance, pouvant révéler une tendance générale à la diminution.
-Décomposons la série par les moyennes mobiles. L'amplitude des cycles semblant varier avec la tendance, nous utilisons un modèle multiplicatif.
+L'autocorrélation est forte. Toutes les barres sont significatives et positives. De plus, on distingue une décroissance, révélant une tendance générale à la diminution.
+Afin de diminuer le bruit, décomposons la série avec un filtrage par les valeurs propres, pour déterminer quelle composante a la plus forte variance.
 ```{r tsd 2020}
-res_20_dec <- tsd(res_20, method = "average", type = "multiplicative", order = 30, times = 3)
+res_20_dec <- tsd(res_20, method = "evf", lag = 20, axes = 1)
 plot(res_20_dec, xlab = "Temps [jours]", col = 1:3)
 ```
-On observe une tendance générale à l'augmentation début d'année 2020, suivie d'une diminution en été, pour réaugmenter fin d'année. Les résidus indiquent la présence d'un cycle.
+On observe une tendance générale à l'augmentation début d'année 2020, suivie d'une diminution en été, pour réaugmenter fin d'année. Les résidus indiquent l'absence de cycle.
 Regardons chaque composante de plus près.
 ```{r mts 2020}
 res_20_mts <- tseries(res_20_dec)
