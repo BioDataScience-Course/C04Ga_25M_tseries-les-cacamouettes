@@ -452,24 +452,10 @@ plot(res_21_dec, col = 1:3, xlab = "Temps [jours]")
 ```
 Une tendance domine la série. La courbe montre une diminution, suivie d'une augmentation.
 Appliquons la méthode des sommes cumulées pour étudier ces changements de tendance.
-```{r mts 2021}
-res_21_mts <- tseries(res_21_dec)
-class(res_21_mts)
-colnames(res_21_mts)
-plot(res_21_mts, main = "Composantes de la série - 2021", xlab = "Temps [mois]")
+```{r}
+res_21_lt <- local.trend(res_21, xlab = "Temps [mois]")
 ```
-
-```{r acf mts 21}
-acf(res_21_mts[, "filtered"], main = "Autocorrélation de la tendance - 2021")
-```
-
-```{r resid mts 21}
-plot(res_21_mts[, "residuals"], ylab = "Composante résiduelle", xlab = "Temps [mois]")
-```
-
-```{r spec21}
-spectrum(res_21_mts[, "residuals"], spans = c(3, 5), main = "Analyse spectrale - 2021", ylab = "Spectre", xlab = "Fréquence")
-```
+La tendance locale à l'augmentation culmine vers le mois de mai, et une tendance locale à la diminution enchaîne directement, pour stagner en fin d'année.
 
 ####Comparaison des années 2020 et 2021
 
