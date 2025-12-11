@@ -458,6 +458,13 @@ res_21_lt <- local.trend(res_21, xlab = "Temps [mois]")
 La tendance locale à l'augmentation culmine vers le mois de mai, et une tendance locale à la diminution enchaîne directement, pour stagner en fin d'année.
 
 ####Comparaison des années 2020 et 2021
+Que ce soit pour 2020 ou 2021, on observe une nette autocorrélation, et une tendance domine la série chronologique.
+
+Début du mois d'avril 2020, on observe une nette augmentation (+ 30%) du nombre de personnes restant chez elles : c'est le début de la quarantaine. Cette augmentation diminue ensuite à la transition juin-juillet pour atteindre son taux le plus bas en fin des vacances d'été, où les gens sortaient plus de chez eux pour profiter du beau temps, malgré la pandémie. Début octobre, la tendance remonte, illustrant la reprise des cours en ligne et du télétravail d'un grand pourcentage de la population.
+
+L'année 2021 débute avec un taux d'augmentation d'environ 15%. Ce taux continue de grimper jusqu'à culminer vers le mois de mai, pour redescendre fortement ensuite, et atteindre un pallier fin 2021. Cette chute illustre l'allègement des mesures relatives à la pandémie, avec notamment la reprise totale des cours en présentiel pour les étudiants.
+
+En résumé, l'année 2020 connut le plus grand taux d'augmentation du nombre de personnes restant dans leur lieu de résidence. En effet, l'année 2021 montra déjà une légère diminution par rapport à 2020, permise par les progrès médicaux et les premiers effets de l'immunité collective. De plus, la période estivale, accompagnée du beau temps, s'est avérée être la période avec le taux d'augmentation le plus faible, et ce pour les deux années.
 
 # Conclusion
 
