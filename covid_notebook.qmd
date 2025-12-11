@@ -395,8 +395,9 @@ Au niveau de la série filtrée, on observe une tendance générale positive. Da
 
 ####Année 2020
 
+
 ```{r série 2020}
-res_20 <- ts(covid$residential, start = c(2020, 46), end = c(2020, 366), frequency = 366)
+res_20 <- ts(window(covid$residential, start = 1, end = 321),start = c(2020, 46), end = c(2020, 366), frequency = 366)
 class(res_20)
 ```
 
@@ -427,7 +428,7 @@ On observe bien deux phases principales : une augmentation à partir du mois d'a
 
 ####Année 2021
 ```{r série 2021}
-res_21 <- ts(covid$residential, start = c(2021, 1), end = c(2021, 365), frequency = 365)
+res_21 <- ts(window(covid$residential, start = 322, end = 686),start = c(2021, 1), end = c(2021, 365), frequency = 366)
 class(res_21)
 ```
 
