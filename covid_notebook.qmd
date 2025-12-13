@@ -316,7 +316,23 @@ Si nous nous intéressons à l'année entière, tant 2020 que 2021, les deux sé
 Concernant les périodes de début d'année, commençant mi-février pour 2020 et en janvier pour 2021 et se terminant fin juin : il n'y a pas de tendance générale significative ni de cycle que ce soit pour 2020 ou 2021.
 Concernant la période entre fin juin et décembre. En 2020, il y a une tendance générale croissante alors qu'en 2021, il y a une tendance générale décroissante.
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ###Alimentation et pharmacies
+La variable Grocery and pharmacies correspond à l’évolution des déplacements de la population wallonne vers les commerces alimentaires et pharmacies. Ces déplacements sont essentiels et donc moins sensibles aux restrictions que d’autres types de mobilité. Nous analysons cette série pour les années 2020 et 2021.
 
 ####Année 2020 
 
@@ -383,13 +399,71 @@ boxplot(as.numeric(grocery_pharma_ts2),
 ```{r}
 acf(grocery_pharma_ts)
 ```
-Le graphique d'autocorrélation possède des valeurs faibles. Ce graphique semble présenter un cycle. En effet, on a une série successive de baisse et d'augmentation à intervalle plus ou moins régulier. Toutefois, on observe également une tendance générale négative. Les dernières valeurs sont à la marge de l'enveloppe de confiance de 95%. 
+L’autocorrélation reflète principalement la persistance temporelle liée à la tendance et aux chocs successifs, plutôt qu’une véritable composante cyclique. Toutefois, on observe également une tendance générale négative. Les dernières valeurs sont à la marge de l'enveloppe de confiance de 95%.
+
+Décomposons la série :
 
 ```{r}
-grocery_pharma_ts2020 <- tsd(grocery_pharma_ts, method = "average", type = "additive", order = 172, times = 3)
+grocery_pharma_ts2020 <- tsd(grocery_pharma_ts, method = "average", type = "additive", order = 26, times = 3)
 plot(grocery_pharma_ts2020, col = 1:3)
 ```
-Au niveau de la série filtrée, on observe une tendance générale positive. Dans les résidus, aucun cycle est aperçu. 
+Au niveau de la série filtrée, on observe une tendance générale croissante sur l'année 2020. Dans les résidus, aucun cycle net est aperçu. Les résidus sont relativement centrés autour de zéro, avec quelques valeurs extrêmes.
+
+Analysons la tendance générale :
+```{r}
+mts_grocerypharma_2020 <- tseries(grocery_pharma_ts2020)
+acf(mts_grocerypharma_2020[, "filtered"])
+trend.test(mts_grocerypharma_2020[, "filtered"])
+```
+La p-value du test de tendance est inférieure à 5 % (p-value = 2.2^-16), ce qui conduit au rejet de l’hypothèse nulle.
+Il existe donc une tendance générale significative et croissante des déplacements vers les commerces alimentaires en 2020. La valeur du coefficient de tendance rho est positive et égale à 0,702, indiquant une tendance marquée.
+
+Analysons les résidus :
+```{r}
+grocerypharma_res_2020 <- extract(grocery_pharma_ts2020, components = "residuals")
+plot(grocerypharma_res_2020)
+spectrum(grocerypharma_res_2020, spans = c(3,5))
+```
+À partir du periodogramme lissé, nous pouvons observer que le spectre présente plusieurs maxima locaux. Plusieurs pics sont significatifs ce qui suggère un cycle régulier tous les 10, 50, 100, 140 et 160 jours. 
+
+
+
+####Année 2021
+
+```{r}
+acf(grocery_pharma_ts2)
+```
+Comme pour l'autocorrélation de 2020, celle de 2021 reflète principalement la persistance temporelle liée à la tendance et aux chocs successifs, plutôt qu’une véritable composante cyclique. Toutefois, on observe également une tendance générale négative. Les dernières valeurs sont à la marge de l'enveloppe de confiance de 95%.
+
+Décomposons la série :
+
+```{r}
+grocery_pharma_ts2021 <- tsd(grocery_pharma_ts2, method = "average", type = "additive", order = 26, times = 3)
+plot(grocery_pharma_ts2021, col = 1:3)
+```
+La composante filtrée indique une tendance légèrement croissante, moins prononcée qu’en 2020. Dans les résidus, aucun cycle net est aperçu. Les résidus sont relativement centrés autour de zéro, avec quelques valeurs extrêmes.
+
+Analysons la tendance générale :
+
+```{r}
+mts_grocerypharma_2021 <- tseries(grocery_pharma_ts2021)
+acf(mts_grocerypharma_2021[, "filtered"])
+trend.test(mts_grocerypharma_2021[, "filtered"])
+```
+Comme pour la série 2020, dans celle de 2021 La p-value du test de tendance est inférieure à 5 % (p-value = 2.2^-16), ce qui conduit au rejet de l’hypothèse nulle.
+Il existe donc une tendance générale significative et croissante des déplacements vers les commerces alimentaires en 2021.
+Cependant, la valeur du coefficient rho est plus faible (rho = 0,571), suggérant une tendance moins prononcée qu’en 2020.
+
+```{r}
+grocerypharma_res_2021 <- extract(grocery_pharma_ts2021, compoenents = "residuals")
+plot(grocerypharma_res_2021)
+spectrum(grocerypharma_res_2021, spans = c(3,5))
+```
+Le periogramme montre que nous n'avons pas de cycle significatif dans la série. 
+
+
+
+
 
 ###Lieux de résidence
 
