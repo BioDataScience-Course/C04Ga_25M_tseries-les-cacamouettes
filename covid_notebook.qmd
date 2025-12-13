@@ -20,9 +20,9 @@ lang: fr
 
 <!--% Rédigez une courte introduction de 3 ou 5 phrases qui présente vos données. Ajoutez une phrase de but. Vous devez citer la bibliographie en utilisant le formatage Markdown ad hoc et en incluant votre référence au format bibtex dans le fichier references.bib. -->
 
-De 2020 à 2022, la pandémie de Covid-19 a ébranlé le monde, forçant la population à limiter ses déplacements. Les données fournies par les rapports de mobilité [@google_covid19_mobility] présentent l'évolution de la mobilité durant cette période pour différentes provinces de Wallonie, et ce pour différents lieux. Nous nous intéresserons ici aux commerces et loisirs, alimentation et pharmacie, lieux de résidence, et lieux de travail.
+De 2020 à 2022, la pandémie de Covid-19 a ébranlé le monde, forçant la population à limiter ses déplacements. Les données fournies par les rapports de mobilité [@google_covid19_mobility] présentent l'évolution de la mobilité durant cette période en Wallonie, et ce pour différents lieux. Nous nous intéresserons ici aux commerces et loisirs, alimentation et pharmacie, lieux de résidence, et lieux de travail.
 
-Dans cette étude, nous tenterons de quantifier l'impact qu'a eu le Covid-19 sur les déplacements de personnes en Belgique, Wallonie, du 15 février 2020 au 31 décembre 2021.
+Dans cette étude, nous tenterons de quantifier l'impact qu'a eu le Covid-19 sur les déplacements de personnes en Belgique, Wallonie, en comparant les années 2020 et 2021.
 
 ## Matériel et méthodes
 
@@ -331,7 +331,10 @@ La tendance générale est significative avec une p-value inférieure au seuil \
 #### Comparaison lieux de travail 2020-2021 
 Si nous nous intéressons à l'année entière, tant 2020 que 2021, les deux séries présentent une tendance générale à l'augmentation et une absence de cycle. Concernant les périodes de début d'année, commençant mi-février pour 2020 et en janvier pour 2021 et se terminant fin juin : il n'y a pas de tendance générale significative ni de cycle que ce soit pour 2020 ou 2021. Concernant la période entre fin juin et décembre. En 2020, il y a une tendance générale croissante alors qu'en 2021, il y a une tendance générale décroissante.
 
+
 ### Alimentation et pharmacies
+La variable Grocery and pharmacies correspond à l’évolution des déplacements de la population wallonne vers les commerces alimentaires et pharmacies. Ces déplacements sont essentiels et donc moins sensibles aux restrictions que d’autres types de mobilité. Nous analysons cette série pour les années 2020 et 2021.
+
 
 #### Année 2020
 
@@ -403,12 +406,73 @@ boxplot(as.numeric(grocery_pharma_ts2),
 acf(grocery_pharma_ts)
 ```
 
-Le graphique d'autocorrélation possède des valeurs faibles. Ce graphique semble présenter un cycle. En effet, on a une série successive de baisse et d'augmentation à intervalle plus ou moins régulier. Toutefois, on observe également une tendance générale négative. Les dernières valeurs sont à la marge de l'enveloppe de confiance de 95%.
+L’autocorrélation reflète principalement la persistance temporelle liée à la tendance et aux chocs successifs, plutôt qu’une véritable composante cyclique. Toutefois, on observe également une tendance générale négative. Les dernières valeurs sont à la marge de l'enveloppe de confiance de 95%.
+
+Décomposons la série :
+
 
 ```{r}
-grocery_pharma_ts2020 <- tsd(grocery_pharma_ts, method = "average", type = "additive", order = 172, times = 3)
+grocery_pharma_ts2020 <- tsd(grocery_pharma_ts, method = "average", type = "additive", order = 26, times = 3)
 plot(grocery_pharma_ts2020, col = 1:3)
 ```
+
+Au niveau de la série filtrée, on observe une tendance générale croissante sur l'année 2020. Dans les résidus, aucun cycle net est aperçu. Les résidus sont relativement centrés autour de zéro, avec quelques valeurs extrêmes.
+
+Analysons la tendance générale :
+```{r}
+mts_grocerypharma_2020 <- tseries(grocery_pharma_ts2020)
+acf(mts_grocerypharma_2020[, "filtered"])
+trend.test(mts_grocerypharma_2020[, "filtered"])
+```
+La p-value du test de tendance est inférieure à 5 % (p-value = 2.2^-16), ce qui conduit au rejet de l’hypothèse nulle.
+Il existe donc une tendance générale significative et croissante des déplacements vers les commerces alimentaires en 2020. La valeur du coefficient de tendance rho est positive et égale à 0,702, indiquant une tendance marquée.
+
+Analysons les résidus :
+```{r}
+grocerypharma_res_2020 <- extract(grocery_pharma_ts2020, components = "residuals")
+plot(grocerypharma_res_2020)
+spectrum(grocerypharma_res_2020, spans = c(3,5))
+```
+À partir du periodogramme lissé, nous pouvons observer que le spectre présente plusieurs maxima locaux. Plusieurs pics sont significatifs ce qui suggère un cycle régulier tous les 10, 50, 100, 140 et 160 jours. 
+
+
+
+#### Année 2021
+
+```{r}
+acf(grocery_pharma_ts2)
+```
+Comme pour l'autocorrélation de 2020, celle de 2021 reflète principalement la persistance temporelle liée à la tendance et aux chocs successifs, plutôt qu’une véritable composante cyclique. Toutefois, on observe également une tendance générale négative. Les dernières valeurs sont à la marge de l'enveloppe de confiance de 95%.
+
+Décomposons la série :
+
+```{r}
+grocery_pharma_ts2021 <- tsd(grocery_pharma_ts2, method = "average", type = "additive", order = 26, times = 3)
+plot(grocery_pharma_ts2021, col = 1:3)
+```
+La composante filtrée indique une tendance légèrement croissante, moins prononcée qu’en 2020. Dans les résidus, aucun cycle net est aperçu. Les résidus sont relativement centrés autour de zéro, avec quelques valeurs extrêmes.
+
+Analysons la tendance générale :
+
+```{r}
+mts_grocerypharma_2021 <- tseries(grocery_pharma_ts2021)
+acf(mts_grocerypharma_2021[, "filtered"])
+trend.test(mts_grocerypharma_2021[, "filtered"])
+```
+Comme pour la série 2020, dans celle de 2021 La p-value du test de tendance est inférieure à 5 % (p-value = 2.2^-16), ce qui conduit au rejet de l’hypothèse nulle.
+Il existe donc une tendance générale significative et croissante des déplacements vers les commerces alimentaires en 2021.
+Cependant, la valeur du coefficient rho est plus faible (rho = 0,571), suggérant une tendance moins prononcée qu’en 2020.
+
+```{r}
+grocerypharma_res_2021 <- extract(grocery_pharma_ts2021, compoenents = "residuals")
+plot(grocerypharma_res_2021)
+spectrum(grocerypharma_res_2021, spans = c(3,5))
+```
+Le periogramme montre que nous n'avons pas de cycle significatif dans la série. 
+
+#### Comparaison 2020 et 2021 
+En comparant les déplacements vers les supermarchés et les pharmacies entre 2020 et 2021, on observe des similitudes notables dans la dynamique générale. Dans les deux années, une forte baisse des déplacements est visible en début d’année, correspondant aux premières mesures sanitaires ou aux périodes de confinement, suivie d’une stabilisation autour d’une tendance négative, puis d’une légère reprise en fin d’année. Toutefois, la série de 2021 présente une tendance générale croissante moins marquée qu’en 2020, comme l’indique la valeur plus faible du coefficient de tendance (rho). Les résidus ne montrent pas de cycles nets significatifs pour 2021, alors que 2020 présentait quelques maxima locaux suggérant des variations régulières. Globalement, malgré des fluctuations ponctuelles différentes, le comportement des déplacements vers les commerces alimentaires et pharmacies reste relativement similaire d’une année à l’autre, reflétant la persistance de besoins essentiels malgré les restrictions sanitaires.
+
 
 Au niveau de la série filtrée, on observe une tendance générale positive. Dans les résidus, aucun cycle est aperçu.
 
@@ -416,15 +480,16 @@ Au niveau de la série filtrée, on observe une tendance générale positive. Da
 
 #### Année 2020
 
+
 ```{r série 2020}
-res_20 <- ts(covid$residential, start = c(2020, 46), end = c(2020, 366), frequency = 366)
+res_20 <- ts(window(covid$residential, start = 1, end = 321),start = c(2020, 46), end = c(2020, 366), frequency = 366)
 class(res_20)
 ```
 
 Que ce soit pour le travail ou pour d'autres activités, la population quitte sa résidence globalement tous les jours de la semaine. Nous ne séparons donc pas les données entre jours de la semaine et jours de weekend. Jetons un oeil à cette série chronologique en imprimant son graphe.
 
 ```{r res20 plot}
-plot(res_20, xlab = "Temps [mois]", ylab = "Evolution du nombre de personnes restant à domicile [%]", main = "Lieux de résidence - 2020")
+plot(res_20, xlab = "Temps [mois]", ylab = "Evolution du nombre de personnes [%]", main = "Lieux de résidence - 2020")
 tsp(res_20)
 ```
 
@@ -468,19 +533,39 @@ spectrum(res_20_mts[, "residuals"], spans = c(3, 5), main = "Analyse spectrale -
 
 On observe trois pics significatifs : à environ 1, 50 et 100 jours. Autrement dit, nous avons un cycle journalier, mensuel et bimestriel.
 
+A cette étape, il est encore très difficile d'interpréter la série chronologique. Il y a beaucoup de bruit. Cependant, nous observons une brusque augmentation (+ 30%) de personnes restant chez elles début d'année 2020, illustrant l'arrivée soudaine de la quarantaine. On observe également une réduction de cette augmentation durant l'été.
+Vérifions l'autocorrélation.
+```{r acf 2020}
+acf(res_20, main = "Autocorrélation pour l'année 2020")
+```
+L'autocorrélation est forte. Toutes les barres sont significatives et positives. De plus, on distingue une décroissance, révélant une tendance générale à la diminution.
+Afin de diminuer le bruit, décomposons la série avec un filtrage par les valeurs propres, pour déterminer quelle composante a la plus forte variance.
+```{r tsd 2020}
+res_20_dec <- tsd(res_20, method = "evf", lag = 20, axes = 1)
+plot(res_20_dec, xlab = "Temps [jours]", col = 1:3)
+```
+La série est dominée par une tendance. On observe une tendance générale à l'augmentation début d'année 2020, suivie d'une diminution en été, pour réaugmenter fin d'année.
+Analysons ces changements de tendance avec la méthode des sommes cumulées.
+```{r}
+res_20_lt <- local.trend(res_20, xlab = "Temps [mois]")
+```
+On observe bien deux phases principales : une augmentation à partir du mois d'avril, suivie d'une diminution à la transition juin-juillet. Une nouvelle augmentation est également observable début octobre.
+
+
 #### Année 2021
 
 ```{r série 2021}
-res_21 <- ts(covid$residential, start = c(2021, 1), end = c(2021, 365), frequency = 365)
+res_21 <- ts(window(covid$residential, start = 322, end = 686),start = c(2021, 1), end = c(2021, 365), frequency = 366)
 class(res_21)
 ```
 
 Imprimons le graphe de cette série chronologique.
 
 ```{r res21 plot}
-plot(res_21, xlab = "Temps [mois]", ylab = "Evolution du nombre de personnes restant à domicile [%]", main = "Lieux de résidence - 2021")
+plot(res_21, xlab = "Temps [mois]", ylab = "Evolution du nombre de personnes [%]", main = "Lieux de résidence - 2021")
 tsp(res_21)
 ```
+
 
 Tout comme pour l'année 2020, on observe une forte augmentation de personnes restant chez elles en début d'année, et une augmentation réduite en été, mais il est encore trop tôt dans l'analyse pour de plus amples interprétations. Le cycle semble saisonnier. Vérifions l'autocorrélation.
 
@@ -515,8 +600,33 @@ plot(res_21_mts[, "residuals"], ylab = "Composante résiduelle", xlab = "Temps [
 ```{r spec21}
 spectrum(res_21_mts[, "residuals"], spans = c(3, 5), main = "Analyse spectrale - 2021", ylab = "Spectre", xlab = "Fréquence")
 ```
+Tout comme pour l'année 2020, on observe beaucoup de bruit. Une tendance à la diminution est observable, suivie d'une augmentation à partir du mois de septembre, mais il est encore trop tôt dans l'analyse pour de plus amples interprétations.
+Vérifions l'autocorrélation.
+```{r acf 2021}
+acf(res_21, main = "Autocorrélation pour l'année 2021")
+```
+On observe une autocorrélation, avec des barres toutes positives et significatives.
+Décomposons la série avec un filtrage par les valeurs propres pour réduire le bruit.
+```{r tsd 2021}
+res_21_dec <- tsd(res_21, method = "evf", lag = 20, axes = 1)
+plot(res_21_dec, col = 1:3, xlab = "Temps [jours]")
+```
+Une tendance domine la série. La courbe montre une diminution, suivie d'une augmentation.
+Appliquons la méthode des sommes cumulées pour étudier ces changements de tendance.
+```{r}
+res_21_lt <- local.trend(res_21, xlab = "Temps [mois]")
+```
+La tendance locale à l'augmentation culmine vers le mois de mai, et une tendance locale à la diminution enchaîne directement, pour stagner en fin d'année.
 
 #### Comparaison des années 2020 et 2021
+
+Que ce soit pour 2020 ou 2021, on observe une nette autocorrélation, et une tendance domine la série chronologique.
+
+Début du mois d'avril 2020, on observe une nette augmentation (+ 30%) du nombre de personnes restant chez elles : c'est le début de la quarantaine. Cette augmentation diminue ensuite à la transition juin-juillet pour atteindre son taux le plus bas en fin des vacances d'été, où les gens sortaient plus de chez eux pour profiter du beau temps, malgré la pandémie. Début octobre, la tendance remonte, illustrant la reprise des cours en ligne et du télétravail d'un grand pourcentage de la population.
+
+L'année 2021 débute avec un taux d'augmentation d'environ 15%. Ce taux continue de grimper jusqu'à culminer vers le mois de mai, pour redescendre fortement ensuite, et atteindre un pallier fin 2021. Cette chute illustre l'allègement des mesures relatives à la pandémie, avec notamment la reprise totale des cours en présentiel pour les étudiants.
+
+En résumé, l'année 2020 connut le plus grand taux d'augmentation du nombre de personnes restant dans leur lieu de résidence. En effet, l'année 2021 montra déjà une légère diminution par rapport à 2020, permise par les progrès médicaux et les premiers effets de l'immunité collective. De plus, la période estivale, accompagnée du beau temps, s'est avérée être la période avec le taux d'augmentation le plus faible, et ce pour les deux années.
 
 # Conclusion
 
