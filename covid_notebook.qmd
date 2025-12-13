@@ -108,23 +108,38 @@ covidy[covidy$weekdays == "Monday" | covidy$weekdays == "Tuesday" | covidy$weekd
 
 ### Commerces et loisirs
 
-```{r serie 2020}
+```{r serie_2020}
 shop_ts <- ts (covid$shop_leisure, start = c(2020, 46),end = c(2020, 366), frequency = 366 )
 plot (shop_ts)
 ```
 
-```{r serie 2020 week}
-covidy_ts <- ts (covidy$shop_leisure, start = c(2020, 46),end = c(2020, 366), frequency = 366 )
+Nous pouvons observer que la série comporte du bruit qui peut créer des problèmes dans les futures analyses. Nous tentons donc de séparer cette série pour les jours de la semaine et pour les week-end :
+
+Séparation pour les jours de la semaine :
+
+```{r 2020_semaine}
+covidw_ts <- ts (covidw$shop_leisure, start = c(2020, 46),end = c(2020, 366), frequency = 365 )
 # Aggrégation par moyenne des valeurs par semaine
-covidy_ts2 <- aggregate(covidy_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
-plot (shopw_ts)
+covidshop_2020 <- aggregate(covidw_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
+plot (covidshop_2020)
 ```
 
-### Lieux de travail 
+Séparation pour les week-end :
+
+```{r  2020_weekend}
+covidy_ts <- ts (covidy$shop_leisure, start = c(2020, 46),end = c(2020, 366), frequency = 365 )
+# Aggrégation par moyenne des valeurs par week-end
+covidshop2_2020 <- aggregate(covidy_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
+plot (covidshop2_2020)
+```
+
+### Lieux de travail
+
 La variable Lieux de travail correspond aux déplacements de la population wallone, en Belgique, vers leur lieu de travail. Nous allons comparer ces déplacements pour l'année 2020 et 2021.
+
 #### Année 2020
 
-```{r série travail 2020}
+```{r serie_travail_2020}
 ts_work <- ts(covid$workplaces, start = c(2020, 46), frequency = 366, end = c(2020, 365))
 plot(ts_work, xlab = "Temps [mois]", ylab = "Déplacements", main = "Année 2020 - Déplacements vers le lieu de travail")
 tsp(ts_work)
@@ -132,7 +147,7 @@ tsp(ts_work)
 
 La série concernant les déplacements vers les lieux de travail présente beaucoup de bruit ce risque risque de rendre l'analyse difficile. Nous allons donc tenter de garder uniquement les jours de la semaine :
 
-```{r Aggrégation semaine 2020}
+```{r Aggregation_semaine_2020}
 # La série temporelle est créée (début le 15 février 2020 = 46e jour de l'année 2020)
 covidw_ts <- ts(covidw$workplaces, start = c(2020, 46), frequency = 365,end = c(2020, 365))
 # Aggrégation par moyenne des valeurs par semaine
@@ -142,7 +157,7 @@ plot(covidwork_2020, xlab = "Temps [mois]", ylab = "Déplacements", main = "Ann�
 
 Nous voyons qu'en ne gardant que les jours de la semaine, le bruit de la série est réduit. Nous continuerons donc nos analyses sur les valeurs moyennes de déplacements au travail uniquement la semaine autant pour 2020 que 2021. Nous voyons que début 2020, les déplacements vers les lieux de travail ont chuté brutalement pour ensuite connaitre deux remontées progressives durant le printemps et jusqu'à la fin de l'été. Enfin, une rechute moins marquée que la première est observée vers la fin de l'été. Puis, les déplacements vers les lieux de travail réaugmente fin 2020. Ces différentes diminutions puis augmentations pourraient être des cycles.
 
-```{r acf travail 2020 }
+```{r acf_travail_2020 }
 acf(covidwork_2020)
 ```
 
@@ -150,14 +165,14 @@ Ce graphique d'autocorrélation ne semble pas présenter de cycle. Par contre, l
 
 Nous réalisons une décomposition de la série afin d'analyser cette dernière plus en détail :
 
-```{r décomposition 2020}
+```{r decomposition_2020}
 covidw2020 <- tsd(covidwork_2020, method = "average", type = "additive", order = 26, times = 3)
 plot(covidw2020, col = 1:3)
 ```
 
 La composante filtered qui représente la série d'origine sans les cycles, semble présenter une tendance générale. De plus, les résidus semblent présenter des cycles. Nous convertissons notre objet en mts pour ensuite regarder l'autocorrélation de la composante filtrée :
 
-```{r tendance générale travail 2020}
+```{r tendance_gen_travail_2020}
  mts_2020 <- tseries(covidw2020)
 class(mts_2020)
 plot(mts_2020)
@@ -166,7 +181,7 @@ plot(mts_2020)
 
 La série présente une tendance générale qui semble croissante lorsque l'on observe la composante filtrée. Quant au graphique de l'autocorrélation il ne présente une autocorrélation à court terme ce qui suggèrerait qu'il n'y a pas de tendance générale mais peut-être une tendance locale. Concernant les résidus, la série semble présenter des cycles.
 
-```{r test significativité travail 2020}
+```{r test_significativite_travail_2020}
 trend.test(mts_2020[,"filtered"])
 ```
 
@@ -174,7 +189,7 @@ La p-value étant inférieure au seuil \alpha de 5% pour la composante filtrée,
 
 Nous allons maintenant vérifier si des cycles sont présents ou non comme le suggère les résidus obtenus après décomposition de la série :
 
-```{r analyse résidus 2020}
+```{r analyse_residus_2020}
  covid_extract_2020 <-extract(covidw2020, components = "residuals")
 plot(covid_extract_2020,ylab = "Résidus", xlab = "Temps [mois]")
 spectrum(covid_extract_2020, spans = c(3,5))
@@ -184,42 +199,42 @@ Le spectre ne présente aucun pic marqué et est assez plat, cela suggère qu'il
 
 Étant donné que, dans la série générale, nous observons un pic vers le bas en début d'année, il serait intéressant de se concentrer sur cette période de l'année. En effet, se concentrer sur une période qui va de mi-février à juin est intéressant car la période ayant le plus impacté la population est le confinement qui débuta en mars 2020 et qui a duré plusieurs mois.
 
-```{r travail 2020 février-juin}
+```{r travail_2020_fevrier_juin}
 work2020_window <-window(covidwork_2020, start = c(2020,1), end = c(2020, 20))
 plot(work2020_window, ylab = "Déplacements entre février et juin", xlab = "Temps [mois]")
 ```
 
 Les déplacements entre février et juin semble aller à la baisse.
 
-```{r décomposition 2020 février-juin}
+```{r decomposition_2020_fevrier_juin}
 workwindow2020_decomp <- tsd(work2020_window, method = "average", order = 13, times = 1)
 plot(workwindow2020_decomp, col = 1:3)
 ```
 
 La composante filtrée semble présenter une tendance générale décroissante entre mi-février et fin juin. Par contre, les résidus ne semblent présenter que du bruit blanc.
 
-```{r test significativité travail 2020 févrir-juin}
+```{r test_significativite_travail_2020_fevrier_juin}
 mts_windowwork2020 <- tseries(workwindow2020_decomp)
 trend.test(mts_windowwork2020[,"filtered"])
 ```
 
 La tendance générale n'est pas significative car la p-value est supérieure au seuil \alpha de 5%.
 
-```{r travail 2020 juin-décembre}
+```{r travail_2020_juin_decembre}
 work2020_window2 <-window(covidwork_2020, start = c(2020,21), end = c(2020, 45))
 plot(work2020_window2, ylab = "Déplacements entre juin et décembre", xlab = "Temps [mois]")
 ```
 
 Les déplacements vers le travail entre fin juin et décembre 2020 semblent augmenter malgré une diminution vers le milieu de la série.
 
-```{r décomposition 2020 juin-décembre}
+```{r decomposition_2020_juin_decembre}
 workwindow22020_decomp <- tsd(work2020_window2, method = "average", order = 13, times = 1)
 plot(workwindow22020_decomp, col = 1:3)
 ```
 
 La composante filtrée semble montrer une tendance générale à la croissance, alors que les résidus semblent indiquer de potentiels cycles. Nous allons vérifier si la tendance générale est bien significative et croissante :
 
-```{r test significativité travail 2020 juin-décembre}
+```{r test_significativite_travail_2020_juin_decembre}
 mts_windowwork22020 <- tseries(workwindow22020_decomp)
 trend.test(mts_windowwork22020[,"filtered"])
 ```
@@ -228,7 +243,7 @@ La tendance générale est en effet croissante avec une valeur \rho positive et 
 
 Nous allons aussi nous intéresser à la deuxième partie de l'année :
 
-```{r analyse résidus 2020 juin-décembre}
+```{r analyse_residus_2020_juin-decembre}
  covid_extract_2020jd <-extract(workwindow22020_decomp, components = "residuals")
 plot(covid_extract_2020jd,ylab = "Résidus", xlab = "Temps [mois]")
 spectrum(covid_extract_2020jd, spans = c(3,5))
@@ -236,7 +251,7 @@ spectrum(covid_extract_2020jd, spans = c(3,5))
 
 Les résidus ne présentent pas de cycle étant donné l'absence de pics. ####Année 2021
 
-```{r série semaine 2021}
+```{r serie_semaine_2021}
 # La série temporelle est créée (début le 1er janvier 2021)
 covidw_ts21 <- ts(covidw$workplaces, start = c(2021, 1), frequency = 365,end = c(2021, 365))
 # Aggrégation par moyenne des valeurs par semaine
@@ -246,13 +261,13 @@ plot(covidwork_2021, xlab = "Temps [mois]", ylab = "Déplacements", main = "Ann�
 
 La série présente une chute des déplacements envers les lieux de travail début 2021. Puis, cela augmente progressivement jusqu'au début de l'été. Pour ensuite rechuter, moins fort que la première fois et après remonter vers la fin de l'été. Ensuite, une autre rechute, plus forte que la dernière apparaît pour ensuite remonter à la fin de l'année 2021.
 
-```{r acf travail 2021 }
+```{r acf_travail_2021 }
 acf(covidwork_2021)
 ```
 
 Ce graphique d'autocorrélation est très semblable à celui de 2020. Il ne semble pas non plus y avoir de cycles. De plus, uniquement les deuxième et troisième barres sont significatives et diminuent, ce qui pourrait, comme 2020, se traduire par une tendance générale négative. Nous décomposons la série afin de l'analyser plus en détail :
 
-```{r décomposition travail 2021}
+```{r decomposition_travail_2021}
 covidw2021 <- tsd(covidwork_2021, method = "average", type = "additive", order = 26, times = 3)
 plot(covidw2021, col = 1:3)
 ```
@@ -261,7 +276,7 @@ Pour 2021, la composante filtrée semble montrer une tendance générale positiv
 
 Nous convertissons notre série décomposée en un objet mts, puis, nous observons le graphique d'autocorrélation de la composante filtrée.
 
-```{r tendance générale travail 2021}
+```{r tendance_gen_travail_2021}
  mts_2021 <- tseries(covidw2021)
 class(mts_2021)
 plot(mts_2021)
@@ -270,13 +285,13 @@ plot(mts_2021)
 
 La composante filtrée semble montrer une tendance générale à l'augmentation alors que le graphique d'autocorrélation de la composante filtrée semble indiquer le contraire. Les résidus pourraient indiquer la présence de cycles.
 
-```{r test significativité travail 2021}
+```{r testsignificativite_travail_2021}
 trend.test(mts_2021[,"filtered"])
 ```
 
 La p value étant inférieur à \alpha au seuil de 5%, la tendance générale croissante est donc significative.
 
-```{r analyse résidus 2021}
+```{r analyse_residus_2021}
  covid_extract_2021 <-extract(covidw2021, components = "residuals")
 plot(covid_extract_2021, ylab = "Résidus", xlab = "Temps [mois]")
 spectrum(covid_extract_2021, spans = c(3,5))
@@ -286,21 +301,21 @@ Nous pouvons tirer les mêmes conclusions que pour 2020, aucun cycle n'est prés
 
 Afin de comparer avec 2020, nous allons aussi analyser 2021 en deux périodes de 6 mois.
 
-```{r travail 2021 janvier-juin}
+```{r travail_2021_janvier_juin}
 work2021_window <-window(covidwork_2021, start = c(2021,1), end = c(2021, 26))
 plot(work2021_window, ylab = "Déplacements entre janvier et juin", xlab = "Temps [mois]")
 ```
 
 Il semble y avoir une nette diminution des déplacements au travail en début d'année avec une ré augmentation légère par la suite.
 
-```{r décomposition 2021 janvier-juin}
+```{r decomposition_2021_janvier_juin}
 workwindow2021_decomp <- tsd(work2021_window, method = "average", order = 13, times = 1)
 plot(workwindow2021_decomp, col = 1:3)
 ```
 
 La série filtrée suggère une diminution suivie d'une stabilisation. Les résidus ne présentent rien en particulier, si ce n'est du bruit.
 
-```{r test significativité travail 2021 janvier-juin}
+```{r test_significativite_travail_2021_janvier_juin}
 mts_windowwork2021<- tseries(workwindow2021_decomp)
 trend.test(mts_windowwork2021[,"filtered"])
 ```
@@ -309,32 +324,32 @@ La tendance générale n'est pas significative avec une p-value supérieure au s
 
 Regardons maintenant pour la période de fin juin à décembre de 2021 :
 
-```{r travail 2021 juin-décembre}
+```{r travail_2021_juin_decembre}
 work2021_window2 <-window(covidwork_2021, start = c(2021,27), end = c(2021, 52))
 plot(work2021_window2, ylab = "Déplacements", xlab = "Temps [mois]", main = "déplacements travail fin juin-décembre")
 ```
 
-```{r décomposition 2021 juin-décembre}
+```{r decomposition_2021_juin_decembre}
 workwindow2021jd_decomp <- tsd(work2021_window2, method = "average", order = 13, times = 1)
 plot(workwindow2021jd_decomp, col = 1:3)
 ```
 
 Selon la série filtrée, il semble y avoir une augmentation suivie d'une diminution, avec ensuite une augmentation à nouveau en fin d'année. Les résidus présentent uniquement du bruit.
 
-```{r test significativité travail 2021 juin-décembre}
+```{r test_significativite_travail_2021_juin_decembre}
 mts_windowwork2021jd<- tseries(workwindow2021jd_decomp)
 trend.test(mts_windowwork2021jd[,"filtered"])
 ```
 
 La tendance générale est significative avec une p-value inférieure au seuil \alpha de 5% pour la période fin juin à décembre 2021. De plus, elle est décroissante car la valeur de \rho est négative.
 
-#### Comparaison lieux de travail 2020-2021 
+#### Comparaison lieux de travail 2020-2021
+
 Si nous nous intéressons à l'année entière, tant 2020 que 2021, les deux séries présentent une tendance générale à l'augmentation et une absence de cycle. Concernant les périodes de début d'année, commençant mi-février pour 2020 et en janvier pour 2021 et se terminant fin juin : il n'y a pas de tendance générale significative ni de cycle que ce soit pour 2020 ou 2021. Concernant la période entre fin juin et décembre. En 2020, il y a une tendance générale croissante alors qu'en 2021, il y a une tendance générale décroissante.
 
-
 ### Alimentation et pharmacies
-La variable Grocery and pharmacies correspond à l’évolution des déplacements de la population wallonne vers les commerces alimentaires et pharmacies. Ces déplacements sont essentiels et donc moins sensibles aux restrictions que d’autres types de mobilité. Nous analysons cette série pour les années 2020 et 2021.
 
+La variable Grocery and pharmacies correspond à l’évolution des déplacements de la population wallonne vers les commerces alimentaires et pharmacies. Ces déplacements sont essentiels et donc moins sensibles aux restrictions que d’autres types de mobilité. Nous analysons cette série pour les années 2020 et 2021.
 
 #### Année 2020
 
@@ -410,7 +425,6 @@ L’autocorrélation reflète principalement la persistance temporelle liée à 
 
 Décomposons la série :
 
-
 ```{r}
 grocery_pharma_ts2020 <- tsd(grocery_pharma_ts, method = "average", type = "additive", order = 26, times = 3)
 plot(grocery_pharma_ts2020, col = 1:3)
@@ -419,29 +433,31 @@ plot(grocery_pharma_ts2020, col = 1:3)
 Au niveau de la série filtrée, on observe une tendance générale croissante sur l'année 2020. Dans les résidus, aucun cycle net est aperçu. Les résidus sont relativement centrés autour de zéro, avec quelques valeurs extrêmes.
 
 Analysons la tendance générale :
+
 ```{r}
 mts_grocerypharma_2020 <- tseries(grocery_pharma_ts2020)
 acf(mts_grocerypharma_2020[, "filtered"])
 trend.test(mts_grocerypharma_2020[, "filtered"])
 ```
-La p-value du test de tendance est inférieure à 5 % (p-value = 2.2^-16), ce qui conduit au rejet de l’hypothèse nulle.
-Il existe donc une tendance générale significative et croissante des déplacements vers les commerces alimentaires en 2020. La valeur du coefficient de tendance rho est positive et égale à 0,702, indiquant une tendance marquée.
+
+La p-value du test de tendance est inférieure à 5 % (p-value = 2.2\^-16), ce qui conduit au rejet de l’hypothèse nulle. Il existe donc une tendance générale significative et croissante des déplacements vers les commerces alimentaires en 2020. La valeur du coefficient de tendance rho est positive et égale à 0,702, indiquant une tendance marquée.
 
 Analysons les résidus :
+
 ```{r}
 grocerypharma_res_2020 <- extract(grocery_pharma_ts2020, components = "residuals")
 plot(grocerypharma_res_2020)
 spectrum(grocerypharma_res_2020, spans = c(3,5))
 ```
-À partir du periodogramme lissé, nous pouvons observer que le spectre présente plusieurs maxima locaux. Plusieurs pics sont significatifs ce qui suggère un cycle régulier tous les 10, 50, 100, 140 et 160 jours. 
 
-
+À partir du periodogramme lissé, nous pouvons observer que le spectre présente plusieurs maxima locaux. Plusieurs pics sont significatifs ce qui suggère un cycle régulier tous les 10, 50, 100, 140 et 160 jours.
 
 #### Année 2021
 
 ```{r}
 acf(grocery_pharma_ts2)
 ```
+
 Comme pour l'autocorrélation de 2020, celle de 2021 reflète principalement la persistance temporelle liée à la tendance et aux chocs successifs, plutôt qu’une véritable composante cyclique. Toutefois, on observe également une tendance générale négative. Les dernières valeurs sont à la marge de l'enveloppe de confiance de 95%.
 
 Décomposons la série :
@@ -450,6 +466,7 @@ Décomposons la série :
 grocery_pharma_ts2021 <- tsd(grocery_pharma_ts2, method = "average", type = "additive", order = 26, times = 3)
 plot(grocery_pharma_ts2021, col = 1:3)
 ```
+
 La composante filtrée indique une tendance légèrement croissante, moins prononcée qu’en 2020. Dans les résidus, aucun cycle net est aperçu. Les résidus sont relativement centrés autour de zéro, avec quelques valeurs extrêmes.
 
 Analysons la tendance générale :
@@ -459,20 +476,20 @@ mts_grocerypharma_2021 <- tseries(grocery_pharma_ts2021)
 acf(mts_grocerypharma_2021[, "filtered"])
 trend.test(mts_grocerypharma_2021[, "filtered"])
 ```
-Comme pour la série 2020, dans celle de 2021 La p-value du test de tendance est inférieure à 5 % (p-value = 2.2^-16), ce qui conduit au rejet de l’hypothèse nulle.
-Il existe donc une tendance générale significative et croissante des déplacements vers les commerces alimentaires en 2021.
-Cependant, la valeur du coefficient rho est plus faible (rho = 0,571), suggérant une tendance moins prononcée qu’en 2020.
+
+Comme pour la série 2020, dans celle de 2021 La p-value du test de tendance est inférieure à 5 % (p-value = 2.2\^-16), ce qui conduit au rejet de l’hypothèse nulle. Il existe donc une tendance générale significative et croissante des déplacements vers les commerces alimentaires en 2021. Cependant, la valeur du coefficient rho est plus faible (rho = 0,571), suggérant une tendance moins prononcée qu’en 2020.
 
 ```{r}
 grocerypharma_res_2021 <- extract(grocery_pharma_ts2021, compoenents = "residuals")
 plot(grocerypharma_res_2021)
 spectrum(grocerypharma_res_2021, spans = c(3,5))
 ```
-Le periogramme montre que nous n'avons pas de cycle significatif dans la série. 
 
-#### Comparaison 2020 et 2021 
+Le periogramme montre que nous n'avons pas de cycle significatif dans la série.
+
+#### Comparaison 2020 et 2021
+
 En comparant les déplacements vers les supermarchés et les pharmacies entre 2020 et 2021, on observe des similitudes notables dans la dynamique générale. Dans les deux années, une forte baisse des déplacements est visible en début d’année, correspondant aux premières mesures sanitaires ou aux périodes de confinement, suivie d’une stabilisation autour d’une tendance négative, puis d’une légère reprise en fin d’année. Toutefois, la série de 2021 présente une tendance générale croissante moins marquée qu’en 2020, comme l’indique la valeur plus faible du coefficient de tendance (rho). Les résidus ne montrent pas de cycles nets significatifs pour 2021, alors que 2020 présentait quelques maxima locaux suggérant des variations régulières. Globalement, malgré des fluctuations ponctuelles différentes, le comportement des déplacements vers les commerces alimentaires et pharmacies reste relativement similaire d’une année à l’autre, reflétant la persistance de besoins essentiels malgré les restrictions sanitaires.
-
 
 Au niveau de la série filtrée, on observe une tendance générale positive. Dans les résidus, aucun cycle est aperçu.
 
@@ -480,48 +497,47 @@ Au niveau de la série filtrée, on observe une tendance générale positive. Da
 
 #### Année 2020
 
-
-```{r série 2020}
+```{r serie_résid_2020}
 res_20 <- ts(window(covid$residential, start = 1, end = 321),start = c(2020, 46), end = c(2020, 366), frequency = 366)
 class(res_20)
 ```
 
 Que ce soit pour le travail ou pour d'autres activités, la population quitte sa résidence globalement tous les jours de la semaine. Nous ne séparons donc pas les données entre jours de la semaine et jours de weekend. Jetons un oeil à cette série chronologique en imprimant son graphe.
 
-```{r res20 plot}
+```{r res20_plot}
 plot(res_20, xlab = "Temps [mois]", ylab = "Evolution du nombre de personnes [%]", main = "Lieux de résidence - 2020")
 tsp(res_20)
 ```
 
 A cette étape, il est encore très difficile d'interpréter la série chronologique. Cependant, nous observons une brusque augmentation (+ 30%) de personnes restant chez elles début d'année 2020, illustrant l'arrivée soudaine de la quarantaine. On observe également une réduction de cette augmentation durant l'été. Le cycle semble à première vue saisonnier. Vérifions l'autocorrélation.
 
-```{r acf 2020}
+```{r acf_resid_2020}
 acf(res_20, main = "Autocorrélation pour l'année 2020")
 ```
 
 L'autocorrélation est forte. Toutes les barres sont significatives et positives. De plus, on distingue une décroissance, pouvant révéler une tendance générale à la diminution. Décomposons la série par les moyennes mobiles. L'amplitude des cycles semblant varier avec la tendance, nous utilisons un modèle multiplicatif.
 
-```{r tsd 2020}
+```{r tsd_resid_2020}
 res_20_dec <- tsd(res_20, method = "average", type = "additive", order = 30, times = 3)
 plot(res_20_dec, xlab = "Temps [jours]", col = 1:3)
 ```
 
 On observe une tendance générale à l'augmentation début d'année 2020, suivie d'une diminution en été, pour réaugmenter fin d'année. Les résidus indiquent la présence d'un cycle. Regardons chaque composante de plus près.
 
-```{r mts 2020}
+```{r mts_resid_2020}
 res_20_mts <- tseries(res_20_dec)
 class(res_20_mts)
 colnames(res_20_mts)
 plot(res_20_mts, main = "Composantes de la série - 2020", xlab = "Temps [mois]")
 ```
 
-```{r acf mts 20}
+```{r acf_mts_20}
 acf(res_20_mts[, "filtered"], main = "Autocorrélation de la tendance - 2020")
 ```
 
 On observe bien une tendance significative à la diminution. Qu'en est-il des cycles ?
 
-```{r resid mts 20}
+```{r resid_mts_20}
 plot(res_20_mts[, "residuals"], ylab = "Composante résiduelle", xlab = "Temps [mois]")
 ```
 
@@ -533,89 +549,94 @@ spectrum(res_20_mts[, "residuals"], spans = c(3, 5), main = "Analyse spectrale -
 
 On observe trois pics significatifs : à environ 1, 50 et 100 jours. Autrement dit, nous avons un cycle journalier, mensuel et bimestriel.
 
-A cette étape, il est encore très difficile d'interpréter la série chronologique. Il y a beaucoup de bruit. Cependant, nous observons une brusque augmentation (+ 30%) de personnes restant chez elles début d'année 2020, illustrant l'arrivée soudaine de la quarantaine. On observe également une réduction de cette augmentation durant l'été.
-Vérifions l'autocorrélation.
-```{r acf 2020}
+A cette étape, il est encore très difficile d'interpréter la série chronologique. Il y a beaucoup de bruit. Cependant, nous observons une brusque augmentation (+ 30%) de personnes restant chez elles début d'année 2020, illustrant l'arrivée soudaine de la quarantaine. On observe également une réduction de cette augmentation durant l'été. Vérifions l'autocorrélation.
+
+```{r acf_2020}
 acf(res_20, main = "Autocorrélation pour l'année 2020")
 ```
-L'autocorrélation est forte. Toutes les barres sont significatives et positives. De plus, on distingue une décroissance, révélant une tendance générale à la diminution.
-Afin de diminuer le bruit, décomposons la série avec un filtrage par les valeurs propres, pour déterminer quelle composante a la plus forte variance.
-```{r tsd 2020}
+
+L'autocorrélation est forte. Toutes les barres sont significatives et positives. De plus, on distingue une décroissance, révélant une tendance générale à la diminution. Afin de diminuer le bruit, décomposons la série avec un filtrage par les valeurs propres, pour déterminer quelle composante a la plus forte variance.
+
+```{r tsd_2020}
 res_20_dec <- tsd(res_20, method = "evf", lag = 20, axes = 1)
 plot(res_20_dec, xlab = "Temps [jours]", col = 1:3)
 ```
-La série est dominée par une tendance. On observe une tendance générale à l'augmentation début d'année 2020, suivie d'une diminution en été, pour réaugmenter fin d'année.
-Analysons ces changements de tendance avec la méthode des sommes cumulées.
+
+La série est dominée par une tendance. On observe une tendance générale à l'augmentation début d'année 2020, suivie d'une diminution en été, pour réaugmenter fin d'année. Analysons ces changements de tendance avec la méthode des sommes cumulées.
+
 ```{r}
 res_20_lt <- local.trend(res_20, xlab = "Temps [mois]")
 ```
-On observe bien deux phases principales : une augmentation à partir du mois d'avril, suivie d'une diminution à la transition juin-juillet. Une nouvelle augmentation est également observable début octobre.
 
+On observe bien deux phases principales : une augmentation à partir du mois d'avril, suivie d'une diminution à la transition juin-juillet. Une nouvelle augmentation est également observable début octobre.
 
 #### Année 2021
 
-```{r série 2021}
+```{r serie_2021}
 res_21 <- ts(window(covid$residential, start = 322, end = 686),start = c(2021, 1), end = c(2021, 365), frequency = 366)
 class(res_21)
 ```
 
 Imprimons le graphe de cette série chronologique.
 
-```{r res21 plot}
+```{r res21_plot}
 plot(res_21, xlab = "Temps [mois]", ylab = "Evolution du nombre de personnes [%]", main = "Lieux de résidence - 2021")
 tsp(res_21)
 ```
 
-
 Tout comme pour l'année 2020, on observe une forte augmentation de personnes restant chez elles en début d'année, et une augmentation réduite en été, mais il est encore trop tôt dans l'analyse pour de plus amples interprétations. Le cycle semble saisonnier. Vérifions l'autocorrélation.
 
-```{r acf 2021}
+```{r acf_2021}
 acf(res_21, main = "Autocorrélation pour l'année 2021")
 ```
 
 On observe une forte autocorrélation, avec des barres toutes positives et significatives. Une tendance à la diminution est également observable. Décomposons la série par les moyennes mobiles pour en savoir plus. Comme pour 2020, nous devons utiliser un modèle multiplicatif.
 
-```{r tsd 2021}
+```{r tsd_2021}
 res_21_dec <- tsd(res_21, method = "average", type = "additive", order = 30, times = 3)
 plot(res_21_dec, col = 1:3, xlab = "Temps [jours]")
 ```
 
 La tendance générale est identique à celle de 2020. Les résidus indiquent également la présence d'un cycle.
 
-```{r mts 2021}
+```{r mts_2021}
 res_21_mts <- tseries(res_21_dec)
 class(res_21_mts)
 colnames(res_21_mts)
 plot(res_21_mts, main = "Composantes de la série - 2021", xlab = "Temps [mois]")
 ```
 
-```{r acf mts 21}
+```{r acf_mts_21}
 acf(res_21_mts[, "filtered"], main = "Autocorrélation de la tendance - 2021")
 ```
 
-```{r resid mts 21}
+```{r resid_mts_21}
 plot(res_21_mts[, "residuals"], ylab = "Composante résiduelle", xlab = "Temps [mois]")
 ```
 
 ```{r spec21}
 spectrum(res_21_mts[, "residuals"], spans = c(3, 5), main = "Analyse spectrale - 2021", ylab = "Spectre", xlab = "Fréquence")
 ```
-Tout comme pour l'année 2020, on observe beaucoup de bruit. Une tendance à la diminution est observable, suivie d'une augmentation à partir du mois de septembre, mais il est encore trop tôt dans l'analyse pour de plus amples interprétations.
-Vérifions l'autocorrélation.
-```{r acf 2021}
+
+Tout comme pour l'année 2020, on observe beaucoup de bruit. Une tendance à la diminution est observable, suivie d'une augmentation à partir du mois de septembre, mais il est encore trop tôt dans l'analyse pour de plus amples interprétations. Vérifions l'autocorrélation.
+
+```{r acf_2021}
 acf(res_21, main = "Autocorrélation pour l'année 2021")
 ```
-On observe une autocorrélation, avec des barres toutes positives et significatives.
-Décomposons la série avec un filtrage par les valeurs propres pour réduire le bruit.
-```{r tsd 2021}
+
+On observe une autocorrélation, avec des barres toutes positives et significatives. Décomposons la série avec un filtrage par les valeurs propres pour réduire le bruit.
+
+```{r tsd_2021}
 res_21_dec <- tsd(res_21, method = "evf", lag = 20, axes = 1)
 plot(res_21_dec, col = 1:3, xlab = "Temps [jours]")
 ```
-Une tendance domine la série. La courbe montre une diminution, suivie d'une augmentation.
-Appliquons la méthode des sommes cumulées pour étudier ces changements de tendance.
+
+Une tendance domine la série. La courbe montre une diminution, suivie d'une augmentation. Appliquons la méthode des sommes cumulées pour étudier ces changements de tendance.
+
 ```{r}
 res_21_lt <- local.trend(res_21, xlab = "Temps [mois]")
 ```
+
 La tendance locale à l'augmentation culmine vers le mois de mai, et une tendance locale à la diminution enchaîne directement, pour stagner en fin d'année.
 
 #### Comparaison des années 2020 et 2021
