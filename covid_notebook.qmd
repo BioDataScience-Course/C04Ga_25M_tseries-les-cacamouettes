@@ -108,7 +108,11 @@ covidy[covidy$weekdays == "Monday" | covidy$weekdays == "Tuesday" | covidy$weekd
 
 ### Commerces et loisirs
 
-```{r serie_2020}
+La variable commerces et loisirs correspond aux déplacements des habitants de la régions wallonne dans des lieux de loisirs tels que les restaurants, les cafés, les centres commerciaux, les parcs à thème, les musées, les bibliothèques et les cinémas. Nous allons analyser l'évolution des déplacement aux cours de deux années charnières de la période du covid : 2020 et 2021
+
+#### Année 2021
+
+```{r serie_shop_2020}
 shop_ts <- ts (covid$shop_leisure, start = c(2020, 46),end = c(2020, 366), frequency = 366 )
 plot (shop_ts)
 ```
@@ -117,7 +121,7 @@ Nous pouvons observer que la série comporte du bruit qui peut créer des probl�
 
 Séparation pour les jours de la semaine :
 
-```{r 2020_semaine}
+```{r ser20_shop_semaine}
 covidw_ts <- ts (covidw$shop_leisure, start = c(2020, 46),end = c(2020, 366), frequency = 365 )
 # Aggrégation par moyenne des valeurs par semaine
 covidshop_2020 <- aggregate(covidw_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
@@ -126,12 +130,22 @@ plot (covidshop_2020)
 
 Séparation pour les week-end :
 
-```{r  2020_weekend}
+```{r  ser20_shop_weekend}
 covidy_ts <- ts (covidy$shop_leisure, start = c(2020, 46),end = c(2020, 366), frequency = 365 )
 # Aggrégation par moyenne des valeurs par week-end
 covidshop2_2020 <- aggregate(covidy_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
 plot (covidshop2_2020)
 ```
+
+```{r acf_shop_20}
+acf (shop_ts)
+```
+
+```{r statslide_shop_20}
+shop_sl <- stat.slide (time (shop_ts), shop_ts, deltat =1/12)
+plot (shop_sl, stat = "mean", leg = TRUE)
+```
+
 
 ### Lieux de travail
 
