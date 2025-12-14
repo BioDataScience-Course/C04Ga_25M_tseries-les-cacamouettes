@@ -208,7 +208,7 @@ trend.test(mts_windowwork2020[,"filtered"])
 
 La tendance générale est significative au seuil \alpha de 5% car la p-value est bien inférieure à ce seuil. IL y a encore une fois des ex-aequo donc la tendance générale décroissante est à prendre avec des pincettes. De plus, cette tendance est décroissante car \rho a une valeur négative.
 
-Nous allons aussi nous intéresser à la deuxième partie de l'année :
+Nous allons aussi nous intéresser à la deuxième partie de l'année de juin fin à décembre  :
 
 ```{r travail2020_juin_decembre}
 work2020_window2 <-window(covidwork_2020, start = c(2020,21), end = c(2020, 45))
@@ -294,8 +294,7 @@ work2021_window <-window(covidwork_2021, start = c(2021,1), end = c(2021, 26))
 plot(work2021_window, ylab = "Déplacements entre janvier et juin", xlab = "Temps [semaines]")
 ```
 
-Il semble y avoir une nette diminution des déplacements au travail en début d'année avec une ré augmentation légère par la suite mais pas 
-de cycles.
+Il semble y avoir une nette diminution des déplacements au travail en début d'année avec une ré augmentation légère par la suite mais pas de cycles.
 
 ```{r decompo2021_janvier_juin}
 workwindow2021_decomp <- tsd(work2021_window, method = "median", order = 5, times = 1)
