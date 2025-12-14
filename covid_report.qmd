@@ -1,6 +1,6 @@
 ---
 title: "___"
-author: "___, ___, ___, ___"
+author: "Abraham Romane, Dechèvres Florine, Desterke Margot, Viseur Zoé"
 format:
   pdf:
     documentclass: report
@@ -28,6 +28,122 @@ lang: fr
 ## Résultats
 
 <!--% Présentez les analyses les plus pertinents que vous avez sélectionnés. Structurez la section en partie avec des titres explicites de niveau trois.-->
+```{r setup, include=FALSE}
+# Nécessaire pour les tests SDD, ne pas utiliser dans un "vrai" projet
+if (!"tools:tests" %in% search())
+  source(here::here("tests/tools_tests.R"), attach(NULL, name = "tools:tests"))
+# Configuration de l'environnement
+SciViews::R("ts")
+```
+
+```{r import}
+covid <- read("data/mobility_wallonia.rds")
+skimr::skim(covid)
+```
+###Lieux de travail
+
+Les déplacements envers le lieux de travail seront analysés uniquement sur la semaine et non le week-end autant en 2020 que 2021.
+
+```{r semaine}
+
+# Copie de la série initiale sous une autre nom
+covidw <- covid
+# Calcul des jours de la semaine
+covidw$weekdays <- weekdays(as.POSIXct(covidw$date))
+# Les données du week-end sont remplacées par des valeurs manquantes
+covidw[covidw$weekdays == "Saturday" | covidw$weekdays == "Sunday" , 2:7] <- NA 
+```
+
+
+```{r agrega_2020}
+# La série temporelle est créée (début le 15 février 2020 = 46e jour de l'année 2020)
+covidw_ts <- ts(covidw$workplaces, start = c(2020, 46), frequency = 365,end = c(2020, 365))
+# Aggrégation par moyenne des valeurs par semaine
+covidwork_2020 <- aggregate(covidw_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
+```
+```{r agrega_2021}
+# La série temporelle est créée (début le 1er janvier 2021)
+covidw_ts21 <- ts(covidw$workplaces, start = c(2021, 1), frequency = 365,end = c(2021, 365))
+# Aggrégation par moyenne des valeurs par semaine
+covidwork_2021 <- aggregate(covidw_ts21, 52, FUN = collapse::fmean, ts.eps = 1/52)
+```
+
+####Comparaison générale 2020-2021 lieux de travail
+
+```{r medianetravail_2020_2021}
+covidw2020 <- tsd(covidwork_2020, method = "median", order = 5, times = 1)
+plot(covidw2020, stack = FALSE, resid = FALSE, col = 1:2, main = "Décomposition-2020", ylab = "Série", xlab = "Temps [semaines]")
+
+covidw2021 <- tsd(covidwork_2021, method = "median", order = 5, times = 1)
+plot(covidw2021, stack = FALSE, resid = FALSE, col = 1:2, main = "Décomposition-2021", ylab = "Série", xlab = "Temps [semaines]")
+
+par(mfrow = c(1, 2))
+```
+La décomposition par moyenne mobile montre des transitions similaires pour 2020 et 2021. En effet, une diminution de la fréquentation des lieux de travail est observée en début d'année 2020, suivie d'une augmentation vers la onzième semaine, et puis d'un plateau d'environ 10 semaines à partir de la 18ème semaine. Ensuite, une augmentation des déplacements vers les lieux de travail apparait entre la 28ème et la 32ème semaine pour ensuite se stabiliser le reste de l'année.
+Pour 2021, c'est exactement le même schéma, si ce n'est que les différentes transitions ne se déroulent pas toujours à la même semaine près.
+
+Étant donné que la série diminue drastiquement en début d'année et semble tendre à ré augmenter le reste de l'année tant pour 2020 que 2021, comparons la tendance générale pour ces deux années :
+```{r comparaison tendance 2020_21}
+mts_2020 <- tseries(covidw2020)
+trend.test(mts_2020[,"filtered"])
+mtsw_2021 <- tseries(covidw2021)
+trend.test(mtsw_2021[,"filtered"])
+```
+Les tendances générales sont croissantes et significatives tant en 2020 qu'en 2021 avec une p-value inférieure au seuil \alpha de 5% et avec une valeur \rho positive.
+
+Il est étonnant de voir que la tendance générale est à l'augmentation autant en 2020 et 2021 car, en début d'année, les déplacements envers les lieux de travail semblent diminuer. Ces résultats laissent penser que la population n'a pas été impactée négativement pas le covid-19. Pour s'en assurer, nous allons nous attarder sur deux périodes plus réduites, une première de janvier (février pour 2020) à juin, puis une deuxième de fin juin à décembre.  
+####Comparaisons par période
+#####Période 1
+Réduction de la série de janvier/février à juin :
+
+```{r travail_fevrier_juin}
+work2020_window <-window(covidwork_2020, start = c(2020,1), end = c(2020, 20))
+workwindow2020_decomp <- tsd(work2020_window, method = "median", order = 5, times = 1)
+plot(workwindow2020_decomp, col = 1:3, xlab = "Temps [semaines] 2020")
+
+work2021_window <-window(covidwork_2021, start = c(2021,1), end = c(2021, 26))
+workwindow2021_decomp <- tsd(work2021_window, method = "median", order = 5, times = 1)
+plot(workwindow2021_decomp, col = 1:3, xlab = "Temps [semaines] 2021")
+```
+Autant en 2020 que 2021, les résidus ne contiennent pas de cycles pour la période de janvier/février à juin. Concernant la composante filtrée, en 2020, elle semble présenter une diminution. En 2021, la composante filtrée diminue, puis augmente pour se stabiliser ensuite.
+
+Nous vérifions donc la significativité des tendances générales pour 2020 et 2021 pour la période de janvier/février à juin :
+
+```{r tendances_periode_1}
+mts_windowwork2020 <- tseries(workwindow2020_decomp)
+trend.test(mts_windowwork2020[,"filtered"])
+
+mts_windowwork2021<- tseries(workwindow2021_decomp)
+trend.test(mts_windowwork2021[,"filtered"])
+```
+La première période de 2020 présente une tendance générale significative et décroissante avec une p-value inférieure au seuil \alpha de 5% et une valeur \rho négative. Par contre, il n'y a pas de tendance générale de janvier à juin 2021.
+
+#####Période 2
+
+Réduction de la série de fin juin à décembre :
+```{r travail_juin_decembre}
+work2020_window2 <-window(covidwork_2020, start = c(2020,21), end = c(2020, 45))
+workwindow22020_decomp <- tsd(work2020_window2, method = "average", order = 5, times = 3)
+plot(workwindow22020_decomp, col = 1:3, xlab = "Temps [semaines] 2020")
+
+
+work2021_window2 <-window(covidwork_2021, start = c(2021,27), end = c(2021, 52))
+workwindow2021jd_decomp <- tsd(work2021_window2, method = "average", order = 9, times = 1)
+plot(workwindow2021jd_decomp, col = 1:3, xlab = "Temps [semaines] 2021")
+
+```
+En 2020, la composante filtrée semble présenter une tendance à l'augmentation entre fin juin et décembre. En 2021, durant la même période, la série semble présenter une tendance à la diminution. 
+
+Vérifions si les tendances sont significatives :
+
+```{r tendances_periode_2}
+mts_windowwork22020 <- tseries(workwindow22020_decomp)
+trend.test(mts_windowwork22020[,"filtered"])
+
+mts_windowwork2021jd<- tseries(workwindow2021jd_decomp)
+trend.test(mts_windowwork2021jd[,"filtered"])
+```
+En 2020 et 2021, entre juin et décembre, les tendances générales sont significatives avec des p-value inférieures au seuil \alpha de 5%. En 2020, la tendance générale est croissante avec une valeur \rho positive, alors que la tendance est décroissante en 2021 avec une valeur \rho négative.
 
 ## Discussion et Conclusion
 
