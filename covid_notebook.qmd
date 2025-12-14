@@ -358,7 +358,7 @@ Si nous nous intéressons à l'année entière, tant 2020 que 2021, les deux sé
 
 ### Alimentation et pharmacies
 
-La variable Grocery and pharmacies correspond à l’évolution des déplacements de la population wallonne vers les commerces alimentaires et pharmacies. Ces déplacements sont essentiels et donc moins sensibles aux restrictions que d’autres types de mobilité. Nous analysons cette série pour les années 2020 et 2021.
+La variable Alimentation et pharmacies correspond à l’évolution des déplacements de la population wallonne vers les commerces alimentaires et pharmacies. Ces déplacements sont essentiels et donc moins sensibles aux restrictions que d’autres types de mobilité. Nous analysons cette série pour les années 2020 et 2021.
 
 #### Année 2020
 
