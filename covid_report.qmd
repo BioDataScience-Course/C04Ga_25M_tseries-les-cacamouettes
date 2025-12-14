@@ -1,6 +1,6 @@
 ---
 title: "___"
-author: "___, ___, ___, ___"
+author: "Abraham Romane, Dechèvres Florine, Desterke Margot, Viseur Zoé"
 format:
   pdf:
     documentclass: report
