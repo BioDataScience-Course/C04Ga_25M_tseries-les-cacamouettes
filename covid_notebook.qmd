@@ -500,6 +500,12 @@ spectrum(grocerypharma_res_2020, spans = c(3,5))
 
 À partir du periodogramme lissé, nous pouvons observer que le spectre présente plusieurs maxima locaux. Plusieurs pics sont significatifs ce qui suggère un cycle régulier tous les 10, 50, 100, 140 et 160 jours.
 
+```{r local gp 2020}
+grocerypharma_local_2020 <- local.trend(grocery_pharma_ts)
+plot(grocerypharma_local_2020)
+```
+Le graphique de tendance locale montre la même chose que la série filtrée. 
+
 #### Année 2021
 
 ```{r autocorrélation2021gp}
@@ -534,6 +540,13 @@ spectrum(grocerypharma_res_2021, spans = c(3,5))
 ```
 
 Le periogramme montre que nous n'avons pas de cycle significatif dans la série.
+
+```{r local gp 2021}
+grocerypharma_local_2021 <- local.trend(grocery_pharma_ts2)
+plot(grocerypharma_local_2021)
+```
+
+Le graphique de tendance locale montre la même chose que la série filtrée.
 
 #### Comparaison 2020 et 2021
 
