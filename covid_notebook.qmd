@@ -124,7 +124,7 @@ Séparation pour les jours de la semaine :
 ```{r ser20_shop_semaine}
 covidw_ts <- ts (covidw$shop_leisure, start = c(2020, 46),end = c(2020, 366), frequency = 365 )
 # Aggrégation par moyenne des valeurs par semaine
-covidshop_2020 <- aggregate(covidw_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
+weekshop_2020 <- aggregate(covidw_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
 plot (covidshop_2020)
 ```
 
@@ -133,19 +133,41 @@ Séparation pour les week-end :
 ```{r  ser20_shop_weekend}
 covidy_ts <- ts (covidy$shop_leisure, start = c(2020, 46),end = c(2020, 366), frequency = 365 )
 # Aggrégation par moyenne des valeurs par week-end
-covidshop2_2020 <- aggregate(covidy_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
+weekendshop_2020 <- aggregate(covidy_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
 plot (covidshop2_2020)
 ```
+Nous voyons que la sélection des jours de la semaine ou des jours du week-end a permis de réduire grandement le bruit et de mieux visualiser l'allure générale de la courbe de la série. Cependant, entre la semaine et le week-end, la série ne semble pas varier énormément, ce qui signifie que les déplacements pour les lieux de commerces et de loisirs ne varient pas beaucoup de la semaine au weekend. 
+Nous pouvons donc nous poser la question de l'utilité réelle de séparer ces deux parties, ou de garder la série combinant la semaine et le week-end. 
 
-```{r acf_shop_20}
-acf (shop_ts)
-```
-
+Réalisons des statistiques glissantes pour avoir la moyenne des différents intervale de temps le long de notre série : 
 ```{r statslide_shop_20}
 shop_sl <- stat.slide (time (shop_ts), shop_ts, deltat =1/12)
 plot (shop_sl, stat = "mean", leg = TRUE)
 ```
 
+```{r statslide_shopweek_20}
+shop_week_sl <- stat.slide (time (weekshop_2020), weekshop_2020, deltat =1/12)
+plot (shop_week_sl, stat = "mean", leg = TRUE)
+```
+
+```{r statslide_shopweekend_20}
+shop_weekend_sl <- stat.slide (time (weekendshop_2020), weekendshop_2020, deltat =1/12)
+plot (shop_weekend_sl, stat = "mean", leg = TRUE)
+```
+Nous pouvons voir qu'entre les différentes données filtrées pour une période de la semaine ou pas, les moyennes des variation de déplacement le long de l'axe temporel de la série ne varient pas grandement. En effet, la valeur moyenne du deuxième pic dans la série excluant la semaine est juste légèrement plus en dessous de 0 que celles des deux autres types de séries. Nous décidons donc de garder la suite de l'analyse avec la séries contenant toutes les données, de la semaine et du week-end, et de comparer cette série pour 2020 et 2021. 
+
+```{r acf_shop_20}
+acf (shop_ts)
+```
+Le graphique de la fonction d'autocorrelation ne présente pas de cycle, mais toutes barres sont significatives (au dessus de l'enveloppe de confiance à 95%) et positive, ce qui signifie qu'une tendance à l'augmentation domine le signal. 
+
+Il serait intéressant aussi, au vu de l'aspect général de notre graphique, de regarder si a série présence des tendances locales, différentes phases d'évolution à long terme, croissance et puis décroissance :
+
+```{r shop20_localtrend}
+shop20_local <- local.trend (shop_ts)
+
+```
+Effectivement, comme nous l'avions anticipé, les sommes cumulées (ligne rouge) forment un V très net et deux pics bien marqué de chaque côté de ce V. Nous avons donc présence de plusieurs phases dans cette série. 
 
 ### Lieux de travail
 
