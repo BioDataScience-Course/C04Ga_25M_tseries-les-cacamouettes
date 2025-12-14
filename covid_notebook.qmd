@@ -409,7 +409,7 @@ Si nous nous intéressons à l'année entière, tant 2020 que 2021, les deux sé
 
 ### Alimentation et pharmacies
 
-La variable Alimentation et pharmacies correspond à l’évolution des déplacements de la population wallonne vers les commerces alimentaires et pharmacies. Ces déplacements sont essentiels et donc moins sensibles aux restrictions que d’autres types de mobilité. Nous analysons cette série pour les années 2020 et 2021.
+La variable alimentation et pharmacies correspond à l’évolution des déplacements de la population wallonne vers les commerces alimentaires et pharmacies. Ces déplacements sont essentiels et donc moins sensibles aux restrictions que d’autres types de mobilité. Nous analysons cette série pour les années 2020 et 2021.
 
 #### Année 2020
 
@@ -445,7 +445,7 @@ grocery_pharma_ts2 <- ts(covid$grocery_pharma, start = c(2021, 1), frequency = 3
 plot(grocery_pharma_ts2, ylab = "déplacement supermarchés et pharmacies", xlab = "temps [mois]", main = "Année 2021 - déplacement supermarchés et pharmacies")
 ```
 
-Ce graphique montre l'évolution des déplacements vers les supermarchés et les pharmacies durant l'année 2021 en période covid. Lorsque l'on observe de manière générale, nous apercevons trois pics : un autour du 12 janvier et deux autour du milieu du mois d'août. Quand on regarde l'évolution de la série, on voit une forte chute au milieu du mois de janvier qui pourrait correspondre aux mesures sanitaires plus strictes mises en place après les fêtes de fin d'années. Ensuite, la série remonte et elle se stabilise autour d'une tendance générale négative jusqu'en août où le deuxième et le troisième pics sont visibles pour après reprendre la tendance générale négative.
+Ce graphique montre l'évolution des déplacements vers les supermarchés et les pharmacies durant l'année 2021 en période covid. Lorsque l'on observe de manière générale, nous apercevons trois pics : un en début d'année et deux en fin d'année. Quand on regarde l'évolution de la série, on voit une forte chute en début d'année qui pourrait correspondre aux mesures sanitaires plus strictes mises en place après les fêtes de fin d'années. Ensuite, la série remonte et elle se stabilise autour d'une tendance générale négative jusqu'en fon d'année où le deuxième et le troisième pics sont visibles pour après reprendre la tendance générale négative.
 
 #### Comparaison année 2020 et année 2021
 
@@ -463,7 +463,7 @@ plot(grocery_pharma_ts2, ylab = "déplacement supermarchés et pharmacies", xlab
 
 ```
 
-Lorsque l'on compare la forme générale de la série pour l'année 2020 et la série pour pour l'année 2021, l'aspect globale semble évoluer de manière similaire. En effet, même si la chute n'a pas lieu au même moment (2020 : février, 2021 : janvier), la baisse brutale de déplacement vers les supermarchés et les pharmacies est observable en début d'année dans les deux séries. Ensuite, tant pour 2020 que pour 2021, la série se stabilise autour d'une tendance générale pour, à la fin de l'année, remonter légèrement.
+Lorsque l'on compare la forme générale de la série pour l'année 2020 et la série pour pour l'année 2021, l'aspect globale semble évoluer de manière similaire. En effet, même si la chute n'a pas lieu au même moment, la baisse brutale de déplacement vers les supermarchés et les pharmacies est observable en début d'année dans les deux séries. Ensuite, tant pour 2020 que pour 2021, la série se stabilise autour d'une tendance générale pour, à la fin de l'année, remonter légèrement.
 
 ```{r autocorrélation2020gp}
 acf(grocery_pharma_ts)
