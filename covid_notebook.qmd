@@ -159,7 +159,7 @@ plot(ts_work, xlab = "Temps [mois]", ylab = "Déplacements", main = "Année 2020
 tsp(ts_work)
 ```
 
-La série concernant les déplacements vers les lieux de travail présente beaucoup de bruit ce risque risque de rendre l'analyse difficile. Nous allons donc tenter de garder uniquement les jours de la semaine :
+La série concernant les déplacements vers les lieux de travail présente beaucoup de bruit cela risque de rendre l'analyse difficile. Nous allons donc tenter de garder uniquement les jours de la semaine :
 
 ```{r agrega_2020}
 # La série temporelle est créée (début le 15 février 2020 = 46e jour de l'année 2020)
@@ -254,6 +254,20 @@ spectrum(covid_extract_2020jd, spans = c(3,5), main = "Périodogramme lissé", y
 
 Les résidus ne présentent pas de cycle étant donné l'absence de pics.
 
+Pour être certains que les séries ne présentent aucun cycles, nous décidons d'analyser la potentielle présence de cycle en tenant compte, à la fois des jours de semaine et de weekend :
+
+La méthode des différences est employées pour éliminer la tendance tout en conservant les potentiels cycles.
+
+```{r cycle_semaine_weekend_2020}
+covid_ts20 <- ts(covid$workplaces, start = c(2020, 46), frequency = 366, end = c(2020, 365))
+covidwhole2020 <- tsd(covid_ts20, method = "diff", lag = 3 , times = 1)
+extract_whole_20 <- extract(covidwhole2020, components = "residuals")
+plot(extract_whole_20)
+spectrum(extract_whole_20, spans= c(3,5))
+time(covid_ts20)
+```
+Deux cycles significatifs sont observés en 2020. Un pic à une fréquence de 50, ce qui signifie un cycle tous les 7,3 jours et un autre pic à une fréquence de 100 jours ce qui signifie un cycle tous les 3,65 jours. 
+
 ####Année 2021
 
 ```{r agrega_2021}
@@ -270,7 +284,7 @@ La série présente une chute des déplacements envers les lieux de travail déb
 acf(covidwork_2021, main = "Graphique d'autocorrélation 2021")
 ```
 
-Ce graphique d'autocorrélation est très semblable à celui de 2020. Il ne semble pas non plus y avoir de cycles. De plus, uniquement les deuxième et troisième barres sont significativesce qui pourrait se déduire par un effet mirroir à court terme, comme 2020. Nous décomposons la série afin de l'analyser plus en détail :
+Ce graphique d'autocorrélation est très semblable à celui de 2020. Il ne semble pas non plus y avoir de cycles. De plus, uniquement les deuxième et troisième barres sont significatives ce qui pourrait se déduire par un effet miroir à court terme, comme 2020. Nous décomposons la série afin de l'analyser plus en détail :
 
 ```{r medianetravail_2021}
 covidw2021 <- tsd(covidwork_2021, method = "median", order = 5, times = 1)
@@ -352,6 +366,21 @@ plot(covid_extract_2021jd, ylab = "Résidus", xlab = "Temps [mois]")
 spectrum(covid_extract_2021jd, spans = c(3,5), main = "Périodogramme lissé", ylab = "spectre", xlab = "Fréquence")
 ```
 Ce graphique ne présente pas de pic net, il n'y a donc pas de cycle entre juin et décembre 2021.
+
+Pour être certains que les séries ne présentent aucun cycles, nous décidons d'analyser la potentielle présence de cycle en tenant compte, à la fois des jours de semaine et de weekend :
+
+La méthode des différences est employées pour éliminer la tendance tout en conservant les potentiels cycles.
+
+```{r cycle_semaine_weekend_2021}
+covid_ts21 <- ts(covid$workplaces, start = c(2021, 1), frequency = 365,end = c(2021, 365))
+covidwhole2021 <- tsd(covid_ts21, method = "diff", lag = 3 , times = 1)
+time(covid_ts21)
+extract_whole_21 <- extract(covidwhole2021, components = "residuals")
+plot(extract_whole_21)
+spectrum(extract_whole_21, spans= c(3,5))
+```
+Tout comme 2020, deux cycles significatifs sont observés en 2021. Un pic à une fréquence de 50, ce qui signifie un cycle tous les 7,3 jours et un autre pic à une fréquence de 100 jours ce qui signifie un cycle tous les 3,65 jours. 
+
 #### Comparaison lieux de travail 2020-2021
 
 Si nous nous intéressons à l'année entière, tant 2020 que 2021, les deux séries présentent une tendance générale à l'augmentation et une absence de cycle. Concernant les périodes de début d'année, commençant mi-février pour 2020 et en janvier pour 2021 et se terminant fin juin : l'analyse suggère qu'il y a une tendance générale décroissante en 2020 et pas de tendance générale en 2021 et aucun cycle, que ce soit en 2020 ou 2021. Concernant la période entre fin juin et décembre : en 2020, il y aurait une tendance générale croissante et aucun cycle, alors qu'en 2021, il y a une tendance générale décroissante et toujours aucun cycle.
