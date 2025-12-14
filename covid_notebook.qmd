@@ -362,22 +362,20 @@ La variable Grocery and pharmacies correspond à l’évolution des déplacement
 
 #### Année 2020
 
-```{r}
+```{r serie grocery_pharma2020}
 grocery_pharma_ts <- ts(covid$grocery_pharma, start = c(2020, 46), frequency = 365, end = c(2020, 365))
-plot(grocery_pharma_ts, ylab = "déplacement supermarchés et pharmacies", xlab = "temps [mois]", main = "Année 2021 - déplacement supermarchés et pharmacies")
+plot(grocery_pharma_ts, ylab = "déplacement supermarchés et pharmacies", xlab = "temps [mois]", main = "Année 2020 - déplacement supermarchés et pharmacies")
 ```
 
 Ce graphique représente l'évolution des déplacements vers les supermarchés et les pharmacies durant l'année 2020 en période de covid. On aperçoit une chute brutale de la série un peu avant le mois de mars. Ensuite, la série se stabilise autour d'une tendance négative, puis, elle remonte légèrement à la fin de l'année. On observe également un pic au début du mois de février.
 
-```{r}
+```{r serie grocery_pharma2020 sep}
 covidw_ts <- ts(covidw$grocery_pharma, start = c(2020, 46), frequency = 365,end = c(2020, 365))
-plot(covidw_ts)
 # Aggrégation par moyenne des valeurs par semaine
 covidw_gp_ts2 <- aggregate(covidw_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
 plot(covidw_gp_ts2)
 
 covidy_ts <- ts(covidy$grocery_pharma, start = c(2020, 46), frequency = 365,end = c(2020, 365))
-plot(covidw_ts)
 # Aggrégation par moyenne des valeurs par semaine
 covidy_gp_ts2 <- aggregate(covidy_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
 plot(covidy_gp_ts2)
@@ -391,7 +389,7 @@ Lorsque l'on compare la variable alimentation et pharmacies entre la semaine et 
 
 #### Année 2021
 
-```{r}
+```{r serie grocery_pharma2021}
 grocery_pharma_ts2 <- ts(covid$grocery_pharma, start = c(2021, 1), frequency = 365, end = c(2021, 365))
 plot(grocery_pharma_ts2, ylab = "déplacement supermarchés et pharmacies", xlab = "temps [mois]", main = "Année 2021 - déplacement supermarchés et pharmacies")
 ```
@@ -400,7 +398,7 @@ Ce graphique montre l'évolution des déplacements vers les supermarchés et les
 
 #### Comparaison année 2020 et année 2021
 
-```{r}
+```{r serie grocery_pharma2020_2021}
 grocery_pharma_ts <- ts(covid$grocery_pharma, start = c(2020, 46), frequency = 365, end = c(2020, 365))
 plot(grocery_pharma_ts)
 
@@ -416,17 +414,7 @@ plot(grocery_pharma_ts2, ylab = "déplacement supermarchés et pharmacies", xlab
 
 Lorsque l'on compare la forme générale de la série pour l'année 2020 et la série pour pour l'année 2021, l'aspect globale semble évoluer de manière similaire. En effet, même si la chute n'a pas lieu au même moment (2020 : février, 2021 : janvier), la baisse brutale de déplacement vers les supermarchés et les pharmacies est observable en début d'année dans les deux séries. Ensuite, tant pour 2020 que pour 2021, la série se stabilise autour d'une tendance générale pour, à la fin de l'année, remonter légèrement.
 
-```{r}
-#j'ai pas fini
-par(mfrow = c(1, 2))
-boxplot(as.numeric(grocery_pharma_ts), 
-  main = "déplacements supermarchés et pharmacies 2020")
-boxplot(as.numeric(grocery_pharma_ts2),
-  main = "déplacements supermarchés et pharmacies 2021")
-
-```
-
-```{r}
+```{r autocorrélation2020gp}
 acf(grocery_pharma_ts)
 ```
 
@@ -434,7 +422,7 @@ L’autocorrélation reflète principalement la persistance temporelle liée à 
 
 Décomposons la série :
 
-```{r}
+```{r decomp2020gp}
 grocery_pharma_ts2020 <- tsd(grocery_pharma_ts, method = "average", type = "additive", order = 26, times = 3)
 plot(grocery_pharma_ts2020, col = 1:3)
 ```
@@ -443,7 +431,7 @@ Au niveau de la série filtrée, on observe une tendance générale croissante s
 
 Analysons la tendance générale :
 
-```{r}
+```{r trend2020gp}
 mts_grocerypharma_2020 <- tseries(grocery_pharma_ts2020)
 acf(mts_grocerypharma_2020[, "filtered"])
 trend.test(mts_grocerypharma_2020[, "filtered"])
@@ -453,7 +441,7 @@ La p-value du test de tendance est inférieure à 5 % (p-value = 2.2\^-16), ce q
 
 Analysons les résidus :
 
-```{r}
+```{r residuals2020gp}
 grocerypharma_res_2020 <- extract(grocery_pharma_ts2020, components = "residuals")
 plot(grocerypharma_res_2020)
 spectrum(grocerypharma_res_2020, spans = c(3,5))
@@ -463,7 +451,7 @@ spectrum(grocerypharma_res_2020, spans = c(3,5))
 
 #### Année 2021
 
-```{r}
+```{r autocorrélation2021gp}
 acf(grocery_pharma_ts2)
 ```
 
@@ -471,16 +459,16 @@ Comme pour l'autocorrélation de 2020, celle de 2021 reflète principalement la 
 
 Décomposons la série :
 
-```{r}
+```{r decomp2021gp}
 grocery_pharma_ts2021 <- tsd(grocery_pharma_ts2, method = "average", type = "additive", order = 26, times = 3)
 plot(grocery_pharma_ts2021, col = 1:3)
 ```
 
-La composante filtrée indique une tendance légèrement croissante, moins prononcée qu’en 2020. Dans les résidus, aucun cycle net est aperçu. Les résidus sont relativement centrés autour de zéro, avec quelques valeurs extrêmes.
+La composante filtrée semble indiquer une tendance générale légèrement croissante, moins prononcée qu’en 2020. Dans les résidus, aucun cycle net est aperçu. Les résidus sont relativement centrés autour de zéro, avec quelques valeurs extrêmes.
 
 Analysons la tendance générale :
 
-```{r}
+```{r trend2021gp}
 mts_grocerypharma_2021 <- tseries(grocery_pharma_ts2021)
 acf(mts_grocerypharma_2021[, "filtered"])
 trend.test(mts_grocerypharma_2021[, "filtered"])
@@ -488,7 +476,7 @@ trend.test(mts_grocerypharma_2021[, "filtered"])
 
 Comme pour la série 2020, dans celle de 2021 La p-value du test de tendance est inférieure à 5 % (p-value = 2.2\^-16), ce qui conduit au rejet de l’hypothèse nulle. Il existe donc une tendance générale significative et croissante des déplacements vers les commerces alimentaires en 2021. Cependant, la valeur du coefficient rho est plus faible (rho = 0,571), suggérant une tendance moins prononcée qu’en 2020.
 
-```{r}
+```{r residuals2021gp}
 grocerypharma_res_2021 <- extract(grocery_pharma_ts2021, compoenents = "residuals")
 plot(grocerypharma_res_2021)
 spectrum(grocerypharma_res_2021, spans = c(3,5))
@@ -500,7 +488,6 @@ Le periogramme montre que nous n'avons pas de cycle significatif dans la série.
 
 En comparant les déplacements vers les supermarchés et les pharmacies entre 2020 et 2021, on observe des similitudes notables dans la dynamique générale. Dans les deux années, une forte baisse des déplacements est visible en début d’année, correspondant aux premières mesures sanitaires ou aux périodes de confinement, suivie d’une stabilisation autour d’une tendance négative, puis d’une légère reprise en fin d’année. Toutefois, la série de 2021 présente une tendance générale croissante moins marquée qu’en 2020, comme l’indique la valeur plus faible du coefficient de tendance (rho). Les résidus ne montrent pas de cycles nets significatifs pour 2021, alors que 2020 présentait quelques maxima locaux suggérant des variations régulières. Globalement, malgré des fluctuations ponctuelles différentes, le comportement des déplacements vers les commerces alimentaires et pharmacies reste relativement similaire d’une année à l’autre, reflétant la persistance de besoins essentiels malgré les restrictions sanitaires.
 
-Au niveau de la série filtrée, on observe une tendance générale positive. Dans les résidus, aucun cycle est aperçu.
 
 ### Lieux de résidence
 
