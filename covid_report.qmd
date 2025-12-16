@@ -45,6 +45,17 @@ covid <- read("data/mobility_wallonia.rds")
 skimr::skim(covid)
 ```
 
+```{r}
+#rename variables
+srename(covid, 
+ shop_leisure = retail_and_recreation_percent_change_from_baseline,
+ grocery_pharma = grocery_and_pharmacy_percent_change_from_baseline,
+ parks = parks_percent_change_from_baseline,
+ stations = transit_stations_percent_change_from_baseline,
+workplaces =  workplaces_percent_change_from_baseline,
+ residential = residential_percent_change_from_baseline) -> covid
+```
+
 ###Lieux de travail
 
 Les déplacements envers le lieux de travail seront analysés uniquement sur la semaine et non le week-end autant en 2020 que 2021.
@@ -154,6 +165,15 @@ trend.test(mts_windowwork2021jd[,"filtered"])
 ```
 
 En 2020 et 2021, entre juin et décembre, les tendances générales sont significatives avec des p-value inférieures au seuil \alpha de 5%. En 2020, la tendance générale est croissante avec une valeur \rho positive, alors que la tendance est décroissante en 2021 avec une valeur \rho négative.
+
+###Lieux de résidence
+La population est susceptible de quitter sa résidence tous les jours de la semaine (travail, commerces, ...). Les analyses se feront donc sur les jours de la semaine et jours de weekend sans distinction.
+####Année 2020
+```{r serie_résid_2020}
+res_20 <- ts(window(covid$residential, start = 1, end = 321),start = c(2020, 46), end = c(2020, 366), frequency = 366)
+plot(res_20, xlab = "Temps [mois]", ylab = "Evolution du nombre de personnes [%]", main = "Lieux de résidence - 2020")
+```
+
 
 ## Discussion et Conclusion
 
