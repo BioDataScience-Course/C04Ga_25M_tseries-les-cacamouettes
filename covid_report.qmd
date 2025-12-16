@@ -209,7 +209,13 @@ res_21_lt <- local.trend(res_21, xlab = "Temps [mois]")
 ```
 Nous observons deux phases principales. La première consiste en une augmentation, culminant vers le mois de mai. La deuxième consiste en une diminution. Nous remarquons également que la courbe stagne en fin d'année.
 ####Comparaison des années 2020 et 2021
+Les années 2020 et 2021 sont toutes deux dominées par plusieurs tendances locales.
 
+Début février 2020, on observe une augmentation de 30% du nombre de personnes restant à leur domicile. A la transition juin-juillet, la tendance diminue ensuite pour atteindre son taux le plus bas vers le mois d'août, période où la population sortait plus afin de profiter du beau temps. La tendance remonte début octobre, illustrant la reprise du travail via les cours en ligne ou le télé-travail, pour un grand pourcentage de la population.
+
+L'année 2021 débute avec un taux d'augmentation d'environ 15%, qui grimpe jusqu'à culminer au mois de mai. On observe ensuite une forte chute de l'augmentation qui finit par atteindre un pallier en fin d'année. Cette brusque diminution résulte de l'allègement des mesures relatives à la pandémie, avec notamment la reprise totale des cours en présentiel pour les étudiants.
+
+En résumé, l'année 2020 connut le plus grand taux d'augmentation du nombre de personnes restant à leur domicile. Une légère diminution était déjà observable en 2021, permise par les progrès médicaux et les premiers effets de l'immunité collective. De plus, pour les deux années confondues, la période estivale s'est avérée être la période avec le taux d'augmentation le plus faible.
 ## Discussion et Conclusion
 
 <!--% En tenant compte du but de votre carnet de notes et de vos résultats, discutez de résultats et proposez des conclusions à votre analyse en 5 à 10 phrases. -->
