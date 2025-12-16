@@ -185,7 +185,13 @@ plot(res_20_dec, xlab = "Temps [jours]", col = 1:3)
 acf(res_20, main = "Autocorrélation pour l'année 2020")
 ```
 La décomposition nous apprend qu'une tendance domine la série. Le graphe d'autocorrélation nous indique qu'il existe une forte autocorrélation dans les données, avec des barres toutes positives et significatives, confirmant la présence d'une tendance générale dans la série. La composante filtrée nous apprend cependant que cette tendance varie localement. Nous réalisons donc une analyse par la méthode des sommes cumulées.
+```{r}
+res_20_lt <- local.trend(res_20, xlab = "Temps [mois]")
+```
+Deux phases principales sont visibles. La première consiste en une augmentation à partir de début février. La seconde consiste en une diminution qui survient vers les mois d'août-septembre. Une diminution est également observable en janvier, ainsi qu'une légère augmentation à la transition septembre-octobre.
+####Année 2021
 
+####Comparaison des années 2020 et 2021
 
 ## Discussion et Conclusion
 
