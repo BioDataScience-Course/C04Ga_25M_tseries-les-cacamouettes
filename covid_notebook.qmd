@@ -587,7 +587,7 @@ La série est dominée par une tendance. On observe une tendance générale à l
 res_20_lt <- local.trend(res_20, xlab = "Temps [mois]")
 ```
 
-On observe bien deux phases principales : une augmentation à partir du mois d'avril, suivie d'une diminution à la transition juin-juillet. Une nouvelle augmentation est également observable début octobre.
+On observe bien deux phases principales : une augmentation à partir du mois de février, suivie d'une diminution à la transition juillet-août. Une nouvelle augmentation est également observable début octobre.
 
 #### Année 2021
 
