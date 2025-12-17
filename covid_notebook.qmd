@@ -296,7 +296,7 @@ Nous décomposons la série afin de l'analyser plus en détail :
 covidw2021 <- tsd(covidw_ts21, method = "evf", lag = 10, axes = 1)
 plot(covidw2021, col = 1:3, main = "Filtrage par les valeurs propres", ylab = "Série", xlab = "Temps [semaines]")
 ```
-À COMPLÉTER
+La composante filtrée ne montre pas de tendance claire. De plus, les résidus ne semblent pas montrer de cycle.
 
 
 Nous allons vérifier si il existe une tendance générale dans la série. Par contre il ne semble pas y avoir de cycles.
@@ -313,27 +313,11 @@ La p value étant inférieur à \alpha au seuil de 5%, la tendance générale es
 plot(covid_extract_2021, ylab = "Résidus", xlab = "Temps [mois]")
 spectrum(covid_extract_2021, spans = c(3,5), main = "Périodogramme lissé", ylab = "spectre", xlab = "frequency")
 ```
-
-Nous pouvons tirer les mêmes conclusions que pour 2020, aucun cycle n'est présent étant donné l'absence de pics nets.
-
-Pour être certains que les séries ne présentent aucun cycles, nous décidons d'analyser la potentielle présence de cycle en tenant compte, à la fois des jours de semaine et de weekend :
-
-La méthode des différences est employées pour éliminer la tendance tout en conservant les potentiels cycles.
-
-```{r cycle_semaine_weekend_2021}
-covid_ts21 <- ts(covid$workplaces, start = c(2021, 1), frequency = 365,end = c(2021, 365))
-covidwhole2021 <- tsd(covid_ts21, method = "diff", lag = 3 , times = 1)
-time(covid_ts21)
-extract_whole_21 <- extract(covidwhole2021, components = "residuals")
-plot(extract_whole_21)
-spectrum(extract_whole_21, spans= c(3,5))
-```
-
 Tout comme 2020, deux cycles significatifs sont observés en 2021. Un pic à une fréquence de 50, ce qui signifie un cycle tous les 7,3 jours et un autre pic à une fréquence de 100 jours ce qui signifie un cycle tous les 3,65 jours.
 
 #### Comparaison lieux de travail 2020-2021
 
-Si nous nous intéressons à l'année entière, tant 2020 que 2021, les deux séries présentent une tendance générale à l'augmentation et une absence de cycle. Concernant les périodes de début d'année, commençant mi-février pour 2020 et en janvier pour 2021 et se terminant fin juin : l'analyse suggère qu'il y a une tendance générale décroissante en 2020 et pas de tendance générale en 2021 et aucun cycle, que ce soit en 2020 ou 2021. Concernant la période entre fin juin et décembre : en 2020, il y aurait une tendance générale croissante et aucun cycle, alors qu'en 2021, il y a une tendance générale décroissante et toujours aucun cycle.
+Si nous nous intéressons à l'année entière, tant 2020 que 2021, les deux séries présentent une tendance générale à l'augmentation ainsi que des cycles de fréquence 50 et 100 jours. La tendance locale est principalement marquée en 2020 avec une baisse des fréquentations au travail entre avril et octobre.
 
 ### Alimentation et pharmacies
 
