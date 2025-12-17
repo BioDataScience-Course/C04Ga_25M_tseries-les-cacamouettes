@@ -45,8 +45,9 @@ covid <- read("data/mobility_wallonia.rds")
 skimr::skim(covid)
 ```
 
+
 ```{r}
-#rename variables
+#rename variables A ENLEVER ?????
 srename(covid, 
  shop_leisure = retail_and_recreation_percent_change_from_baseline,
  grocery_pharma = grocery_and_pharmacy_percent_change_from_baseline,
@@ -55,6 +56,7 @@ srename(covid,
 workplaces =  workplaces_percent_change_from_baseline,
  residential = residential_percent_change_from_baseline) -> covid
 ```
+
 
 ###Lieux de travail
 
