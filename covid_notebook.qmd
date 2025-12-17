@@ -414,7 +414,7 @@ La variable alimentation et pharmacies correspond à l’évolution des déplace
 #### Année 2020
 
 ```{r serie grocery_pharma2020}
-grocery_pharma_ts <- ts(covid$grocery_pharma, start = c(2020, 46), frequency = 365, end = c(2020, 365))
+grocery_pharma_ts <- ts(window(covid$grocery_pharma, start = 1, end = 321),start = c(2020, 46), end = c(2020, 366), frequency = 366)
 plot(grocery_pharma_ts, ylab = "déplacement supermarchés et pharmacies", xlab = "temps [mois]", main = "Année 2020 - déplacement supermarchés et pharmacies")
 ```
 
@@ -441,7 +441,7 @@ Lorsque l'on compare la variable alimentation et pharmacies entre la semaine et 
 #### Année 2021
 
 ```{r serie grocery_pharma2021}
-grocery_pharma_ts2 <- ts(covid$grocery_pharma, start = c(2021, 1), frequency = 365, end = c(2021, 365))
+grocery_pharma_ts2 <- ts(window(covid$grocery_pharma, start = 322, end = 686),start = c(2021, 1), end = c(2021, 365), frequency = 366)
 plot(grocery_pharma_ts2, ylab = "déplacement supermarchés et pharmacies", xlab = "temps [mois]", main = "Année 2021 - déplacement supermarchés et pharmacies")
 ```
 
@@ -450,10 +450,10 @@ Ce graphique montre l'évolution des déplacements vers les supermarchés et les
 #### Comparaison année 2020 et année 2021
 
 ```{r serie grocery_pharma2020_2021}
-grocery_pharma_ts <- ts(covid$grocery_pharma, start = c(2020, 46), frequency = 365, end = c(2020, 365))
+grocery_pharma_ts <- ts(window(covid$grocery_pharma, start = 1, end = 321),start = c(2020, 46), end = c(2020, 366), frequency = 366)
 plot(grocery_pharma_ts)
 
-grocery_pharma_ts2 <- ts(covid$grocery_pharma, start = c(2021, 1), frequency = 365, end = c(2021, 365))
+grocery_pharma_ts2 <- ts(window(covid$grocery_pharma, start = 322, end = 686),start = c(2021, 1), end = c(2021, 365), frequency = 366)
 plot(grocery_pharma_ts2)
 
 
