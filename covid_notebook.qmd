@@ -278,26 +278,26 @@ class(covidw_ts21)
 plot(covidw_ts21, xlab = "Temps [mois]", ylab = "Déplacements", main = "Année 2021 - Déplacements vers le lieu de travail")
 ```
 
-La série ne semble pas présenter de grosses chutes liées aux déplacements vers les lieux de travail si ce n'est quelques chutes aigues et brèves à certains moments de l'année.
+La série ne semble pas présenter de grosses chutes liées aux déplacements vers les lieux de travail si ce n'est quelques chutes aigües et brèves à certains moments de l'année.
 
 ```{r acf_travail_2021 }
-acf(covidwork_2021, main = "Graphique d'autocorrélation 2021")
+acf(covidw_ts21, main = "Graphique d'autocorrélation 2021")
 ```
+
+```{r tendance_locale_2021work}
+local.trend(covidw_ts21) 
+```
+
 
 Ce graphique d'autocorrélation ne semble pas non plus avoir de cycles. De plus, uniquement les deuxième et troisième barres sont significatives ce qui pourrait se traduire par un effet miroir à court terme. Nous décomposons la série afin de l'analyser plus en détail :
 
-```{r medianetravail_2021}
-covidw2021 <- tsd(covidwork_2021, method = "median", order = 5, times = 1)
-plot(covidw2021, stack = FALSE, resid = FALSE, col = 1:2, main = "Décomposition par médianes mobiles", ylab = "Série", xlab = "Temps [semaines]")
+```{r evftravail_2021}
+covidw2021 <- tsd(covidw_ts21, method = "evf", lag = 10, axes = 1)
+plot(covidw2021, col = 1:3, main = "Filtrage par les valeurs propres", ylab = "Série", xlab = "Temps [semaines]")
 ```
 
 Cette décomposition possède des caractéristiques semblables à la série de 2020 car il y a d'abord une diminution, suivie d'une augmentation. Puis, un plateau suivi d'une autre augmentation plus légère, et enfin un plateau sur les vingt dernières semaines.
 
-Nous convertissons notre série décomposée en un objet mts, puis, nous observons le graphique d'autocorrélation de la composante filtrée.
-
-```{r decompotravail_2021}
-plot(covidw2021)
-```
 
 Nous allons vérifier si il existe une tendance générale dans la série. par contre il ne semble pas y avoir de cycles.
 
