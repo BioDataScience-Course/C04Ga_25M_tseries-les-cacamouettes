@@ -271,20 +271,20 @@ Deux cycles significatifs sont observés en 2020. Un pic à une fréquence de 50
 
 ####Année 2021
 
-```{r agrega_2021}
+```{r serie_travail_2021}
 # La série temporelle est créée (début le 1er janvier 2021)
- covidw_ts21 <-ts(window(covid$workplaces, start = 1, end = 321),start = c(2021, 1), end = c(2021, 366), frequency = 366)
+ covidw_ts21 <-ts(window(covid$workplaces, start = 322, end = 686),start = c(2021, 1), end = c(2021, 366), frequency = 366)
 class(covidw_ts21)
 plot(covidw_ts21, xlab = "Temps [mois]", ylab = "Déplacements", main = "Année 2021 - Déplacements vers le lieu de travail")
 ```
 
-La série présente une chute des déplacements envers les lieux de travail début 2021. Puis, cela augmente progressivement jusqu'au début de l'été. Pour ensuite rechuter, moins fort que la première fois et après remonter vers la fin de l'été. Ensuite, une autre rechute, plus forte que la dernière apparaît pour ensuite remonter à la fin de l'année 2021.
+La série ne semble pas présenter de grosses chutes liées aux déplacements vers les lieux de travail si ce n'est quelques chutes aigues et brèves à certains moments de l'année.
 
 ```{r acf_travail_2021 }
 acf(covidwork_2021, main = "Graphique d'autocorrélation 2021")
 ```
 
-Ce graphique d'autocorrélation est très semblable à celui de 2020. Il ne semble pas non plus y avoir de cycles. De plus, uniquement les deuxième et troisième barres sont significatives ce qui pourrait se déduire par un effet miroir à court terme, comme 2020. Nous décomposons la série afin de l'analyser plus en détail :
+Ce graphique d'autocorrélation ne semble pas non plus avoir de cycles. De plus, uniquement les deuxième et troisième barres sont significatives ce qui pourrait se traduire par un effet miroir à court terme. Nous décomposons la série afin de l'analyser plus en détail :
 
 ```{r medianetravail_2021}
 covidw2021 <- tsd(covidwork_2021, method = "median", order = 5, times = 1)
