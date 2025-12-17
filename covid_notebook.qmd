@@ -113,7 +113,7 @@ La variable commerces et loisirs correspond aux déplacements des habitants de l
 #### Année 2021
 
 ```{r serie_shop_2020}
-shop_ts <- ts (covid$shop_leisure, start = c(2020, 46),end = c(2020, 366), frequency = 366 )
+shop_ts <- ts (covid$shop_leisure, start = c(2020, 46),end = c(2020, 365), frequency = 365 )
 plot (shop_ts)
 ```
 
@@ -122,24 +122,25 @@ Nous pouvons observer que la série comporte du bruit qui peut créer des probl�
 Séparation pour les jours de la semaine :
 
 ```{r ser20_shop_semaine}
-covidw_ts <- ts (covidw$shop_leisure, start = c(2020, 46),end = c(2020, 366), frequency = 365 )
+covidw_ts <- ts (covidw$shop_leisure, start = c(2020, 46),end = c(2020, 365), frequency = 365 )
 # Aggrégation par moyenne des valeurs par semaine
 weekshop_2020 <- aggregate(covidw_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
-plot (covidshop_2020)
+plot (weekshop_2020)
 ```
 
 Séparation pour les week-end :
 
 ```{r  ser20_shop_weekend}
-covidy_ts <- ts (covidy$shop_leisure, start = c(2020, 46),end = c(2020, 366), frequency = 365 )
+covidy_ts <- ts (covidy$shop_leisure, start = c(2020, 46),end = c(2020, 365), frequency = 365 )
 # Aggrégation par moyenne des valeurs par week-end
 weekendshop_2020 <- aggregate(covidy_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
-plot (covidshop2_2020)
+plot (weekendshop_2020)
 ```
-Nous voyons que la sélection des jours de la semaine ou des jours du week-end a permis de réduire grandement le bruit et de mieux visualiser l'allure générale de la courbe de la série. Cependant, entre la semaine et le week-end, la série ne semble pas varier énormément, ce qui signifie que les déplacements pour les lieux de commerces et de loisirs ne varient pas beaucoup de la semaine au weekend. 
-Nous pouvons donc nous poser la question de l'utilité réelle de séparer ces deux parties, ou de garder la série combinant la semaine et le week-end. 
 
-Réalisons des statistiques glissantes pour avoir la moyenne des différents intervale de temps le long de notre série : 
+Nous voyons que la sélection des jours de la semaine ou des jours du week-end a permis de réduire grandement le bruit et de mieux visualiser l'allure générale de la courbe de la série. Cependant, entre la semaine et le week-end, la série ne semble pas varier énormément, ce qui signifie que les déplacements pour les lieux de commerces et de loisirs ne varient pas beaucoup de la semaine au weekend. Nous pouvons donc nous poser la question de l'utilité réelle de séparer ces deux parties, ou de garder la série combinant la semaine et le week-end.
+
+Réalisons des statistiques glissantes pour avoir la moyenne des différents intervale de temps le long de notre série :
+
 ```{r statslide_shop_20}
 shop_sl <- stat.slide (time (shop_ts), shop_ts, deltat =1/12)
 plot (shop_sl, stat = "mean", leg = TRUE)
@@ -154,20 +155,62 @@ plot (shop_week_sl, stat = "mean", leg = TRUE)
 shop_weekend_sl <- stat.slide (time (weekendshop_2020), weekendshop_2020, deltat =1/12)
 plot (shop_weekend_sl, stat = "mean", leg = TRUE)
 ```
-Nous pouvons voir qu'entre les différentes données filtrées pour une période de la semaine ou pas, les moyennes des variation de déplacement le long de l'axe temporel de la série ne varient pas grandement. En effet, la valeur moyenne du deuxième pic dans la série excluant la semaine est juste légèrement plus en dessous de 0 que celles des deux autres types de séries. Nous décidons donc de garder la suite de l'analyse avec la séries contenant toutes les données, de la semaine et du week-end, et de comparer cette série pour 2020 et 2021. 
+
+Nous pouvons voir qu'entre les différentes données filtrées pour une période de la semaine ou pas, les moyennes des variation de déplacement le long de l'axe temporel de la série ne varient pas grandement. En effet, la valeur moyenne du deuxième pic dans la série excluant la semaine est juste légèrement plus en dessous de 0 que celles des deux autres types de séries. Nous décidons donc de garder la suite de l'analyse avec la séries contenant toutes les données, de la semaine et du week-end, et de comparer cette série pour 2020 et 2021.
+
+Test de l'autocorrelation :
 
 ```{r acf_shop_20}
 acf (shop_ts)
 ```
-Le graphique de la fonction d'autocorrelation ne présente pas de cycle, mais toutes barres sont significatives (au dessus de l'enveloppe de confiance à 95%) et positive, ce qui signifie qu'une tendance à l'augmentation domine le signal. 
+
+Le graphique de la fonction d'autocorrelation ne présente pas de cycle, mais toutes barres sont significatives (au dessus de l'enveloppe de confiance à 95%) et positive, ce qui signifie qu'une tendance à l'augmentation domine le signal.
 
 Il serait intéressant aussi, au vu de l'aspect général de notre graphique, de regarder si a série présence des tendances locales, différentes phases d'évolution à long terme, croissance et puis décroissance :
 
 ```{r shop20_localtrend}
 shop20_local <- local.trend (shop_ts)
+class (shop20_local)
+```
+
+Effectivement, comme nous l'avions anticipé, les sommes cumulées (ligne rouge) forment un U assez net et deux pics bien marqué de chaque côté de ce V. Nous avons donc présence de plusieurs phases dans cette série : une croissance, suivit d'une décroissance marquée, puis d'une croissance aussi marquée, et enfin une légère décroissance. 
+Les points de ruptures correspondant à ces changement de phases sont environ : au 73e jour, au 146e jour, et au 292e jour jour, et un ralentissement au 328e jour. 
+Si nous convertissons ces données de jours en mois : 
+Il y a eu une augmentation des déplacement jusqu'en mi-mars (14 mars environ). 
+- À partir de mi-mars, le taux de déplacement vers les commerces et lieux de loisirs chute drastiquement, jusque fin mai. 
+- Puis, à partir de la fin du mois de mai jusqu'en mi-octobre, les déplacement vers les commerces et loisirs augmentent progressivement. 
+- Après la mi-octobre, on observe une nouvelle baisse des déplacements, plus progressive, pour ensuite se stabiliser (et peut-être monter très légerement) à la fin novembre. 
+
+```{r}
+#chunk pour avoir les valeurs précises des jours correspondant aux ruptures dans la courbe de local trend (code aidé par ingtelligence artificielle, à ne pas prendre en compte pour la correction si pas autorisé, réalisé juste par simple curiosité et désir de rendre l'analyse plus solide)
+localtrend <- shop20_local
+time_trend <- time(localtrend)
+
+# Dérivée Calcul de la dérivée, pour détecter les variations de tendances locales
+d_trend <- diff(localtrend)
+
+# Lissage de la dérivée (moyenne mobile) pour éliminer le bruit et éviter d'avoir trop de valeurs de ruptures, et garder que les principales
+d_trend_smooth <- stats::filter(d_trend, rep(1/7, 7), sides = 2)
+
+# Détection des changements de signe : <0 : décroissante, >0 : croissante. Les changements dans ces signes montrent donc le point de changement de phase dans la 
+sign_change <- diff(sign(d_trend_smooth))
+ruptures <- which(sign_change != 0) + 1
+
+# Filtrage des ruptures trop proches (de nouveau pour ne garder que les points de ruptures les plus importants dans la série )
+#min_gap <- 10
+#ruptures_filt <- ruptures[c(TRUE, diff(ruptures) > min_gap)]
+
+# Temps des ruptures 
+rupture_times <- time_trend[ruptures_filt]
+rupture_times
+```
+
+Vérifions tout de même la tendance générale de cette série en la décomposant : 
+
+```{r}
 
 ```
-Effectivement, comme nous l'avions anticipé, les sommes cumulées (ligne rouge) forment un V très net et deux pics bien marqué de chaque côté de ce V. Nous avons donc présence de plusieurs phases dans cette série. 
+
 
 ### Lieux de travail
 
@@ -205,6 +248,7 @@ Nous réalisons une décomposition de la série afin d'analyser cette dernière 
 covidw2020 <- tsd(covidwork_2020, method = "median", order = 5, times = 1)
 plot(covidw2020, stack = FALSE, resid = FALSE, col = 1:2, main = "Décomposition par médianes mobiles", ylab = "Série", xlab = "Temps [semaines]")
 ```
+
 Le filtrage par médianes mobiles permet de résumer comment varient les déplacements au travail au cours des semaines de l'année 2020. Entre la première et la dixième semaine, c'est-à-dire, en début mars, les déplacements vers le travail chutent. Puis, à partir de la onzième semaine, les déplacements se remettent à augmenter pour ensuite connaitre un plateau entre la 21ème et la 27ème semaine. Juste après, il y a une augmentation et enfin, un nouveau lors des dernières de 2021.
 
 ```{r decompotravail_2020}
@@ -219,7 +263,6 @@ trend.test(mts_2020[,"filtered"])
 ```
 
 La p-value étant inférieure au seuil \alpha de 5% pour la composante filtrée,nous rejetons H0 même si il y a des ex-aequo car la p-value est bien inférieur au seuil. Nous pouvons donc dire qu'il est plausible qu'une tendance générale existe. Cette tendance est croissante car la valeur de \rho est positive.
-
 
 Étant donné que, dans la série générale, nous observons un pic vers le bas en début d'année, il serait intéressant de se concentrer sur cette période de l'année. En effet, se concentrer sur une période qui va de mi-février à juin est intéressant car la période ayant le plus impacté la population est le confinement qui débuta en mars 2020 et qui a duré plusieurs mois.
 
@@ -244,7 +287,7 @@ trend.test(mts_windowwork2020[,"filtered"])
 
 La tendance générale est significative au seuil \alpha de 5% car la p-value est bien inférieure à ce seuil. IL y a encore une fois des ex-aequo donc la tendance générale décroissante est à prendre avec des pincettes. De plus, cette tendance est décroissante car \rho a une valeur négative.
 
-Nous allons aussi nous intéresser à la deuxième partie de l'année de juin fin à décembre  :
+Nous allons aussi nous intéresser à la deuxième partie de l'année de juin fin à décembre :
 
 ```{r travail2020_juin_decembre}
 work2020_window2 <-window(covidwork_2020, start = c(2020,21), end = c(2020, 45))
@@ -268,6 +311,7 @@ trend.test(mts_windowwork22020[,"filtered"])
 La tendance générale est en effet croissante avec une valeur \rho positive et significative car la p-value est inférieure au seuil \alpha de 5%.
 
 Vérifions si des cycles existent :
+
 ```{r resid2020_juin-decembre}
  covid_extract_2020jd <-extract(workwindow22020_decomp, components = "residuals")
 plot(covid_extract_2020jd,ylab = "Résidus", xlab = "Temps [mois]")
@@ -288,7 +332,8 @@ plot(extract_whole_20)
 spectrum(extract_whole_20, spans= c(3,5))
 time(covid_ts20)
 ```
-Deux cycles significatifs sont observés en 2020. Un pic à une fréquence de 50, ce qui signifie un cycle tous les 7,3 jours et un autre pic à une fréquence de 100 jours ce qui signifie un cycle tous les 3,65 jours. 
+
+Deux cycles significatifs sont observés en 2020. Un pic à une fréquence de 50, ce qui signifie un cycle tous les 7,3 jours et un autre pic à une fréquence de 100 jours ce qui signifie un cycle tous les 3,65 jours.
 
 ####Année 2021
 
@@ -320,6 +365,7 @@ Nous convertissons notre série décomposée en un objet mts, puis, nous observo
 ```{r decompotravail_2021}
 plot(covidw2021)
 ```
+
 Nous allons vérifier si il existe une tendance générale dans la série. par contre il ne semble pas y avoir de cycles.
 
 ```{r tendancetravail_2021}
@@ -327,7 +373,7 @@ mtsw_2021 <- tseries(covidw2021)
 trend.test(mtsw_2021[,"filtered"])
 ```
 
-La p value étant inférieur à \alpha au seuil de 5%, la tendance générale croissante est donc significative. Nous considérons la tendance comme significative malgré les ex-aequos car la valeur de p-value est bien inférieure au seuil. 
+La p value étant inférieur à \alpha au seuil de 5%, la tendance générale croissante est donc significative. Nous considérons la tendance comme significative malgré les ex-aequos car la valeur de p-value est bien inférieure au seuil.
 
 ```{r residtravail_2021}
  covid_extract_2021 <-extract(covidw2021, components = "residuals")
@@ -366,7 +412,8 @@ Regardons maintenant pour la période de fin juin à décembre de 2021 :
 work2021_window2 <-window(covidwork_2021, start = c(2021,27), end = c(2021, 52))
 plot(work2021_window2, ylab = "Déplacements", xlab = "Temps [mois]", main = "Déplacements travail fin juin-décembre")
 ```
-Ce graphique laisse penser que des cycles peuvent exister dans cette série. 
+
+Ce graphique laisse penser que des cycles peuvent exister dans cette série.
 
 ```{r decompo_2021_juin_decembre}
 workwindow2021jd_decomp <- tsd(work2021_window2, method = "average", order = 9, times = 1)
@@ -387,6 +434,7 @@ La tendance générale est significative avec une p-value inférieure au seuil \
 plot(covid_extract_2021jd, ylab = "Résidus", xlab = "Temps [mois]")
 spectrum(covid_extract_2021jd, spans = c(3,5), main = "Périodogramme lissé", ylab = "spectre", xlab = "Fréquence")
 ```
+
 Ce graphique ne présente pas de pic net, il n'y a donc pas de cycle entre juin et décembre 2021.
 
 Pour être certains que les séries ne présentent aucun cycles, nous décidons d'analyser la potentielle présence de cycle en tenant compte, à la fois des jours de semaine et de weekend :
@@ -401,7 +449,8 @@ extract_whole_21 <- extract(covidwhole2021, components = "residuals")
 plot(extract_whole_21)
 spectrum(extract_whole_21, spans= c(3,5))
 ```
-Tout comme 2020, deux cycles significatifs sont observés en 2021. Un pic à une fréquence de 50, ce qui signifie un cycle tous les 7,3 jours et un autre pic à une fréquence de 100 jours ce qui signifie un cycle tous les 3,65 jours. 
+
+Tout comme 2020, deux cycles significatifs sont observés en 2021. Un pic à une fréquence de 50, ce qui signifie un cycle tous les 7,3 jours et un autre pic à une fréquence de 100 jours ce qui signifie un cycle tous les 3,65 jours.
 
 #### Comparaison lieux de travail 2020-2021
 
@@ -538,7 +587,6 @@ Le periogramme montre que nous n'avons pas de cycle significatif dans la série.
 #### Comparaison 2020 et 2021
 
 En comparant les déplacements vers les supermarchés et les pharmacies entre 2020 et 2021, on observe des similitudes notables dans la dynamique générale. Dans les deux années, une forte baisse des déplacements est visible en début d’année, correspondant aux premières mesures sanitaires ou aux périodes de confinement, suivie d’une stabilisation autour d’une tendance négative, puis d’une légère reprise en fin d’année. Toutefois, la série de 2021 présente une tendance générale croissante moins marquée qu’en 2020, comme l’indique la valeur plus faible du coefficient de tendance (rho). Les résidus ne montrent pas de cycles nets significatifs pour 2021, alors que 2020 présentait quelques maxima locaux suggérant des variations régulières. Globalement, malgré des fluctuations ponctuelles différentes, le comportement des déplacements vers les commerces alimentaires et pharmacies reste relativement similaire d’une année à l’autre, reflétant la persistance de besoins essentiels malgré les restrictions sanitaires.
-
 
 ### Lieux de résidence
 
