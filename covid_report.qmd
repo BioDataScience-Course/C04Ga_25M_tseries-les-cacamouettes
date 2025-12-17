@@ -16,6 +16,7 @@ lang: fr
 ## Introduction
 
 <!--% Rédigez l'introduction de ce rapport.-->
+
 Début 2020, la pandémie de Covid-19 fait son entrée frappante, ébranlant le monde entier. La Belgique ne fut pas épargnée. Face à cette menace, la population est contrainte de limiter ses déplacements, impactant tous les aspects de la vie quotidienne.
 
 Les rapports de mobilité [@google_covid19_mobility] ont fourni les données présentant l'évolution de la mobilité durant cette période en Wallonie. Quatre types de lieux nous intéressent particulièrement : Commerces et loisirs, Alimentation et pharmacie, Lieux de résidence, et Lieux de travail. Ces lieux représentent en effet les aspects Activités, Besoins de première nécessité, Isolement, et Travail, nous donnant de bons aperçus de l'impact de cette pandémie dans la vie quotidienne.
@@ -27,6 +28,18 @@ Les rapports de mobilité [@google_covid19_mobility] ont fourni les données pr�
 ## Matériel et méthodes
 
 <!--% Cette section doit comprendre deux parties. La première partie doit expliciter le données employées et la seconde traiter des analyses réalisées et des logiciels employés.-->
+
+Les données analysées sont issues de Google : <https://www.google.com/covid19/mobility>
+
+Ces données sont complétées par deux rapports descriptifs distincts, l’un pour 2020 et l’autre pour 2021.
+
+<https://www.gstatic.com/covid19/mobility/2020-11-13_BE_Wallonia_Mobility_Report_fr.pdf>
+
+<https://www.gstatic.com/covid19/mobility/2021-11-26_BE_Wallonia_Mobility_Report_fr.pdf>
+
+Ces données contiennent des informations relatives aux déplacements de la population wallonne en Belgique au cours des années 2020 et 2021, période marquée par la pandémie de Covid-19.
+
+L’analyse est réalisée à l’aide de la SciViews Box 2025 dans l’environnement Saturn Cloud (Linux), en utilisant le logiciel R (R.version.string). Le package {pastecs} version r packageVersion("pastecs") est utilisé pour l’étude des séries temporelles.
 
 ## Résultats
 
@@ -45,7 +58,6 @@ covid <- read("data/mobility_wallonia.rds")
 skimr::skim(covid)
 ```
 
-
 ```{r}
 #rename variables A ENLEVER ?????
 srename(covid, 
@@ -56,7 +68,6 @@ srename(covid,
 workplaces =  workplaces_percent_change_from_baseline,
  residential = residential_percent_change_from_baseline) -> covid
 ```
-
 
 ###Lieux de travail
 
@@ -168,13 +179,13 @@ trend.test(mts_windowwork2021jd[,"filtered"])
 
 En 2020 et 2021, entre juin et décembre, les tendances générales sont significatives avec des p-value inférieures au seuil \alpha de 5%. En 2020, la tendance générale est croissante avec une valeur \rho positive, alors que la tendance est décroissante en 2021 avec une valeur \rho négative.
 
-###Lieux de résidence
-La population est susceptible de quitter sa résidence tous les jours de la semaine (travail, commerces, ...). Les analyses se feront donc sur les jours de la semaine et jours de weekend sans distinction.
-####Année 2020
+###Lieux de résidence La population est susceptible de quitter sa résidence tous les jours de la semaine (travail, commerces, ...). Les analyses se feront donc sur les jours de la semaine et jours de weekend sans distinction. ####Année 2020
+
 ```{r serie_résid_2020}
 res_20 <- ts(window(covid$residential, start = 1, end = 321),start = c(2020, 46), end = c(2020, 366), frequency = 366)
 plot(res_20, xlab = "Temps [mois]", ylab = "Evolution du nombre de personnes [%]", main = "Lieux de résidence - 2020")
 ```
+
 Nous pouvons déjà observer une brusque augmentation de près de 30% vers le mois de février, cohérent avec l'arrivée de la quarantaine. Une réduction de cette augmentation est visible vers le mois d'août.
 
 Le bruit gênant notre analyse, nous réalisons une décomposition de la série avec un filtrage par les valeurs propres. Nous jetons également un oeil à l'autocorrélation.
@@ -183,41 +194,47 @@ Le bruit gênant notre analyse, nous réalisons une décomposition de la série 
 res_20_dec <- tsd(res_20, method = "evf", lag = 20, axes = 1)
 plot(res_20_dec, xlab = "Temps [jours]", col = 1:3)
 ```
+
 ```{r acf_2020}
 acf(res_20, main = "Autocorrélation pour l'année 2020")
 ```
+
 La décomposition nous apprend qu'une tendance générale domine la série. Le graphe d'autocorrélation nous indique qu'il existe une forte autocorrélation dans les données, avec des barres toutes positives et significatives, confirmant la présence d'une tendance générale dans la série. La composante filtrée nous apprend cependant que cette tendance varie localement. Nous réalisons donc une analyse par la méthode des sommes cumulées.
+
 ```{r}
 res_20_lt <- local.trend(res_20, xlab = "Temps [mois]")
 ```
-Deux phases principales sont visibles. La première consiste en une augmentation à partir de début février. La seconde consiste en une diminution qui survient à la transition juillet-août. Une diminution est également observable en janvier, ainsi qu'une légère augmentation début octobre.
-####Année 2021
+
+Deux phases principales sont visibles. La première consiste en une augmentation à partir de début février. La seconde consiste en une diminution qui survient à la transition juillet-août. Une diminution est également observable en janvier, ainsi qu'une légère augmentation début octobre. ####Année 2021
+
 ```{r serie_2021}
 res_21 <- ts(window(covid$residential, start = 322, end = 686),start = c(2021, 1), end = c(2021, 365), frequency = 366)
 plot(res_21, xlab = "Temps [mois]", ylab = "Evolution du nombre de personnes [%]", main = "Lieux de résidence - 2021")
 ```
-A première vue, on observe une tendance à la diminution jusqu'au mois de septembre, suivie d'une augmentation.
-Pour vérifier ces observations et éliminer le bruit, nous réalisons une décomposition de la série avec un filtrage par les valeurs propres, ainsi qu'un graphe d'autocorrélation.
+
+A première vue, on observe une tendance à la diminution jusqu'au mois de septembre, suivie d'une augmentation. Pour vérifier ces observations et éliminer le bruit, nous réalisons une décomposition de la série avec un filtrage par les valeurs propres, ainsi qu'un graphe d'autocorrélation.
+
 ```{r tsd_2021}
 res_21_dec <- tsd(res_21, method = "evf", lag = 20, axes = 1)
 plot(res_21_dec, col = 1:3, xlab = "Temps [jours]")
 ```
+
 ```{r acf_2021}
 acf(res_21, main = "Autocorrélation pour l'année 2021")
 ```
+
 La décomposition détermine bien la présence d'une tendance générale dominant la série, mais cette tendance est également variable localement. L'autocorrélation est forte, avec toutes les barres positives et significatives, confirmant la présence d'une tendance générale. Afin de mieux comprendre ces changements de tendance, nous réalisons une analyse par la méthode des sommes cumulées.
+
 ```{r}
 res_21_lt <- local.trend(res_21, xlab = "Temps [mois]")
 ```
-Nous observons deux phases principales. La première consiste en une augmentation, culminant vers le mois de mai. La deuxième consiste en une diminution. Nous remarquons également que la courbe stagne en fin d'année.
-####Comparaison des années 2020 et 2021
-Les années 2020 et 2021 sont toutes deux dominées par plusieurs tendances locales.
+
+Nous observons deux phases principales. La première consiste en une augmentation, culminant vers le mois de mai. La deuxième consiste en une diminution. Nous remarquons également que la courbe stagne en fin d'année. ####Comparaison des années 2020 et 2021 Les années 2020 et 2021 sont toutes deux dominées par plusieurs tendances locales.
 
 Début février 2020, on observe une augmentation de 30% du nombre de personnes restant à leur domicile. A la transition juin-juillet, la tendance diminue ensuite pour atteindre son taux le plus bas vers le mois d'août, période où la population sortait plus afin de profiter du beau temps. La tendance remonte début octobre, illustrant la reprise du travail via les cours en ligne ou le télé-travail, pour un grand pourcentage de la population.
 
 L'année 2021 débute avec un taux d'augmentation d'environ 15%, qui grimpe jusqu'à culminer au mois de mai. On observe ensuite une forte chute de l'augmentation qui finit par atteindre un pallier en fin d'année. Cette brusque diminution résulte de l'allègement des mesures relatives à la pandémie, avec notamment la reprise totale des cours en présentiel pour les étudiants.
 
-En résumé, l'année 2020 connut le plus grand taux d'augmentation du nombre de personnes restant à leur domicile. Une légère diminution était déjà observable en 2021, permise par les progrès médicaux et les premiers effets de l'immunité collective. De plus, pour les deux années confondues, la période estivale s'est avérée être la période avec le taux d'augmentation le plus faible.
-## Discussion et Conclusion
+En résumé, l'année 2020 connut le plus grand taux d'augmentation du nombre de personnes restant à leur domicile. Une légère diminution était déjà observable en 2021, permise par les progrès médicaux et les premiers effets de l'immunité collective. De plus, pour les deux années confondues, la période estivale s'est avérée être la période avec le taux d'augmentation le plus faible. \## Discussion et Conclusion
 
 <!--% En tenant compte du but de votre carnet de notes et de vos résultats, discutez de résultats et proposez des conclusions à votre analyse en 5 à 10 phrases. -->
