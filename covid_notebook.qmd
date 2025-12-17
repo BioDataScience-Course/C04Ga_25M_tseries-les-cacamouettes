@@ -110,7 +110,7 @@ covidy[covidy$weekdays == "Monday" | covidy$weekdays == "Tuesday" | covidy$weekd
 
 La variable commerces et loisirs correspond aux déplacements des habitants de la régions wallonne dans des lieux de loisirs tels que les restaurants, les cafés, les centres commerciaux, les parcs à thème, les musées, les bibliothèques et les cinémas. Nous allons analyser l'évolution des déplacement aux cours de deux années charnières de la période du covid : 2020 et 2021
 
-#### Année 2021
+#### Année 2020
 
 ```{r serie_shop_2020}
 shop_ts <- ts (covid$shop_leisure, start = c(2020, 46),end = c(2020, 365), frequency = 365 )
