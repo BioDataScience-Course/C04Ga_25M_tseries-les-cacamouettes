@@ -69,7 +69,10 @@ workplaces =  workplaces_percent_change_from_baseline,
  residential = residential_percent_change_from_baseline) -> covid
 ```
 
-###Lieux de travail Les déplacements vers lex lieux de travail seront analysés sur les jours de semaine et de week-end car nous considérons que les déplacements au travail sont susceptibles de se faire également le week-end. Ces déplacements sont représentés par la variable workplaces.
+
+###Lieux de travail
+Les déplacements vers les lieux de travail seront analysés sur les jours de semaine et de week-end car nous considérons que les déplacements au travail sont susceptibles de se faire également le week-end. Ces déplacements sont représentés par la variable workplaces.
+
 
 ####Comparaison générale 2020-2021 lieux de travail
 
@@ -82,8 +85,7 @@ ts_work21 <- ts(covid$workplaces, start = c(2020, 46), frequency = 365)
 ts_work21 <- window(ts_work21, start = c(2021, 1), end = c(2021, 365), frequency = 366)
 plot(ts_work21, col = "tan3", xlab = "Temps [mois]", ylab = "Déplacements", main = "Année 2021 - Déplacements vers le lieu de travail")
 ```
-
-De manière générale, les déplacements au travail en 2020 et 2021 n'ont pas la même allure. En 2020, la chute des fréquentations au travail qui débute fin mars/début avril est remarquable contrairement à 2021 où cela est plus stable. De plus, il semble y avoir des cycles au sein des deux années, ce que nous vérifierons. 2020 semble présenter plus de variations contrairement à 2021 qui semble plus stable.
+De manière générale, les déplacements au travail en 2020 et 2021 n'ont pas la même allure. En 2020, la chute des déplacements vers les lieux de travail qui débute fin mars/début avril est remarquable contrairement à 2021 où cela est plus stable. De plus, il semble y avoir des cycles au sein des deux années, ce que nous vérifierons. 2020 semble présenter plus de variations contrairement à 2021 qui semble plus stable.
 
 ####Tendances locales
 
