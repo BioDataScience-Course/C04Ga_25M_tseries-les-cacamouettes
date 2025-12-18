@@ -83,12 +83,14 @@ Graphique d'auto-correlation
 Retenir les jours de la semaine :
 
 ```{r semaine}
+#Isolement semaine pour 2020 : 
 # Copie de la série initiale sous une autre nom
 covidw <- covid
+covidw20 <- subset (covidw, format(date, "%Y") == "2020")
 # Calcul des jours de la semaine
-covidw$weekdays <- weekdays(as.POSIXct(covidw$date))
+covidw20$weekdays <- weekdays(as.POSIXct(covidw20$date))
 # Les données du week-end sont remplacées par des valeurs manquantes
-covidw[covidw$weekdays == "Saturday" | covidw$weekdays == "Sunday" , 2:7] <- NA 
+covidw20[covidw20$weekdays %in% c("Saturday","Sunday"), "shop_leisure", "grocery_pharma", "parks", "stations", "workplaces", "residential"] <- NA
 ```
 
 Retenir les jours du week-end :
@@ -137,19 +139,19 @@ Séparation pour les jours de la semaine :
 
 ```{r ser20_shop_semaine}
 #découpage de la série globale par semaine : 
-covidw_ts <- ts(
-  covidw$shop_leisure,
+shopw20_ts <- ts(
+  covidw20$shop_leisure,
   start = c(2020, 46),
   frequency = 365)
 
 #sélection pour 2020 
-covidw_ts <- window(
-  covidw_ts,
-  start = c(2020, 46),
-  end   = c(2020, 365))
+#covidw_ts <- window(
+  #covidw_ts,
+  #start = c(2020, 46),
+  #end   = c(2020, 365))
 
 # Aggrégation par moyenne des valeurs par semaine
-weekshop_2020 <- aggregate(covidw_ts, 
+weekshop_2020 <- aggregate(shopw20_ts, 
   nfrequency = 52,
   FUN = collapse::fmean, 
   ts.eps = 1/52)
@@ -272,7 +274,7 @@ lines (weekendshop_2020, col = "coral3", lwd = 2)
 legend(
   "topright",
   legend = c("Tous les jours", "Semaine", "Week-end"),
-  col = c("gray", "darkseagreen3", "coral3"),
+  col = c("gray", "darkseagreen4", "coral3"),
   lwd = c(2, 2, 2),
   bty = "n"
 )
@@ -282,10 +284,10 @@ De nouveau, nous voyons que les deux courbes qui isolent respectivement les sema
 Test de l'autocorrelation :
 
 ```{r acf_shop_20}
-acf (shop20_ts)
+acf (shop20_ts, main = "Graphique d'autocorrelation de la série pour 2020")
 ```
 
-Le graphique de la fonction d'autocorrelation ne présente pas de cycle, mais toutes barres sont significatives (au dessus de l'enveloppe de confiance à 95%) et positive, ce qui signifie qu'une tendance à l'augmentation domine le signal.
+Le graphique de la fonction d'autocorrelation ne semble pas présenter de cycle, mais toutes barres sont significatives (au dessus de l'enveloppe de confiance à 95%) et positive, ce qui signifie qu'une tendance à l'augmentation domine le signal.
 
 Il serait intéressant aussi, au vu de l'aspect général de notre graphique, de regarder si a série présence des tendances locales, différentes phases d'évolution à long terme, croissance et puis décroissance :
 
@@ -294,7 +296,8 @@ shop20_local <- local.trend (shop20_ts)
 class (shop20_local)
 ```
 
-Effectivement, comme nous l'avions anticipé, les sommes cumulées (ligne rouge) forment un U assez net et deux pics bien marqué de chaque côté. Nous avons donc présence de plusieurs phases dans cette série : une croissance, suivit d'une décroissance marquée, puis d'une croissance aussi marquée, et enfin une légère décroissance. Les points de ruptures correspondant à ces changement de phases sont environ : au 73e jour, au 146e jour, et au 292e jour jour, et un ralentissement au 328e jour. Si nous convertissons ces données de jours en mois : Il y a eu une augmentation des déplacement jusqu'en mi-mars (14 mars environ). - À partir de mi-mars, le taux de déplacement vers les commerces et lieux de loisirs chute drastiquement, jusque fin mai. - Puis, à partir de la fin du mois de mai jusqu'en mi-octobre, les déplacement vers les commerces et loisirs augmentent progressivement. - Après la mi-octobre, on observe une nouvelle baisse des déplacements, plus progressive, pour ensuite se stabiliser (et peut-être monter très légerement) à la fin novembre.
+Effectivement, comme nous l'avions anticipé, les sommes cumulées (ligne rouge) forment un pic, avec sur les côté deux creux. Nous avons donc présence de plusieurs phases dans cette série : une décroissance jusqu'au 73e jour environ, suivit d'une croissance marquée jusqu'au 146e jour environ, suivit d'une décroissance tout aussi marquée jusqu'au 292e jour environ. 
+Si nous convertissons ses données de poinrs de rupture de la courbe en mois : Après une baise des déplacement jusqu'en mi-mars (14 mars environ). - À partir de mi-mars, le taux de déplacement vers les commerces et lieux de loisirs chute drastiquement, jusque fin mai. - Puis, à partir de la fin du mois de mai jusqu'en mi-octobre, les déplacement vers les commerces et loisirs augmentent progressivement. - Après la mi-octobre, on observe une nouvelle baisse des déplacements, plus progressive, pour ensuite se stabiliser (et peut-être monter très légerement) à la fin novembre.
 
 ```{r}
 #chunk pour avoir les valeurs précises des jours correspondant aux ruptures dans la courbe de local trend (code aidé par ingtelligence artificielle, à ne pas prendre en compte pour la correction si pas autorisé, réalisé juste par simple curiosité et désir de rendre l'analyse plus solide)
@@ -331,7 +334,19 @@ plot (shop20_evf, col = 1:3)
 #### Année 2021
 
 ```{r serie_shop_2021}
-shop21_ts <- ts (window(covid$residential, start = 322, end = 686),start = c(2021, 1), end = c(2021, 365), frequency = 365 )
+#Création de la série globale :
+shop_ts <- ts(
+  covid$residential,
+  start = c(2020, 46),
+  frequency = 365
+)
+
+##Découpage de l'année 2021 : 
+shop21_ts <- window(
+   shop_ts,
+  start = c(2021, 1),
+  end   = c(2021, 365))
+
 plot (shop21_ts, 
   col= "tan3", 
   xlab = "Déplacements", 
