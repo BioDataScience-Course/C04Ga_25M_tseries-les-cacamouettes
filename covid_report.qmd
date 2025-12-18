@@ -74,13 +74,13 @@ Les déplacements vers lex lieux de travail seront analysés sur les jours de se
 ####Comparaison générale 2020-2021 lieux de travail
 
 ```{r tstravail_2020_2021}
-ts_work<- ts(covid$workplaces, start = c(2020,46),frequency = 365)
-ts_work <- window(ts_work, start = c(2020,46), end = c(2020,365))
-plot(ts_work, col = "cadetblue4",xlab = "Temps [mois]", ylab = "Déplacements", main = "Année 2020 - Déplacements vers le lieu de travail")
+ts_work20<- ts(covid$workplaces, start = c(2020,46),frequency = 365)
+ts_work <- window(ts_work20, start = c(2020,46), end = c(2020,365))
+plot(ts_work20, col = "cadetblue4",xlab = "Temps [mois]", ylab = "Déplacements", main = "Année 2020 - Déplacements vers le lieu de travail")
 
-covidw_ts21 <- window(covid$workplaces, start = 322, end = 686)
-covidw_ts21 <-ts(covidw_ts21, start = c(2021, 1), end = c(2021, 366), frequency = 366)
-plot(covidw_ts21, col = "tan3", xlab = "Temps [mois]", ylab = "Déplacements", main = "Année 2021 - Déplacements vers le lieu de travail")
+ts_work21 <- window(covid$workplaces, start = 322, end = 686)
+ts_work21 <-ts(ts_work21, start = c(2021, 1), end = c(2021, 366), frequency = 366)
+plot(ts_work21, col = "tan3", xlab = "Temps [mois]", ylab = "Déplacements", main = "Année 2021 - Déplacements vers le lieu de travail")
 ```
 De manière générale, les déplacements au travail en 2020 et 2021 n'ont pas la même allure. En 2020, la chute des fréquentations au travail qui débute fin mars/début avril est remarquable contrairement à 2021 où cela est plus stable. De plus, il semble y avoir des cycles au sein des deux années, ce que nous vérifierons. 2020 semble présenter plus de variations contrairement à 2021 qui semble plus stable.
 
