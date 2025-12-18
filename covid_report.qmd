@@ -13,7 +13,7 @@ lang: fr
 
 <!--# Un rapport est différent d'un carnet de notes. Il ne s'agit donc pas de faire du copier-coller d'un document vers l'autre. Un rapport de synthèse doit être compréhensible sans devoir lire le carnet de notes. Le rapport de synthèse doit être  rédigé avec un style et une présentation adéquats. -->
 
-## Introduction
+# Introduction
 
 <!--% Rédigez l'introduction de ce rapport.-->
 
@@ -21,11 +21,11 @@ Début 2020, la pandémie de Covid-19 fait son entrée frappante, ébranlant le 
 
 Les rapports de mobilité [@google_covid19_mobility] ont fourni les données présentant l'évolution de la mobilité durant cette période en Wallonie. Quatre types de lieux nous intéressent particulièrement : Commerces et loisirs, Alimentation et pharmacie, Lieux de résidence, et Lieux de travail. Ces lieux représentent en effet les aspects Activités, Besoins de première nécessité, Isolement, et Travail, nous donnant de bons aperçus de l'impact de cette pandémie dans la vie quotidienne.
 
-## But
+# But
 
 <!--% Rédigez le but de ce rapport.-->
 
-## Matériel et méthodes
+# Matériel et méthodes
 
 <!--% Cette section doit comprendre deux parties. La première partie doit expliciter le données employées et la seconde traiter des analyses réalisées et des logiciels employés.-->
 
@@ -41,7 +41,7 @@ Ces données contiennent des informations relatives aux déplacements de la popu
 
 L’analyse est réalisée à l’aide de la SciViews Box 2025 dans l’environnement Saturn Cloud (Linux), en utilisant le logiciel R (R.version.string). Le package {pastecs} version r packageVersion("pastecs") est utilisé pour l’étude des séries temporelles.
 
-## Résultats
+# Résultats
 
 <!--% Présentez les analyses les plus pertinents que vous avez sélectionnés. Structurez la section en partie avec des titres explicites de niveau trois.-->
 
@@ -69,24 +69,45 @@ workplaces =  workplaces_percent_change_from_baseline,
  residential = residential_percent_change_from_baseline) -> covid
 ```
 
-###Lieux de travail
-Les déplacements vers lex lieux de travail seront analysés sur les jours de semaine et de week-end car nous considérons que les déplacements au travail sont susceptibles de se faire également le week-end. Ces déplacements sont représentés par la variable workplaces.
+## Commerces et lieux de loisirs 
+Les déplacements vers les lieux de loisirs et de commerce seront analysés sur une série chronologique combinant semaine et week-end. En effet, les déplacements dans ce type de lieux se font à la fois durant la semaine et le week-end, sans vraiment avoir de grosses différences quand à la répartition de ces deux types de données au cours du temps. 
 
-####Comparaison générale 2020-2021 lieux de travail
+### Comparaison générale 2020-2021 pour lieux de loisirs et commerces 
+
+```{r}
+#Année 2020
+shop_ts <- ts(covid$shop_leisure, start = c(2020, 46), frequency = 365)
+shop20_ts <- window(shop_ts, start = c(2020, 46), end   = c(2020, 365))
+
+plot (shop20_ts, col= "cadetblue4", ylab = "Déplacements", xlab = "Temps [mois]", main = "Déplacements vers les commerces et les lieux de loisirs \n Année 2020")
+
+#Année 2021
+shop21_ts <- window(shop_ts, start = c(2021, 1), end   = c(2021, 365))
+
+plot (shop21_ts,col= "tan3",ylab = "Déplacements", xlab = "Temps [mois]", main = "Déplacements vers les commerces et les lieux de loisirs \n durant l'année 2021")
+
+```
+En regardant l'allure générale des séries pour 2020 et 2021, nous pouvons voir qu'elles ne sont déjà pas les mêmes. En 2020, la série montre une chute brusque des déplacements 
+
+## Lieux de travail 
+Les déplacements vers les lieux de travail seront analysés sur les jours de semaine et de week-end car nous considérons que les déplacements au travail sont susceptibles de se faire également le week-end. Ces déplacements sont représentés par la variable workplaces.
+
+### Comparaison générale 2020-2021 lieux de travail
 
 ```{r tstravail_2020_2021}
+#Année 2020
 ts_work20<- ts(covid$workplaces, start = c(2020,46),frequency = 365)
 ts_work20 <- window(ts_work20, start = c(2020,46), end = c(2020,365))
 plot(ts_work20, col = "cadetblue4",xlab = "Temps [mois]", ylab = "Déplacements", main = "Année 2020 - Déplacements vers le lieu de travail")
 
-ts_work21 <- ts(covid$workplaces, start = c(2020, 46), frequency = 365)
-ts_work21 <- window(ts_work21, start = c(2021, 1), end = c(2021, 365), frequency = 366)
+#Année 2021
+ts_work21 <- window(ts_work21, start = c(2021, 1), end = c(2021, 365), frequency = 365)
 plot(ts_work21, col = "tan3", xlab = "Temps [mois]", ylab = "Déplacements", main = "Année 2021 - Déplacements vers le lieu de travail")
 ```
 
 De manière générale, les déplacements au travail en 2020 et 2021 n'ont pas la même allure. En 2020, la chute des fréquentations au travail qui débute fin mars/début avril est remarquable contrairement à 2021 où cela est plus stable. De plus, il semble y avoir des cycles au sein des deux années, ce que nous vérifierons. 2020 semble présenter plus de variations contrairement à 2021 qui semble plus stable.
 
-####Tendances locales
+#### Tendances locales
 
 ```{r tendance_locale_202021work}
 local.trend(ts_work20)
@@ -95,7 +116,7 @@ local.trend(ts_work21)
 
 En 2020, une tendance locale se marque entre mars/avril et octobre. En 2021, une tendance locale se marque de avril à juillet et une autre se marque de juillet à octobre.
 
-####Décomposition des séries Décomposons les séries pour les analyser plus en détail :
+#### Décomposition des séries Décomposons les séries pour les analyser plus en détail :
 
 ```{r evftravail_2020_21}
 covidw2020 <- tsd(ts_work20, method = "evf", lag = 20, axes = 1)
@@ -130,18 +151,18 @@ spectrum(covid_extract_2021, col = "tan3",spans = c(3,5), main = "Périodogramme
 
 Les années 2020 et 2021 présentent deux cycles significatifs de fréquence 50, ce qui correspond à un cycle de 7.3 jours, et un autre cycle de fréquence 100 ce qui correspond à un cycle de 3.65 jours. 2021 présente un cycle significatif supplémentaire qui a une fréquence de 160, ce qui correspond à un cycle de 2.3 jours.
 
-####Comparaison des années 2020 et 2021 
+#### Comparaison des années 2020 et 2021 
 En résumé, 2020 diffère de 2021 de part la présence d'une tendance locale plus marquée allant de mars/avril à octobre. Cette tendance locale correspond probablement au début du confinement en mars 2020. On peut d'ailleurs observer cette diminution de la fréquentation des lieux de travail dans la série générale.
 
 Concernant les tendances générales, les deux années présentent une tendance générale croissante qui est plus significative pour 2021 que 2020. La tendance générale croissante en 2020 peut sembler étonnante étant donné que 2020 fut l'année la plus touchée par le confinement le plus strict. Cependant, comme la composante filtrée montre que les déplacements vers les lieux de travail augmentent le reste de l'année, cela reste compréhensible.
 
 Enfin, il y a des cycles d'environ sept et quatre jours en 2020 et 2021, ainsi qu'un cycle d'environ deux jours en 2021. Ces cycles pourraient s'expliquer de par les périodes où le confinement se faisait de manière alternée une semaine sur deux voire un jour sur deux dans le but de diviser la population en deux groupes et ainsi, limiter la propagation du virus.
 
-#### alimentation et pharmacies
+## Alimentation et pharmacies
 
 L'évolution des déplacements de la population wallonne vers les commerces alimentaires et pharmacies est représentée par la variable grocery_pharma. Ces déplacements sont indispensables et par conséquent moins affectés par les limitations que d'autres catégories de mobilité. Nous étudions cette série pour les années 2020 et 2021.
 
-####Année 2020
+#### Année 2020
 
 ```{r serie grocery_pharma2020}
 grocery_pharma_ts <- ts(covid$grocery_pharma, start = c(2020, 46), frequency = 365,end = c(2020, 365))
@@ -175,7 +196,7 @@ spectrum(grocerypharma_res_2020, spans = c(3,5))
 
 En se basant sur le periodogramme lissé, il est possible d'observer que la série comporte plusieurs pics locaux. Plusieurs pics notables indiquent un cycle régulier avec une fréquence de 10, 55, 100, 140 et 170.Cela indique que nous avons cinq cycles : un de 36,5 jours, un autre de 6,6 jours, un troisième de 3,65 jours, un quatrième de 2,6 jours et enfin un dernier de 2,15 jours.
 
-####Année 2021
+#### Année 2021
 
 ```{r serie grocery_pharma2021}
 grocery_pharma_ts2 <-  ts(window(covid$grocery_pharma, start = 322, end = 686),start = c(2021, 1), end = c(2021, 365), frequency = 366)
@@ -209,7 +230,7 @@ plot(grocerypharma_local_2021)
 
 Bien que le test de tendance mette en évidence une tendance générale fortement croissante sur l’ensemble de l’année 2021, l’analyse des tendances locales révèle une dynamique plus contrastée. En effet, l’année se décompose en deux phases distinctes : une baisse structurelle en début d’année, suivie d’une rupture de tendance au printemps et d’un redressement progressif jusqu’à la fin de l’année. La tendance globale positive observée est ainsi principalement portée par cette phase de reprise, tandis que les chocs ponctuels identifiés n’altèrent pas la dynamique générale du changement de régime.
 
-####Comparaison 2020 et 2021
+#### Comparaison 2020 et 2021
 
 L’analyse des déplacements vers les supermarchés et les pharmacies met en évidence des dynamiques sensiblement différentes entre les années 2020 et 2021, reflétant l’évolution du contexte sanitaire et des comportements de mobilité au cours de la pandémie de Covid-19.
 
@@ -219,7 +240,10 @@ En 2020, la série est marquée par une forte instabilité en début d'année, a
 
 En définitive, 2020 apparaît comme une année de rupture et d'ajustement, dominée par l’impact immédiat de la crise sanitaire, alors que 2021 correspond davantage à une phase d'adaptation et de reprise progressive, caractérisée par une tendance positive plus forte et une dynamique plus homogène. Cette comparaison souligne ainsi le passage d’un régime de choc à un régime de normalisation relative des déplacements vers les commerces alimentaires et les pharmacies.
 
-###Lieux de résidence La population est susceptible de quitter sa résidence tous les jours de la semaine (travail, commerces, ...). Les analyses se feront donc sur les jours de la semaine et jours de weekend sans distinction. ####Année 2020
+### Lieux de résidence 
+La population est susceptible de quitter sa résidence tous les jours de la semaine (travail, commerces, ...). Les analyses se feront donc sur les jours de la semaine et jours de weekend sans distinction. 
+
+#### Année 2020
 
 ```{r serie_résid_2020}
 res_20 <- ts(window(covid$residential, start = 1, end = 321), start = c(2020, 46), end = c(2020, 366), frequency = 366)
@@ -299,7 +323,8 @@ spectrum(extract_res_21, spans = c(3, 5), ylab = "Spectre", xlab = "Fréquence",
 
 Le périodogramme lissé détecte la présence de cycles significatifs à \~ 60, 110 et 160 jours, soit des cycles bimestriel, quadrimestriel et semestriel.
 
-####Comparaison des années 2020 et 2021 Les années 2020 et 2021 sont toutes deux dominées par plusieurs tendances locales. Des cycles bimestriel et quadrimestriel sont visibles chez les deux années. Nous remarquons cependant également la présence d'un cycle semestriel pour l'année 2021.
+#### Comparaison des années 2020 et 2021
+Les années 2020 et 2021 sont toutes deux dominées par plusieurs tendances locales. Des cycles bimestriel et quadrimestriel sont visibles chez les deux années. Nous remarquons cependant également la présence d'un cycle semestriel pour l'année 2021.
 
 Début février 2020, on observe une augmentation de 30% du nombre de personnes restant à leur domicile. A la transition juin-juillet, la tendance diminue ensuite pour atteindre son taux le plus bas vers le mois d'août, période où la population sortait plus afin de profiter du beau temps. La tendance remonte début octobre, illustrant la reprise du travail via les cours en ligne ou le télé-travail, pour un grand pourcentage de la population.
 

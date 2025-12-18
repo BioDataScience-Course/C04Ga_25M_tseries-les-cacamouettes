@@ -132,7 +132,7 @@ plot (shop20_ts,
   main = "Déplacements vers les commerces et les lieux de loisirs \n durant l'année du covid (2020)")
 ```
 
-Nous pouvons observer que la série comporte du bruit qui peut créer des problèmes dans les futures analyses. Nous tentons donc de séparer cette série pour les jours de la semaine et pour les week-end :
+Nous pouvons observer que la série comporte du bruit qui peut créer des problèmes dans les futures analyses. Nous tentons donc de séparer cette série pour les jours de la semaine et pour les week-ends :
 
 Séparation pour les jours de la semaine :
 
@@ -293,11 +293,11 @@ Le graphique de la fonction d'autocorrelation ne semble pas présenter de cycle,
 Il serait intéressant aussi, au vu de l'aspect général de notre graphique, de regarder si a série présence des tendances locales, différentes phases d'évolution à long terme, croissance et puis décroissance :
 
 ```{r shop20_localtrend}
-shop20_local <- local.trend (shop20_ts, xlab = "Temps [mois]", ylab = "Déplacements", main = "Tendances locales de la série 2020 \n sur le déplacement vers les commerces et loisirs")
+shop20_local <- local.trend (shop20_ts, xlab = "Temps [mois]", ylab = "Sommes cumulées (CUSUM)", main = "Tendances locales de la série 2020 \n sur le déplacement vers les commerces et loisirs")
 abline (v = c(2020.2, 2020.43, 2020.8, 2021.0), col = "red", lty = 2)
 ```
 
-Effectivement, comme nous l'avions anticipé, les sommes cumulées (ligne rouge) forment un U assez net et deux pics bien marqué de chaque côté de ce U. Nous avons donc présence de plusieurs phases dans cette série : une croissance, suivit d'une décroissance marquée, puis d'une croissance aussi marquée, et enfin une légère décroissance. Les points de ruptures correspondant à ces changement de phases sont environ : au 73e jour, au 156e jour, et au 292e jour jour, et un ralentissement au 328e jour. Si nous convertissons ces données de jours en mois : - Il y a eu une augmentation des déplacement jusqu'en mi-mars (14 mars environ). - À partir de mi-mars, le taux de déplacement vers les commerces et lieux de loisirs chute drastiquement, jusque début juin (aux environs du 5 juin). - Puis, à partir du début du mois de juin jusqu'en mi-octobre, les déplacement vers les commerces et loisirs augmentent progressivement. - Après la mi-octobre, on observe une nouvelle baisse des déplacements, plus progressive, pour ensuite se stabiliser (et peut-être monter très légerement) à la fin novembre.
+Effectivement, comme nous l'avions anticipé, les sommes cumulées (ligne rouge) forment un U assez net et deux pics bien marqué de chaque côté de ce U. Nous avons donc présence de plusieurs phases dans cette série : une croissance, suivit d'une décroissance marquée, puis d'une croissance aussi marquée, et enfin une légère décroissance. Les ruptures moyennes (marquées par les traits pointillé verticaux) correspondant à ces changement de phases sont environ : au 73e jour, au 156e jour, et au 292e jour jour, et un ralentissement au 328e jour. Si nous convertissons ces données de jours en mois : - Il y a eu une augmentation jusqu'en mi-mars (14 mars environ). - À partir de mi-mars, les sommes cumulées chutent drastiquement, jusque début juin (aux environs du 5 juin). - Puis, à partir du début du mois de juin jusqu'en mi-octobre, augmentation progressive. - Après la mi-octobre, on observe une nouvelle baisse des déplacements, plus progressive, pour ensuite se stabiliser (et peut-être monter très légerement) à la fin novembre.
 
 Vérifions tout de même s'il y a présence également d'une tendance générale. Pour cela, nous réalisons une EVF qui permettra de nous dire si la série est dominée par un signal de tendance générale, de cycle ou autre. Cela permettra de nous confirmer la présence de la tendance générale, s'il y en a bien une.
 
@@ -467,13 +467,14 @@ Tout comme la série 2020, nous pouvons voir que le graphique de la fonction d'a
 Au vu de l'aspect général du graphique de la série, nous ne pencherions pas sur de grosses variations de tendances locales (plutôt une tendance générale qui domine) mais réalisons quand même un graphique de ces tendances locales pour en être sûr :
 
 ```{r shop21_localtrend}
-shop21_local <- local.trend (shop21_ts, xlab = "Temps [mois]", ylab = "Déplacements", main = "Tendances locales de la série 2021 \n sur le déplacement vers les commerces et loisirs")
-class (shop21_local)
+shop21_local <- local.trend (shop21_ts, xlab = "Temps [mois]", ylab = "Sommes cumulées (CUSUM)", main = "Tendances locales de la série 2021 \n sur le déplacement vers les commerces et loisirs")
+#Visualiser la possible rupture (minimum de CUSUM)
+abline(v = time(shop21_local)[which.min(shop21_local)], col = "red", lty = 3)
 ```
 
-Etrangement,les sommes cumulées (ligne rouge) forment un U assez net, ce qui ne semble pas correspondre à l'allure générale du graphe de la série. Il semblerait donc qu'il y ait deux phases dans la série : - une diminution marquée qui commence à la première observation de 2021 et s'arrête au 146e jour, soit à peu près en fin mai de cette année (donc dans les environs du 26 mai) - Une augmentation tout aussi marquée jusque la fin d'année 2021.
+Les sommes cummulées montrent une rupture au milieu de l'année, montrant qu'il y a deux phases dans la série. Cette allure en U de la courbe rouge montre que la série commence sous le niveau de référence et finit au dessus, ce qui confirme la sensation d'augmentation générale avec l'allure de la série 2021.
 
-Avant de prendre ces résultats pour acquis : décomposons notre série pour vérifier qu'il n'y a pas également une tendance générale qui domine :
+Décomposons notre série pour vérifier qu'il n'y a une tendance générale qui domine :
 
 ```{r shop21_filtrage_evf}
 shop21_evf <- tsd (shop21_ts, method = "evf", lag = 30, axes = 1)
@@ -504,11 +505,12 @@ Plusieurs cycles significatifs sont présents dans cette série. - Un pic de fr�
 
 #### Comparaison 2020 20201
 
-La série, qui mesure les variations de déplacement vers les commerces et les lieux de loisirs au cours du temps, est très différente entre l'année 2020 et 2021. 
+La série, qui mesure les variations de déplacement vers les commerces et les lieux de loisirs au cours du temps, est très différente entre l'année 2020 et 2021.
 
-En effet, en 2020, la série est caractérisée par des tendances locales assez marquées, qui divisent l'année en plusieurs phases de croissance et de décroissance. Une tendance générale à l'augmentation se profile également, étant significative, mais moins marquée et visible sur la série brute de la série. Pas de cycles de déplacements significatifs sont présents au cours de cette année 2020. 
+En effet, en 2020, la série est caractérisée par des tendances locales assez marquées, qui divisent l'année en plusieurs phases de croissance et de décroissance. Une tendance générale à l'augmentation se profile également, étant significative, mais moins marquée et visible sur la série brute de la série. Pas de cycles de déplacements significatifs sont présents au cours de cette année 2020.
 
-Au contraire, pour l'année 2021, la série n'est pas marquée par autant de phases de croissance et de décroissance coupant l'année, 
+Au contraire, pour l'année 2021, la série n'est pas marquée par autant de phases de croissance et de décroissance coupant l'année, et les sommes cumulées ont montrées qu'un point de rupture et deux phases dans l'année.\
+Par contre, l'allure générale incite plus à penser qu'une tendance globale à l'augmentation existe dans cette série. Et en effet, cette tendance globale est significative. En plus de cela, des cycles significatifs sont présents, à différents intervalles de jours, signifiant que les déplacements se font parfois à différents intervalles réguliers selon les observations.
 
 ### Lieux de travail
 
