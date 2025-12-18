@@ -345,9 +345,9 @@ plot (trend.test(shop_tfilter, R = 100))
 
 Tout comme la décomposition par filtrage par valeurs propres, la tendance générale qui est extraite est significative au seuil \alpha de 5%. Nous rejetons H0 et considérons donc la tendance générale à l'augmentation comme significative. Nous revérifions qu'il n'y a pas de cycle pour la série, également avec cette décomposition, avec une analyse spectrale des résidus.
 
-```{r}
+```{r shop20_analyse_résidus}
 shop_residual <- extract (shop_mb, components = "residuals")
-plot (shop_residual)
+plot (shop_residual, xlab = "Temps [mois]", main = "Résidus de la décomposition de la série des déplacements en 2020")
 acf (shop_residual)
 spectrum (shop_residual, spans = c(3,5))
 ```
@@ -494,7 +494,7 @@ Nous pouvons voir que la tendance générale à l'augmentation pour cette série
 
 Pour vérifier la présence ou l'absence de cycle dans les résidus, nous réalisons une analyse spectrale :
 
-```{r}
+```{r shop21_analyse_residus}
 shop21_residual <- extract (shop21_evf, components = "residuals")
 plot (shop21_residual, xlab = "Temps [mois]", main = "Résidus de la décomposition de la série des déplacements en 2021")
 acf (shop21_residual, main = "Autocorrelation des résidus")
@@ -891,4 +891,4 @@ En résumé, l'année 2020 connut le plus grand taux d'augmentation du nombre de
 
 <!--% Lorsque toutes les analyses sont réalisées, terminez ce bloc-notes avec 3 à 6 phrases de conclusion en rapport avec ce que vous avez observé dans vos analyses. Quels sont les éléments les plus pertinents que vous retenez ? -->
 
-...vos conclusions ici...
+En conclusion, 
