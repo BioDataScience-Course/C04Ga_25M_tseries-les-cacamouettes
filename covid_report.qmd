@@ -235,7 +235,7 @@ Ce graphique illustre les variations des déplacements vers les supermarchés et
 
 Analysons la tendance locale pour 2021 :
 
-```{r}
+```{r tendance locale 2021 gp}
 grocerypharma_local_2021 <- local.trend(grocery_pharma_ts2)
  
 plot(grocerypharma_local_2021)
@@ -245,7 +245,7 @@ Bien que le test de tendance mette en évidence une tendance générale fortemen
 
 Décomposons les séries + Analysons la tendance générale :
 
-```{r}
+```{r decomp 2020 gp}
 grocery_pharma_ts2020 <- tsd(grocery_pharma_ts, method = "average", type = "additive", order = 26, times = 3)
 plot(grocery_pharma_ts2020, col = 1:3)
 
@@ -257,29 +257,7 @@ On observe clairement l’existence d’une tendance générale dans l’évolut
 
 Le coefficient de tendance \rho est positif et relativement élevé (\rho = 0,702), indiquant une tendance marquée et globalement croissante sur la période étudiée. L’analyse de la série filtrée montre cependant une dynamique contrastée : une chute importante est observée en début d’année, suivie d’une reprise progressive qui se traduit par une tendance générale à la hausse sur l’ensemble de l’année 2020.
 
-
-Analysons le reste :
-
-```{r residuals2020gp}
-grocerypharma_res_2020 <- extract(grocery_pharma_ts2020, components = "residuals")
-plot(grocerypharma_res_2020)
-spectrum(grocerypharma_res_2020, spans = c(3,5))
-```
-
-En se basant sur le periodogramme lissé, il est possible d'observer que la série comporte plusieurs pics locaux. Plusieurs pics notables indiquent un cycle régulier avec une fréquence de 10, 55, 100, 140 et 170.Cela indique que nous avons cinq cycles : un de 36,5 jours, un autre de 6,6 jours, un troisième de 3,65 jours, un quatrième de 2,6 jours et enfin un dernier de 2,15 jours.
-
-#### Année 2021
-
-```{r serie grocery_pharma2021}
-grocery_pharma_ts2 <-  ts(window(covid$grocery_pharma, start = 322, end = 686),start = c(2021, 1), end = c(2021, 365), frequency = 366)
-plot(grocery_pharma_ts2, ylab = "déplacement supermarchés et pharmacies", xlab = "temps [mois]", main = "Déplacement supermarchés et pharmacies en 2021")
-```
-
-Ce graphique illustre les variations des déplacements vers les supermarchés et les pharmacies pendant l'année 2021 en pleine crise du Covid. À première analyse, la série ne montre pas de pic apparent. Effectivement, la série présente une augmentation au début de l'année, paraît stable par la suite avant d'entamer une nouvelle montée en fin d'année.
-
-Décomposons la série + Analysons la tendance générale :
-
-```{r decomp2021gp}
+```{r decomp 2021 gp}
 grocery_pharma_ts2021 <- tsd(grocery_pharma_ts2, method = "average", type = "additive", order = 26, times = 3)
 plot(grocery_pharma_ts2021, col = 1:3)
 
@@ -290,6 +268,7 @@ trend.test(grocerypharma_2021f)
 L’analyse de la composante filtrée met en évidence une évolution globalement régulière en 2021. En début d’année, la progression est lente mais constante, avant de laisser place à une phase de stabilisation sur une grande partie de la période. En toute fin d’année, une légère reprise à la hausse est toutefois perceptible. Les résidus sont majoritairement centrés autour de zéro et ne présentent pas de cycle clairement identifiable, même si quelques valeurs extrêmes apparaissent ponctuellement.
 
 Par ailleurs, le test de tendance confirme l’existence d’une tendance générale significative, avec une p-value largement inférieure à 5 % (p-value = 2.2\^-16), conduisant au rejet de l’hypothèse nulle. Les déplacements vers les commerces alimentaires et les pharmacies suivent ainsi une tendance globale fortement croissante en 2021. Le coefficient de tendance \rho, égal à 0,928, est nettement plus élevé que celui observé en 2020, ce qui traduit une tendance encore plus marquée sur cette année.
+
 
 Analysons les résidus pour 2020 :
 
