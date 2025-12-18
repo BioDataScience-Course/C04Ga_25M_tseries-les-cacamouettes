@@ -504,7 +504,11 @@ Plusieurs cycles significatifs sont présents dans cette série. - Un pic de fr�
 
 #### Comparaison 2020 20201
 
-La série, qui mesure les variations de déplacement vers les commerces et les lieux de loisirs au cours du temps, est très différente entre l'année 2020 et 2021. En effet, en 2020, la série est caractérisée par des tendances locales assez marquées, qui divisent l'année en plusieurs phases de croissance et de décroissance. Une tendance générale à l'augmentation se profile également, étant significative, mais moins marquée et visible sur la série brute de la série. Pas de cycles de déplacements significatifs sont présents au cours de cette année 2020. Au contraire, pour l'année 2021, la série n'est pas marquée par autant de phases de croissance et de décroissance coupant l'année,
+La série, qui mesure les variations de déplacement vers les commerces et les lieux de loisirs au cours du temps, est très différente entre l'année 2020 et 2021. 
+
+En effet, en 2020, la série est caractérisée par des tendances locales assez marquées, qui divisent l'année en plusieurs phases de croissance et de décroissance. Une tendance générale à l'augmentation se profile également, étant significative, mais moins marquée et visible sur la série brute de la série. Pas de cycles de déplacements significatifs sont présents au cours de cette année 2020. 
+
+Au contraire, pour l'année 2021, la série n'est pas marquée par autant de phases de croissance et de décroissance coupant l'année, 
 
 ### Lieux de travail
 
@@ -538,7 +542,7 @@ Nous réalisons une décomposition de la série afin d'analyser cette dernière 
 
 ```{r evftravail_2020}
 covidw2020 <- tsd(ts_work, method = "evf", lag = 20, axes = 1)
-plot(covidw2020,col = 1:3, main = "Filtrage par les valeurs propres", ylab = "Série", xlab = "Temps [semaines]")
+plot(covidw2020,col = 1:3, main = "Filtrage par les valeurs propres", ylab = "Série", xlab = "Temps [mois]")
 ```
 
 Les résidus semblent indiquer qu'il n'y a aucun cycle. De manière générale, lorsque l'on observe la composante filtrée, bien qu'au début de la série il y ait une diminution importante des fréquentations au travail, le reste de la série semble présenter une tendance générale croissante. Nous vérifions s'il existe une tendance générale significative :
@@ -588,7 +592,7 @@ Nous décomposons la série afin de l'analyser plus en détail :
 
 ```{r evftravail_2021}
 covidw2021 <- tsd(ts_work21, method = "evf", lag = 20, axes = 1)
-plot(covidw2021, col = 1:3, main = "Filtrage par les valeurs propres", ylab = "Série", xlab = "Temps [semaines]")
+plot(covidw2021, col = 1:3, main = "Filtrage par les valeurs propres", ylab = "Série", xlab = "Temps [mois]")
 ```
 
 La composante filtrée ne montre pas de tendance claire. De plus, les résidus ne semblent pas montrer de cycle.
