@@ -338,7 +338,9 @@ La composante résiduelle de la série étant extraite, cette série est station
 spectrum(extract_res_20, spans = c(3, 5), ylab = "Spectre", xlab = "Fréquence", main = "Analyse spectrale - ")
 ```
 
-Le périodogramme lissé détecte la présence de cycles significatifs à \~ 60 et 110 jours, soit des cycles bimestriel et quadrimestriel. ####Année 2021
+Le périodogramme lissé détecte la présence de cycles significatifs à \~ 60 et 110 jours, soit des cycles bimestriel et quadrimestriel. 
+
+####Année 2021
 
 ```{r serie_2021}
 res_21 <- ts(window(covid$residential, start = 322, end = 686),start = c(2021, 1), end = c(2021, 365), frequency = 366)
