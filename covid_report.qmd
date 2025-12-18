@@ -150,13 +150,24 @@ plot(res_20_dec, xlab = "Temps [jours]", col = 1:3)
 acf(res_20, main = "Autocorrélation pour l'année 2020")
 ```
 
-La décomposition nous apprend qu'une tendance générale domine la série. Le graphe d'autocorrélation nous indique qu'il existe une forte autocorrélation dans les données, avec des barres toutes positives et significatives, confirmant la présence d'une tendance générale dans la série. Il ne semble pas y avoir de cycle. La composante filtrée nous apprend cependant que cette tendance varie localement. Nous réalisons donc une analyse par la méthode des sommes cumulées.
+La décomposition nous apprend qu'une tendance générale domine la série. Le graphe d'autocorrélation nous indique qu'il existe une forte autocorrélation dans les données, avec des barres toutes positives et significatives, confirmant la présence d'une tendance générale dans la série. La composante filtrée nous apprend cependant que cette tendance varie localement. Nous réalisons donc une analyse par la méthode des sommes cumulées.
 
 ```{r}
 res_20_lt <- local.trend(res_20, xlab = "Temps [mois]")
 ```
 
 Deux phases principales sont visibles. La première consiste en une augmentation à partir de début février. La seconde consiste en une diminution qui survient à la transition juillet-août. Une diminution est également observable en janvier, ainsi qu'une légère augmentation début octobre.
+Nous jetons désormais un oeil aux cycles.
+
+```{r}
+extract_res_20 <- extract(res_20_dec, components = "residuals")
+plot(extract_res_20, ylab = "Composante résiduelle", xlab = "Temps [mois]")
+```
+La composante résiduelle de la série étant extraite, cette série est stationnarisée et nous pouvons dès lors réaliser une analyse spectrale.
+```{r}
+spectrum(extract_res_20, spans = c(3, 5), ylab = "Spectre", xlab = "Fréquence", main = "Analyse spectrale - ")
+```
+Le périodogramme lissé détecte la présence de cycles significatifs à ~ 60 et 110 jours, soit bimestriel et quadrimestriel.
 ####Année 2021
 
 ```{r serie_2021}
