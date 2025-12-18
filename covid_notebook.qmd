@@ -86,11 +86,10 @@ Retenir les jours de la semaine :
 #Isolement semaine pour 2020 : 
 # Copie de la série initiale sous une autre nom
 covidw <- covid
-covidw20 <- subset (covidw, format(date, "%Y") == "2020")
 # Calcul des jours de la semaine
-covidw20$weekdays <- weekdays(as.POSIXct(covidw20$date))
+covidw$weekdays <- weekdays(as.POSIXct(covidw$date))
 # Les données du week-end sont remplacées par des valeurs manquantes
-covidw20[covidw20$weekdays %in% c("Saturday","Sunday"), "shop_leisure", "grocery_pharma", "parks", "stations", "workplaces", "residential"] <- NA
+covidw[covidw$weekdays == "Saturday" | covidw$weekdays == "Sunday" , 2:7] <- NA 
 ```
 
 Retenir les jours du week-end :
@@ -116,7 +115,7 @@ La variable commerces et loisirs correspond aux déplacements des habitants de l
 ```{r serie_shop_2020}
 #Création de la série globale :
 shop_ts <- ts(
-  covid$residential,
+  covid$shop_leisure,
   start = c(2020, 46),
   frequency = 365
 )
@@ -139,18 +138,18 @@ Séparation pour les jours de la semaine :
 
 ```{r ser20_shop_semaine}
 #découpage de la série globale par semaine : 
-shopw20_ts <- ts(
-  covidw20$shop_leisure,
+shopw_ts <- ts(
+  covidw$shop_leisure,
   start = c(2020, 46),
   frequency = 365)
 
 #sélection pour 2020 
-#covidw_ts <- window(
-  #covidw_ts,
-  #start = c(2020, 46),
-  #end   = c(2020, 365))
+shopw20_ts <- window(
+  covidw_ts,
+  start = c(2020, 46),
+  end   = c(2020, 365))
 
-# Aggrégation par moyenne des valeurs par semaine
+#Aggrégation par moyenne des valeurs par semaine
 weekshop_2020 <- aggregate(shopw20_ts, 
   nfrequency = 52,
   FUN = collapse::fmean, 
@@ -167,7 +166,8 @@ end(weekshop_2020)
 length(weekshop_2020)
 ```
 
-Comme la forme de la série hebdomadaire ressemble fort à la forme de la série originale avec les 3 ans, nous faisons un collage des deux séries hebdomadaires (pour 2020 et pour toutes les années), afin d'être sûr : 
+vérification supplémentaire que la série hebdomadaire est bien uniquement pour 2020 : 
+
 ```{r}
 covidw_all_ts <- ts(
   covidw$shop_leisure,
@@ -334,13 +334,6 @@ plot (shop20_evf, col = 1:3)
 #### Année 2021
 
 ```{r serie_shop_2021}
-#Création de la série globale :
-shop_ts <- ts(
-  covid$residential,
-  start = c(2020, 46),
-  frequency = 365
-)
-
 ##Découpage de l'année 2021 : 
 shop21_ts <- window(
    shop_ts,
