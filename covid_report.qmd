@@ -130,7 +130,6 @@ shop21_filtered <- extract (shop21_evf, components = "filtered")
 trend.test(shop21_filtered)
 ```
 Vérifions maintenant si des cycles existent en 2020 et 2021 :
-
 ```{r residtravail_2020}
 #Année 2020
 shop_residual <- extract (shop20_evf, components = "residuals")
