@@ -229,7 +229,7 @@ Enfin, il y a des cycles d'environ sept et quatre jours en 2020 et 2021, ainsi q
 
 L'évolution des déplacements de la population wallonne vers les commerces alimentaires et pharmacies est représentée par la variable grocery_pharma. Ces déplacements sont indispensables et par conséquent moins affectés par les limitations que d'autres catégories de mobilité. Nous étudions cette série pour les années 2020 et 2021.
 
-#### Année 2020
+### Comparaison générale 2020-2021 alimentation et pharmacies
 
 ```{r serie grocery_pharma2020}
 grocery_pharma_ts <- ts(covid$grocery_pharma, start = c(2020, 46), frequency = 365,end = c(2020, 365))
@@ -238,7 +238,6 @@ plot(grocery_pharma_ts, ylab = "déplacement supermarchés et pharmacies", xlab 
 
 Ce graphique illustre les déplacements vers les supermarchés et les pharmacies pendant l'année 2020 en plein contexte de pandémie de covid. On observe une chute abrupte en début d'année dans la série. Par la suite, la série connaît une phase de stabilisation autour d'une tendance négative, avant de montrer une légère remontée en fin d'année. On note aussi un pic le 11 mars, quelques jours précédant la chute drastique qui coïncide avec l'annonce officielle de pandémie par l'OMS.
 
-#### Année 2021
 
 ```{r serie grocery_pharma2021}
 grocery_pharma_ts2 <-  ts(window(covid$grocery_pharma, start = 322, end = 686),start = c(2021, 1), end = c(2021, 365), frequency = 366)
@@ -246,6 +245,8 @@ plot(grocery_pharma_ts2, ylab = "déplacement supermarchés et pharmacies", xlab
 ```
 
 Ce graphique illustre les variations des déplacements vers les supermarchés et les pharmacies pendant l'année 2021 en pleine crise du Covid. À première analyse, la série ne montre pas de pic apparent. Effectivement, la série présente une augmentation au début de l'année, paraît stable par la suite avant d'entamer une nouvelle montée en fin d'année.
+
+#### Tendances locales
 
 Analysons la tendance locale pour 2021 :
 
@@ -256,6 +257,8 @@ plot(grocerypharma_local_2021)
 ```
 
 Bien que le test de tendance mette en évidence une tendance générale fortement croissante sur l’ensemble de l’année 2021, l’analyse des tendances locales révèle une dynamique plus contrastée. En effet, l’année se décompose en deux phases distinctes : une baisse structurelle en début d’année, suivie d’une rupture de tendance au printemps et d’un redressement progressif jusqu’à la fin de l’année. La tendance globale positive observée est ainsi principalement portée par cette phase de reprise, tandis que les chocs ponctuels identifiés n’altèrent pas la dynamique générale du changement de régime.
+
+#### Décomposition des séries
 
 Décomposons les séries + Analysons la tendance générale :
 
