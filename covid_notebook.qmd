@@ -599,7 +599,7 @@ La variable alimentation et pharmacies correspond à l’évolution des déplace
 #### Année 2020
 
 ```{r serie grocery_pharma2020}
-grocery_pharma_ts <- ts(covidw$grocery_pharma, start = c(2020, 46), frequency = 365,end = c(2020, 365))
+grocery_pharma_ts <- ts(window(covid$grocery_pharma, start = 1, end = 321),start = c(2020, 46), end = c(2020, 366), frequency = 366)
 plot(grocery_pharma_ts, ylab = "déplacement supermarchés et pharmacies", xlab = "temps [mois]", main = "Déplacement supermarchés et pharmacies en 2020")
 ```
 
