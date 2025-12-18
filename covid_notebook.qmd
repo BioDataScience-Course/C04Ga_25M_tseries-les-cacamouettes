@@ -127,8 +127,8 @@ shop20_ts <- window(
 
 plot (shop20_ts, 
   col= "cadetblue4", 
-  xlab = "Déplacements", 
-  ylab = "Temps [mois]", 
+  ylab = "Déplacements", 
+  xlab = "Temps [mois]", 
   main = "Déplacements vers les commerces et les lieux de loisirs \n durant l'année du covid (2020)")
 ```
 
@@ -156,8 +156,8 @@ weekshop_2020 <- aggregate(shopw20_ts,
   ts.eps = 1/52)
 
 plot (weekshop_2020, 
-  xlab = "Déplacements", 
-  ylab = "Temps [mois]", 
+  ylab = "Déplacements", 
+  xlab = "Temps [mois]", 
   main = "Série hebdomadaire des déplacements pour le commerce et loisirs")
 
 #Vérification que la série hebdomadaire est bien uniquement pour 2020 
@@ -168,7 +168,7 @@ length(weekshop_2020)
 
 vérification supplémentaire que la série hebdomadaire est bien uniquement pour 2020 : 
 
-```{r week20_VS_weekALL}
+```{r week20_VS_weekALLYEARS}
 covidw_all_ts <- ts(
   covidw$shop_leisure,
   start = c(2020, 46),
@@ -184,7 +184,7 @@ weekshop_all <- aggregate(
 #comparaison de plot 
 plot(weekshop_all, col = "grey", lwd = 1,
      main = "Comparaison série complète vs 2020",
-     ylab = "Déplacements", xlab = "Temps")
+     ylab = "Déplacements", xlab = "Temps [mois]")
 
 lines(weekshop_2020, col = "red", lwd = 2)
 legend("bottomright",
@@ -219,8 +219,8 @@ weekendshop_2020 <- aggregate(covidy_ts,
   ts.eps = 1/52)
 
 plot (weekendshop_2020, 
-  xlab = "Déplacements", 
-  ylab = "Temps [mois]", 
+  ylab = "Déplacements", 
+  xlab = "Temps [mois]", 
   main = "Série contenant les jours de week-end uniquement")
 
 #Vérification que la série hebdomadaire est bien uniquement pour 2020 
@@ -235,8 +235,8 @@ Réalisons des statistiques glissantes pour avoir la moyenne des différents int
 
 ```{r statslide_shop_20}
 shop_sl <- stat.slide (time (shop20_ts), shop20_ts, deltat =1/12)
-plot (shop_sl, stat = "mean", leg = TRUE, xlab = "Déplacements", 
-  ylab = "Temps [mois]", 
+plot (shop_sl, stat = "mean", leg = TRUE, ylab = "Déplacements", 
+  xlab = "Temps [mois]", 
   main = "Statistiques glissantes sur la série d'origine" )
 lines(shop_ts, col = "gray")
 ```
@@ -244,16 +244,16 @@ Comparons ces statisqtiques glissantes avec les séries isolant les données de 
 
 ```{r statslide_shopweek_20}
 shop_week_sl <- stat.slide (time (weekshop_2020), weekshop_2020, deltat =1/12)
-plot (shop_week_sl, stat = "mean", leg = TRUE, xlab = "Déplacements", 
-  ylab = "Temps [mois]", 
+plot (shop_week_sl, stat = "mean", leg = TRUE, ylab = "Déplacements", 
+  xlab = "Temps [mois]", 
   main = "Statistiques glissantes sur la série contenant juste \n les données pour les semaines")
 lines(weekshop_2020, col = "gray")
 ```
 
 ```{r statslide_shopweekend_20}
 shop_weekend_sl <- stat.slide (time (weekendshop_2020), weekendshop_2020, deltat =1/12)
-plot (shop_weekend_sl, stat = "mean", leg = TRUE, xlab = "Déplacements", 
-  ylab = "Temps [mois]", 
+plot (shop_weekend_sl, stat = "mean", leg = TRUE, ylab = "Déplacements", 
+  xlab = "Temps [mois]", 
   main =  "Statistiques glissantes sur la série contenant juste \n les données pour les weekends")
 lines(weekendshop_2020, col = "gray")
 
@@ -262,7 +262,7 @@ Nous pouvons voir qu'entre les différentes données filtrées pour une période
 
 Pour visualiser encore mieux la variation entre les séries filtrées pour la semaine et pour le week-end, nous pouvons également réaliser ceci ; 
 
-```{r superposition}
+```{r superposition_20}
 plot (shop20_ts, 
   col = "gray", 
   ylab = "Déplacements", 
@@ -292,11 +292,11 @@ Le graphique de la fonction d'autocorrelation ne semble pas présenter de cycle,
 Il serait intéressant aussi, au vu de l'aspect général de notre graphique, de regarder si a série présence des tendances locales, différentes phases d'évolution à long terme, croissance et puis décroissance :
 
 ```{r shop20_localtrend}
-shop20_local <- local.trend (shop20_ts)
+shop20_local <- local.trend (shop20_ts, xlab = "Temps [mois]", ylab = "Déplacements", main = "Tendances locales de la série 2020 \n sur le déplacement vers les commerces et loisirs")
 class (shop20_local)
 ```
 
-Effectivement, comme nous l'avions anticipé, les sommes cumulées (ligne rouge) forment un U assez net et deux pics bien marqué de chaque côté de ce V. Nous avons donc présence de plusieurs phases dans cette série : une croissance, suivit d'une décroissance marquée, puis d'une croissance aussi marquée, et enfin une légère décroissance. 
+Effectivement, comme nous l'avions anticipé, les sommes cumulées (ligne rouge) forment un U assez net et deux pics bien marqué de chaque côté de ce U. Nous avons donc présence de plusieurs phases dans cette série : une croissance, suivit d'une décroissance marquée, puis d'une croissance aussi marquée, et enfin une légère décroissance. 
 Les points de ruptures correspondant à ces changement de phases sont environ : au 73e jour, au 146e jour, et au 292e jour jour, et un ralentissement au 328e jour. 
 Si nous convertissons ces données de jours en mois : 
 - Il y a eu une augmentation des déplacement jusqu'en mi-mars (14 mars environ). 
@@ -347,8 +347,8 @@ shop21_ts <- window(
 
 plot (shop21_ts, 
   col= "tan3", 
-  xlab = "Déplacements", 
-  ylab = "Temps [mois]", 
+  ylab = "Déplacements", 
+  xlab = "Temps [mois]", 
   main = "Déplacements vers les commerces et les lieux de loisirs \n durant l'année 2021")
 ```
 
@@ -374,8 +374,8 @@ weekshop_2021 <- aggregate(shopw21_ts,
   ts.eps = 1/52)
 
 plot (weekshop_2021, 
-  xlab = "Déplacements", 
-  ylab = "Temps [mois]", 
+  ylab = "Déplacements", 
+  xlab = "Temps [mois]", 
   main = "Série hebdomadaire des déplacements pour le commerce et loisirs")
 
 #Vérification que la série hebdomadaire est bien uniquement pour 2020 
@@ -384,7 +384,7 @@ end(weekshop_2021)
 length(weekshop_2021)
 ```
 Sélection des données pour le week-end : 
-```{r ser21_shop_semaine}
+```{r ser21_shop_weekend}
 #découpage de la série globale pour les jours du week-end : 
 shopy_ts <- ts(
   covidy$shop_leisure,
@@ -404,8 +404,8 @@ weekendshop_2021 <- aggregate(shopy21_ts,
   ts.eps = 1/52)
 
 plot (weekendshop_2021, 
-  xlab = "Déplacements", 
-  ylab = "Temps [mois]", 
+  ylab = "Déplacements", 
+  xlab = "Temps [mois]", 
   main = "Série hebdomadaire des déplacements pour le commerce et loisirs")
 
 #Vérification que la série hebdomadaire est bien uniquement pour 2020 
@@ -414,7 +414,7 @@ end(weekendshop_2021)
 length(weekendshop_2021)
 ```
 Visualisation et comparaison de la variation entre les séries filtrées pour la semaine et pour le week-end :  
-```{r superposition}
+```{r superposition_21}
 plot (shop21_ts, 
   col = "gray", 
   ylab = "Déplacements", 
@@ -436,13 +436,24 @@ Nous pouvons voir, qu'à part la fin du graphique, où la courbe du week-end des
 
 Réalisons un test de l'autocorrelation pour cette série 2021:
 
-```{r acf_shop_20}
-acf (shop20_ts, main = "Graphique d'autocorrelation de la série pour 2021")
+```{r acf_shop_21}
+acf (shop21_ts, main = "Graphique d'autocorrelation de la série pour 2021")
 ```
 
 Tout comme la série 2020, nous pouvons voir que le graphique de la fonction d'autocorrelation présente des barres qui sont significatives (au dessus de l'enveloppe de confiance à 95%) et positives, ce qui signifie qu'une tendance à l'augmentation domine le signal. Il ne semble pas avoir de cycle dans cette série. 
 
 Au vu de l'aspect général du graphique de la série, nous ne pencherions pas sur de grosses variations de tendances locales (plutôt une tendance générale qui domine) mais réalisons quand même un graphique de ces tendances locales pour en être sûr : 
+
+```{r shop21_localtrend}
+shop21_local <- local.trend (shop21_ts, xlab = "Temps [mois]", ylab = "Déplacements", main = "Tendances locales de la série 2021 \n sur le déplacement vers les commerces et loisirs")
+class (shop21_local)
+```
+
+Etrangement,les sommes cumulées (ligne rouge) forment un U assez net, ce qui ne semble pas correspondre à l'allure générale du graphe de la série. Il semblerait donc qu'il y ait deux phases dans la série : 
+- une diminution marquée qui commence à la première observation de 2021 et s'arrête au 146e jour, soit à peu près en fin mai de cette année (donc dans les environs du 26 mai)
+- Une augmentation tout aussi marquée jusque la fin d'année 2021. 
+
+Avant de prendre ces résultats pour acquis : décomposont notre série pour vérifier qu'il n'y a pas également une tendance générale qui domine  : 
 
 
 
