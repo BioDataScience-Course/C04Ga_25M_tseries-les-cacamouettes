@@ -310,7 +310,7 @@ plot (shop20_evf, col = 1:3,
 
 On peut voir un signal beaucoup plus propre apparaître, qui pourrait correspondre au signal d'une tendance générale
 
-```{r test_tendance_shop20}
+```{r shop20_test_tendance}
 shop_evffilter <- extract (shop20_evf, components = "filtered")
 plot (shop_evffilter)
 plot (trend.test(shop_evffilter, R = 100))

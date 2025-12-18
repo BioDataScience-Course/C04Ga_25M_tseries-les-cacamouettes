@@ -97,7 +97,7 @@ En regardant l'allure générale des séries pour 2020 et 2021, nous pouvons voi
 #### Tendances locales
 Pour mieux inférer et visualiser les différentes phases que traversent ces séries chronologiques, nous réalisons une anlyse des tendances locales. 
 
-```{r tendance_locale_commerces_20-21}
+```{r commerces_20-21_tendance_locale}
 #Année 2020
 shop20_local <- local.trend (shop20_ts, xlab = "Temps [mois]", ylab = "Sommes cumulées (CUSUM)", main = "Tendances locales de la série 2020 \n sur le déplacement vers les commerces et loisirs")
 abline (v = c(2020.2, 2020.43, 2020.8, 2021.0), col = "red", lty = 2)
@@ -169,7 +169,7 @@ De manière générale, les déplacements au travail en 2020 et 2021 n'ont pas l
 
 #### Tendances locales
 
-```{r tendance_locale_travail_20_21}
+```{r travail_local_td_20_21}
 #Année 2020
 work20_local <- local.trend(ts_work20)
 abline (v = c(2020.2, 2020.4, 2020.55, 2020.83, 2020.97), col = "red", lty = 2)
@@ -250,7 +250,7 @@ Ce graphique illustre les variations des déplacements vers les supermarchés et
 
 Analysons la tendance locale pour 2021 :
 
-```{r tendance locale 2021 gp}
+```{r tlocal_2021 gp}
 grocerypharma_local_2021 <- local.trend(grocery_pharma_ts2)
  
 plot(grocerypharma_local_2021)
