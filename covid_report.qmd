@@ -79,7 +79,7 @@ Les déplacements vers les lieux de loisirs et de commerce seront analysés sur 
 
 ### Comparaison générale 2020-2021 pour lieux de loisirs et commerces 
 
-```{r}
+```{r tscommerces_2020_2021}
 #Année 2020
 shop_ts <- ts(covid$shop_leisure, start = c(2020, 46), frequency = 365)
 shop20_ts <- window(shop_ts, start = c(2020, 46), end   = c(2020, 365))
@@ -92,7 +92,49 @@ shop21_ts <- window(shop_ts, start = c(2021, 1), end   = c(2021, 365))
 plot (shop21_ts,col= "tan3",ylab = "Déplacements", xlab = "Temps [mois]", main = "Déplacements vers les commerces et les lieux de loisirs \n durant l'année 2021")
 
 ```
-En regardant l'allure générale des séries pour 2020 et 2021, nous pouvons voir qu'elles ne sont déjà pas les mêmes. En 2020, la série montre une chute brusque des déplacements 
+En regardant l'allure générale des séries pour 2020 et 2021, nous pouvons voir qu'elles ne sont déjà pas les mêmes. En 2020, la série montre une chute brusque des déplacements à partir du 14 mars. En 2021, pas de chute brusque, mais plutot une augmentation globale des déplacement qui semble se profiler. 
+
+#### Tendances locales
+Pour mieux inférer et visualiser les différentes phases que traversent ces séries chronologiques, nous réalisons une anlyse des tendances locales. 
+
+```{r tendance_locale_commerces_20-21}
+#Année 2020
+shop20_local <- local.trend (shop20_ts, xlab = "Temps [mois]", ylab = "Sommes cumulées (CUSUM)", main = "Tendances locales de la série 2020 \n sur le déplacement vers les commerces et loisirs")
+abline (v = c(2020.2, 2020.43, 2020.8, 2021.0), col = "red", lty = 2)
+
+#Année 2021
+shop21_local <- local.trend (shop21_ts, xlab = "Temps [mois]", ylab = "Sommes cumulées (CUSUM)", main = "Tendances locales de la série 2021 \n sur le déplacement vers les commerces et loisirs")
+abline(v = time(shop21_local)[which.min(shop21_local)], col = "red", lty = 3)
+```
+
+#### Décomposition des séries 
+
+```{r evfcommerces_20_21}
+#Année 2020
+shop20_evf <- tsd (shop20_ts, method = "evf", lag = 50, axes = 1)
+plot (shop20_evf, col = 1:3, xlab = "Temps", main = "Filtrage de la série 2020 par valeur propre")
+
+#Année 2021
+shop21_evf <- tsd (shop21_ts, method = "evf", lag = 30, axes = 1)
+plot (shop21_evf, col = 1:3, xlab = "Temps", main = "Filtrage de la série 2021 par valeur propre")
+```
+
+Vérifions la significativité de la tendance générale en 2020 et 2021:
+
+```{r comparaison tendance 2020_21}
+#Année 2020
+shop_filter <- extract (shop20_evf, components = "filtered")
+trend.test(shop_evffilter)
+#Année 2021
+shop21_filtered <- extract (shop21_evf, components = "filtered")
+trend.test(shop21_filtered)
+```
+Superposition des tendances sur la série originale pour 2020 et 2021 :
+
+```{r }
+
+```
+
 
 ## Lieux de travail 
 Les déplacements vers les lieux de travail seront analysés sur les jours de semaine et de week-end car nous considérons que les déplacements au travail sont susceptibles de se faire également le week-end. Ces déplacements sont représentés par la variable workplaces.
@@ -113,14 +155,19 @@ De manière générale, les déplacements au travail en 2020 et 2021 n'ont pas l
 
 #### Tendances locales
 
-```{r tendance_locale_202021work}
-local.trend(ts_work20)
-local.trend(ts_work21)
+```{r tendance_locale_travail_20_21}
+#Année 2020
+work20_local <- local.trend(ts_work20)
+abline (v = c(2020.2, 2020.4, 2020.55, 2020.83, 2020.97), col = "red", lty = 2)
+#Année 2021
+work21_local <- local.trend(ts_work21)
+abline (v = c(2021.15, 2021.3, 2021.5, 2021.63, 2021.82, 2021.97), col = "red", lty = 2)
 ```
 
 En 2020, une tendance locale se marque entre mars/avril et octobre. En 2021, une tendance locale se marque de avril à juillet et une autre se marque de juillet à octobre.
 
-#### Décomposition des séries Décomposons les séries pour les analyser plus en détail :
+#### Décomposition des séries 
+Décomposons les séries pour les analyser plus en détail :
 
 ```{r evftravail_2020_21}
 covidw2020 <- tsd(ts_work20, method = "evf", lag = 20, axes = 1)
@@ -177,7 +224,7 @@ plot(grocery_pharma_ts, ylab = "déplacement supermarchés et pharmacies", xlab 
 
 Ce graphique illustre les déplacements vers les supermarchés et les pharmacies pendant l'année 2020 en plein contexte de pandémie de covid. On observe une chute abrupte en début d'année dans la série. Par la suite, la série connaît une phase de stabilisation autour d'une tendance négative, avant de montrer une légère remontée en fin d'année. On note aussi un pic le 11 mars, quelques jours précédant la chute drastique qui coïncide avec l'annonce officielle de pandémie par l'OMS.
 
-####Année 2021
+#### Année 2021
 
 ```{r serie grocery_pharma2021}
 grocery_pharma_ts2 <-  ts(window(covid$grocery_pharma, start = 322, end = 686),start = c(2021, 1), end = c(2021, 365), frequency = 366)
