@@ -86,11 +86,10 @@ Retenir les jours de la semaine :
 #Isolement semaine pour 2020 : 
 # Copie de la série initiale sous une autre nom
 covidw <- covid
-covidw20 <- subset (covidw, format(date, "%Y") == "2020")
 # Calcul des jours de la semaine
-covidw20$weekdays <- weekdays(as.POSIXct(covidw20$date))
+covidw$weekdays <- weekdays(as.POSIXct(covidw$date))
 # Les données du week-end sont remplacées par des valeurs manquantes
-covidw20[covidw20$weekdays %in% c("Saturday","Sunday"), "shop_leisure", "grocery_pharma", "parks", "stations", "workplaces", "residential"] <- NA
+covidw[covidw$weekdays == "Saturday" | covidw$weekdays == "Sunday" , 2:7] <- NA 
 ```
 
 Retenir les jours du week-end :
@@ -116,7 +115,7 @@ La variable commerces et loisirs correspond aux déplacements des habitants de l
 ```{r serie_shop_2020}
 #Création de la série globale :
 shop_ts <- ts(
-  covid$residential,
+  covid$shop_leisure,
   start = c(2020, 46),
   frequency = 365
 )
@@ -139,18 +138,18 @@ Séparation pour les jours de la semaine :
 
 ```{r ser20_shop_semaine}
 #découpage de la série globale par semaine : 
-shopw20_ts <- ts(
-  covidw20$shop_leisure,
+shopw_ts <- ts(
+  covidw$shop_leisure,
   start = c(2020, 46),
   frequency = 365)
 
 #sélection pour 2020 
-#covidw_ts <- window(
-  #covidw_ts,
-  #start = c(2020, 46),
-  #end   = c(2020, 365))
+shopw20_ts <- window(
+  shopw_ts,
+  start = c(2020, 46),
+  end   = c(2020, 365))
 
-# Aggrégation par moyenne des valeurs par semaine
+#Aggrégation par moyenne des valeurs par semaine
 weekshop_2020 <- aggregate(shopw20_ts, 
   nfrequency = 52,
   FUN = collapse::fmean, 
@@ -167,8 +166,9 @@ end(weekshop_2020)
 length(weekshop_2020)
 ```
 
-Comme la forme de la série hebdomadaire ressemble fort à la forme de la série originale avec les 3 ans, nous faisons un collage des deux séries hebdomadaires (pour 2020 et pour toutes les années), afin d'être sûr : 
-```{r}
+vérification supplémentaire que la série hebdomadaire est bien uniquement pour 2020 : 
+
+```{r week20_VS_weekALL}
 covidw_all_ts <- ts(
   covidw$shop_leisure,
   start = c(2020, 46),
@@ -221,7 +221,7 @@ weekendshop_2020 <- aggregate(covidy_ts,
 plot (weekendshop_2020, 
   xlab = "Déplacements", 
   ylab = "Temps [mois]", 
-  main = "Série hebdomadaire des déplacements pour le commerce et loisirs")
+  main = "Série contenant les jours de week-end uniquement")
 
 #Vérification que la série hebdomadaire est bien uniquement pour 2020 
 start(weekendshop_2020)
@@ -240,6 +240,7 @@ plot (shop_sl, stat = "mean", leg = TRUE, xlab = "Déplacements",
   main = "Statistiques glissantes sur la série d'origine" )
 lines(shop_ts, col = "gray")
 ```
+Comparons ces statisqtiques glissantes avec les séries isolant les données de semaine et de week-end : 
 
 ```{r statslide_shopweek_20}
 shop_week_sl <- stat.slide (time (weekshop_2020), weekshop_2020, deltat =1/12)
@@ -257,10 +258,9 @@ plot (shop_weekend_sl, stat = "mean", leg = TRUE, xlab = "Déplacements",
 lines(weekendshop_2020, col = "gray")
 
 ```
-
 Nous pouvons voir qu'entre les différentes données filtrées pour une période de la semaine ou pas, les moyennes des variation de déplacement le long de l'axe temporel de la série ne varient pas grandement. En effet, la valeur moyenne du deuxième pic dans la série excluant la semaine est juste légèrement plus en dessous de 0 que celles des deux autres types de séries.
 
-Pour voir la variation entre les séries filtrées pour la semaine et pour le week-end, nous pouvons également réaliser ceci ; 
+Pour visualiser encore mieux la variation entre les séries filtrées pour la semaine et pour le week-end, nous pouvons également réaliser ceci ; 
 
 ```{r superposition}
 plot (shop20_ts, 
@@ -279,9 +279,9 @@ legend(
   bty = "n"
 )
 ```
-De nouveau, nous voyons que les deux courbes qui isolent respectivement les semaines et les weekends ne diffèrent pas tellement dans la variation du déplacement. Nous décidons donc de garder, pour la suite de l'analyse, la série complète avec les semaines et les week-ends. Nous décidons donc de garder 
+De nouveau, nous voyons que les deux courbes qui isolent respectivement les semaines et les weekends ne diffèrent pas tellement dans la variation du déplacement. Nous décidons donc de garder, pour la suite de l'analyse, la série complète avec les semaines et les week-ends.
 
-Test de l'autocorrelation :
+Pour commencer l'analyse sur la série 2020, réalisons un test de l'autocorrelation :
 
 ```{r acf_shop_20}
 acf (shop20_ts, main = "Graphique d'autocorrelation de la série pour 2020")
@@ -296,8 +296,13 @@ shop20_local <- local.trend (shop20_ts)
 class (shop20_local)
 ```
 
-Effectivement, comme nous l'avions anticipé, les sommes cumulées (ligne rouge) forment un pic, avec sur les côté deux creux. Nous avons donc présence de plusieurs phases dans cette série : une décroissance jusqu'au 73e jour environ, suivit d'une croissance marquée jusqu'au 146e jour environ, suivit d'une décroissance tout aussi marquée jusqu'au 292e jour environ. 
-Si nous convertissons ses données de poinrs de rupture de la courbe en mois : Après une baise des déplacement jusqu'en mi-mars (14 mars environ). - À partir de mi-mars, le taux de déplacement vers les commerces et lieux de loisirs chute drastiquement, jusque fin mai. - Puis, à partir de la fin du mois de mai jusqu'en mi-octobre, les déplacement vers les commerces et loisirs augmentent progressivement. - Après la mi-octobre, on observe une nouvelle baisse des déplacements, plus progressive, pour ensuite se stabiliser (et peut-être monter très légerement) à la fin novembre.
+Effectivement, comme nous l'avions anticipé, les sommes cumulées (ligne rouge) forment un U assez net et deux pics bien marqué de chaque côté de ce V. Nous avons donc présence de plusieurs phases dans cette série : une croissance, suivit d'une décroissance marquée, puis d'une croissance aussi marquée, et enfin une légère décroissance. 
+Les points de ruptures correspondant à ces changement de phases sont environ : au 73e jour, au 146e jour, et au 292e jour jour, et un ralentissement au 328e jour. 
+Si nous convertissons ces données de jours en mois : 
+- Il y a eu une augmentation des déplacement jusqu'en mi-mars (14 mars environ). 
+- À partir de mi-mars, le taux de déplacement vers les commerces et lieux de loisirs chute drastiquement, jusque fin mai.
+- Puis, à partir de la fin du mois de mai jusqu'en mi-octobre, les déplacement vers les commerces et loisirs augmentent progressivement. 
+- Après la mi-octobre, on observe une nouvelle baisse des déplacements, plus progressive, pour ensuite se stabiliser (et peut-être monter très légerement) à la fin novembre. 
 
 ```{r}
 #chunk pour avoir les valeurs précises des jours correspondant aux ruptures dans la courbe de local trend (code aidé par ingtelligence artificielle, à ne pas prendre en compte pour la correction si pas autorisé, réalisé juste par simple curiosité et désir de rendre l'analyse plus solide)
@@ -334,13 +339,6 @@ plot (shop20_evf, col = 1:3)
 #### Année 2021
 
 ```{r serie_shop_2021}
-#Création de la série globale :
-shop_ts <- ts(
-  covid$residential,
-  start = c(2020, 46),
-  frequency = 365
-)
-
 ##Découpage de l'année 2021 : 
 shop21_ts <- window(
    shop_ts,
@@ -353,6 +351,100 @@ plot (shop21_ts,
   ylab = "Temps [mois]", 
   main = "Déplacements vers les commerces et les lieux de loisirs \n durant l'année 2021")
 ```
+
+Tout comme la série 2021, nous essayons de séparer semaine et week-end pour évaluer quelle série serait la meilleure pour nos analyses : 
+
+```{r ser21_shop_semaine}
+#découpage de la série globale par semaine : 
+shopw_ts <- ts(
+  covidw$shop_leisure,
+  start = c(2020, 46),
+  frequency = 365)
+
+#sélection pour 2021 
+shopw21_ts <- window(
+  shopw_ts,
+  start = c(2021, 1),
+  end   = c(2021, 365))
+
+#Aggrégation par moyenne des valeurs par semaine
+weekshop_2021 <- aggregate(shopw21_ts, 
+  nfrequency = 52,
+  FUN = collapse::fmean, 
+  ts.eps = 1/52)
+
+plot (weekshop_2021, 
+  xlab = "Déplacements", 
+  ylab = "Temps [mois]", 
+  main = "Série hebdomadaire des déplacements pour le commerce et loisirs")
+
+#Vérification que la série hebdomadaire est bien uniquement pour 2020 
+start(weekshop_2021)
+end(weekshop_2021)
+length(weekshop_2021)
+```
+Sélection des données pour le week-end : 
+```{r ser21_shop_semaine}
+#découpage de la série globale pour les jours du week-end : 
+shopy_ts <- ts(
+  covidy$shop_leisure,
+  start = c(2020, 46),
+  frequency = 365)
+
+#sélection pour 2021 
+shopy21_ts <- window(
+  shopy_ts,
+  start = c(2021, 1),
+  end   = c(2021, 365))
+
+#Aggrégation par moyenne des valeurs par semaine
+weekendshop_2021 <- aggregate(shopy21_ts, 
+  nfrequency = 52,
+  FUN = collapse::fmean, 
+  ts.eps = 1/52)
+
+plot (weekendshop_2021, 
+  xlab = "Déplacements", 
+  ylab = "Temps [mois]", 
+  main = "Série hebdomadaire des déplacements pour le commerce et loisirs")
+
+#Vérification que la série hebdomadaire est bien uniquement pour 2020 
+start(weekendshop_2021)
+end(weekendshop_2021)
+length(weekendshop_2021)
+```
+Visualisation et comparaison de la variation entre les séries filtrées pour la semaine et pour le week-end :  
+```{r superposition}
+plot (shop21_ts, 
+  col = "gray", 
+  ylab = "Déplacements", 
+  xlab = "Temps [mois]", 
+  main = "Superposition des courbes des semaines et du weekends")
+lines (weekshop_2021, col = "darkseagreen4", lwd = 2)
+lines (weekendshop_2021, col = "coral3", lwd = 2)
+
+legend(
+  "bottomright",
+  legend = c("Tous les jours", "Semaine", "Week-end"),
+  col = c("gray", "darkseagreen4", "coral3"),
+  lwd = c(2, 2, 2),
+  bty = "n"
+)
+```
+
+Nous pouvons voir, qu'à part la fin du graphique, où la courbe du week-end descend brusquement contrairement à celle de la semaine, le reste est assez similaire entre semaine et week-end. Nous gardons donc, pour le reste de nos analyse, la série complète avec week-end et semaines compris. 
+
+Réalisons un test de l'autocorrelation pour cette série 2021:
+
+```{r acf_shop_20}
+acf (shop20_ts, main = "Graphique d'autocorrelation de la série pour 2021")
+```
+
+Tout comme la série 2020, nous pouvons voir que le graphique de la fonction d'autocorrelation présente des barres qui sont significatives (au dessus de l'enveloppe de confiance à 95%) et positives, ce qui signifie qu'une tendance à l'augmentation domine le signal. Il ne semble pas avoir de cycle dans cette série. 
+
+Au vu de l'aspect général du graphique de la série, nous ne pencherions pas sur de grosses variations de tendances locales (plutôt une tendance générale qui domine) mais réalisons quand même un graphique de ces tendances locales pour en être sûr : 
+
+
 
 ### Lieux de travail
 
@@ -408,8 +500,8 @@ Deux cycles significatifs sont observés en 2020. Un pic à une fréquence de 50
 
 ```{r serie_travail_2021}
 # La série temporelle est créée (début le 1er janvier 2021)
-ts_work21 <- window(covid$workplaces, start = 322, end = 686) 
-ts_work21 <-ts(ts_work21, start = c(2021, 1), end = c(2021, 366), frequency = 366)
+ts_work21 <- ts(covid$workplaces, start = c(2020, 46), frequency = 365)
+ts_work21 <- window(ts_work21, start = c(2021, 1), end = c(2021, 365), frequency = 366)
 class(ts_work21)
 plot(ts_work21, xlab = "Temps [mois]", ylab = "Déplacements", main = "Année 2021 - Déplacements vers le lieu de travail")
 ```
@@ -628,7 +720,7 @@ A cette étape, il est encore très difficile d'interpréter la série chronolog
 acf(res_20, main = "Autocorrélation pour l'année 2020")
 ```
 
-L'autocorrélation est forte. Toutes les barres sont significatives et positives. De plus, on distingue une décroissance, révélant une tendance générale à la diminution. Afin de diminuer le bruit, décomposons la série avec un filtrage par les valeurs propres, pour déterminer quelle composante a la plus forte variance.
+L'autocorrélation est forte. Toutes les barres sont significatives et positives. De plus, on distingue une décroissance, révélant une tendance générale à la diminution. Il ne semble pas y avoir de cycle. Afin de diminuer le bruit, décomposons la série avec un filtrage par les valeurs propres, pour déterminer quelle composante a la plus forte variance.
 
 ```{r tsd_2020}
 res_20_dec <- tsd(res_20, method = "evf", lag = 20, axes = 1)
@@ -637,11 +729,24 @@ plot(res_20_dec, xlab = "Temps [jours]", col = 1:3)
 
 La série est dominée par une tendance. On observe une tendance générale à l'augmentation début d'année 2020, suivie d'une diminution en été, pour réaugmenter fin d'année. Analysons ces changements de tendance avec la méthode des sommes cumulées.
 
-```{r}
+```{r lt_2020}
 res_20_lt <- local.trend(res_20, xlab = "Temps [mois]")
 ```
 
 On observe bien deux phases principales : une augmentation à partir du mois d'avril, suivie d'une diminution à la transition juin-juillet. Une nouvelle augmentation est également observable début octobre.
+
+Nous réalisons désormais une vérification concernant les cycles.
+
+```{r extract_2020}
+extract_res_20 <- extract(res_20_dec, components = "residuals")
+plot(extract_res_20, ylab = "Composante résiduelle", xlab = "Temps [mois]")
+```
+La composante résiduelle de la série étant extraite, cette série est stationnarisée et nous pouvons dès lors réaliser une analyse spectrale.
+```{r spec_2020}
+spectrum(extract_res_20, spans = c(3, 5), ylab = "Spectre", xlab = "Fréquence", main = "Analyse spectrale - ")
+```
+Le périodogramme lissé détecte la présence de cycles significatifs à ~ 60 et 110 jours, soit des cycles bimestriel et quadrimestriel.
+
 
 #### Année 2021
 
@@ -661,7 +766,7 @@ tsp(res_21)
 acf(res_21, main = "Autocorrélation pour l'année 2021")
 ```
 
-On observe une autocorrélation, avec des barres toutes positives et significatives. Décomposons la série avec un filtrage par les valeurs propres pour réduire le bruit.
+On observe une autocorrélation, avec des barres toutes positives et significatives. Il ne semble pas y avoir de cycle. Décomposons la série avec un filtrage par les valeurs propres pour réduire le bruit.
 
 ```{r tsd_2021}
 res_21_dec <- tsd(res_21, method = "evf", lag = 20, axes = 1)
@@ -670,15 +775,27 @@ plot(res_21_dec, col = 1:3, xlab = "Temps [jours]")
 
 Une tendance domine la série. La courbe montre une diminution, suivie d'une augmentation. Appliquons la méthode des sommes cumulées pour étudier ces changements de tendance.
 
-```{r}
+```{r lt_2021}
 res_21_lt <- local.trend(res_21, xlab = "Temps [mois]")
 ```
 
 La tendance locale à l'augmentation culmine vers le mois de mai, et une tendance locale à la diminution enchaîne directement, pour stagner en fin d'année.
 
+Nous réalisons désormais une vérification concernant les cycles.
+
+```{r extract_2021}
+extract_res_21 <- extract(res_21_dec, components = "residuals")
+plot(extract_res_21, ylab = "Composante résiduelle", xlab = "Temps [mois]")
+```
+La composante résiduelle de la série étant extraite, cette série est stationnarisée et nous pouvons dès lors réaliser une analyse spectrale.
+```{r spec_2021}
+spectrum(extract_res_21, spans = c(3, 5), ylab = "Spectre", xlab = "Fréquence", main = "Analyse spectrale - ")
+```
+Le périodogramme lissé détecte la présence de cycles significatifs à ~ 60, 110 et 160 jours, soit des cycles bimestriel, quadrimestriel et semestriel.
+
 #### Comparaison des années 2020 et 2021
 
-Que ce soit pour 2020 ou 2021, on observe une nette autocorrélation, et une tendance domine la série chronologique.
+Que ce soit pour 2020 ou 2021, on observe une nette autocorrélation, et une tendance domine la série chronologique. Des cycles bimestriels et quadrimestriels sont visibles pour les deux années. L'année 2021 contient également un cycle semestriel.
 
 Début du mois d'avril 2020, on observe une nette augmentation (+ 30%) du nombre de personnes restant chez elles : c'est le début de la quarantaine. Cette augmentation diminue ensuite à la transition juin-juillet pour atteindre son taux le plus bas en fin des vacances d'été, où les gens sortaient plus de chez eux pour profiter du beau temps, malgré la pandémie. Début octobre, la tendance remonte, illustrant la reprise des cours en ligne et du télétravail d'un grand pourcentage de la population.
 
