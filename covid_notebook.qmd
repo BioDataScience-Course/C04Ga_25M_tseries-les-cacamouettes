@@ -509,10 +509,7 @@ La série, qui mesure les variations de déplacement vers les commerces et les l
 
 En effet, en 2020, la série est caractérisée par des tendances locales assez marquées, qui divisent l'année en plusieurs phases de croissance et de décroissance. Une tendance générale à l'augmentation se profile également, étant significative, mais moins marquée et visible sur la série brute de la série. Pas de cycles de déplacements significatifs sont présents au cours de cette année 2020.
 
-
-Au contraire, pour l'année 2021, la série n'est pas marquée par autant de phases de croissance et de décroissance coupant l'année, et les sommes cumulées ont montrées qu'un point de rupture et deux phases dans l'année.
-Par contre, l'allure générale incite plus à penser qu'une tendance globale à l'augmentation existe dans cette série. Et en effet, cette tendance globale est significative. En plus de cela, des cycles significatifs sont présents, à différents intervalles de jours, signifiant que les déplacements se font parfois à différents intervalles réguliers selon les observations.
-
+Au contraire, pour l'année 2021, la série n'est pas marquée par autant de phases de croissance et de décroissance coupant l'année, et les sommes cumulées ont montrées qu'un point de rupture et deux phases dans l'année. Par contre, l'allure générale incite plus à penser qu'une tendance globale à l'augmentation existe dans cette série. Et en effet, cette tendance globale est significative. En plus de cela, des cycles significatifs sont présents, à différents intervalles de jours, signifiant que les déplacements se font parfois à différents intervalles réguliers selon les observations.
 
 ### Lieux de travail
 
@@ -891,4 +888,4 @@ En résumé, l'année 2020 connut le plus grand taux d'augmentation du nombre de
 
 <!--% Lorsque toutes les analyses sont réalisées, terminez ce bloc-notes avec 3 à 6 phrases de conclusion en rapport avec ce que vous avez observé dans vos analyses. Quels sont les éléments les plus pertinents que vous retenez ? -->
 
-En conclusion, 
+En conclusion,
