@@ -408,8 +408,8 @@ Deux cycles significatifs sont observés en 2020. Un pic à une fréquence de 50
 
 ```{r serie_travail_2021}
 # La série temporelle est créée (début le 1er janvier 2021)
-ts_work21 <- window(covid$workplaces, start = 322, end = 686) 
-ts_work21 <-ts(ts_work21, start = c(2021, 1), end = c(2021, 366), frequency = 366)
+ts_work21 <- ts(covid$workplaces, start = c(2020, 46), frequency = 365)
+ts_work21 <- window(ts_work21, start = c(2021, 1), end = c(2021, 365), frequency = 366)
 class(ts_work21)
 plot(ts_work21, xlab = "Temps [mois]", ylab = "Déplacements", main = "Année 2021 - Déplacements vers le lieu de travail")
 ```
