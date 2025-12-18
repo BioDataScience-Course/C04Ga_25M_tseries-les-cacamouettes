@@ -74,32 +74,32 @@ Les déplacements vers lex lieux de travail seront analysés sur les jours de se
 ####Comparaison générale 2020-2021 lieux de travail
 
 ```{r tstravail_2020_2021}
-ts_work<- ts(covid$workplaces, start = c(2020,46),frequency = 365)
-ts_work <- window(ts_work, start = c(2020,46), end = c(2020,365))
-plot(ts_work, col = "cadetblue4",xlab = "Temps [mois]", ylab = "Déplacements", main = "Année 2020 - Déplacements vers le lieu de travail")
+ts_work20<- ts(covid$workplaces, start = c(2020,46),frequency = 365)
+ts_work20 <- window(ts_work20, start = c(2020,46), end = c(2020,365))
+plot(ts_work20, col = "cadetblue4",xlab = "Temps [mois]", ylab = "Déplacements", main = "Année 2020 - Déplacements vers le lieu de travail")
 
-covidw_ts21 <- window(covid$workplaces, start = 322, end = 686)
-covidw_ts21 <-ts(covidw_ts21, start = c(2021, 1), end = c(2021, 366), frequency = 366)
-plot(covidw_ts21, col = "tan3", xlab = "Temps [mois]", ylab = "Déplacements", main = "Année 2021 - Déplacements vers le lieu de travail")
+ts_work21 <- ts(covid$workplaces, start = c(2020, 46), frequency = 365)
+ts_work21 <- window(ts_work21, start = c(2021, 1), end = c(2021, 365), frequency = 366)
+plot(ts_work21, col = "tan3", xlab = "Temps [mois]", ylab = "Déplacements", main = "Année 2021 - Déplacements vers le lieu de travail")
 ```
 De manière générale, les déplacements au travail en 2020 et 2021 n'ont pas la même allure. En 2020, la chute des fréquentations au travail qui débute fin mars/début avril est remarquable contrairement à 2021 où cela est plus stable. De plus, il semble y avoir des cycles au sein des deux années, ce que nous vérifierons. 2020 semble présenter plus de variations contrairement à 2021 qui semble plus stable.
 
 ####Tendances locales
 ```{r tendance_locale_202021work}
-locatrend20 <-local.trend(ts_work)
-local.trend(covidw_ts21)
+local.trend(ts_work20)
+local.trend(ts_work21)
 ```
-En 2020, une tendance locale se marque entre avril et octobre.
+En 2020, une tendance locale se marque entre mars/avril et octobre.
 En 2021, une tendance locale se marque de avril à juillet et une autre se marque de juillet à octobre.
 
 ####Décomposition des séries
 Décomposons les séries pour les analyser plus en détail :
 
 ```{r evftravail_2020_21}
-covidw2020 <- tsd(ts_work, method = "evf", lag = 5, axes = 1)
+covidw2020 <- tsd(ts_work20, method = "evf", lag = 5, axes = 1)
 plot(covidw2020,col = 1:3, main = "Filtrage par les valeurs propres", ylab = "Série", xlab = "Temps [semaines]")
 
-covidw2021 <- tsd(covidw_ts21, method = "evf", lag = 10, axes = 1)
+covidw2021 <- tsd(ts_work21, method = "evf", lag = 10, axes = 1)
 plot(covidw2021, col = 1:3, main = "Filtrage par les valeurs propres", ylab = "Série", xlab = "Temps [semaines]")
 ```
 La composante filtrée montre également une baisse des fréquentations au travail en mars/avril durant l'année 2020. La composante filtrée de l'année 2021 ne montre pas de variations aussi marquées. Les résidus semblent ne montrer aucun cycle. 
@@ -124,6 +124,8 @@ covid_extract_2021 <-extract(covidw2021, components = "residuals")
 spectrum(covid_extract_2021, col = "tan3",spans = c(3,5), main = "Périodogramme lissé-2021", ylab = "spectre", xlab = "Fréquence")
 ```
 Les années 2020 et 2021 présentent deux cycles significatifs de fréquence 50, ce qui correspond à un cycle de 7.3 jours, et un autre cycle de fréquence 100 ce qui correspond à un cycle de 3.65 jours. 2021 présente un cycle significatif supplémentaire qui a une fréquence de 160, ce qui correspond à un cycle de 2.3 jours.
+####Comparaison des années 2020 et 2021
+En résumé, 2020 diffère de 2021 de part la présence d'une tendance locale plus marquée allant de mars/avril à octobre. Il n'y a pas de tendance générale en 2020 mais il y en a bien une en 2021 qui est croissante. Enfin, il y a des cycles d'environ sept et quatre jours en 2020 et 2021, ainsi qu'un cycle d'environ deux jours en 2021.
 
 
 ###Lieux de résidence
@@ -155,6 +157,17 @@ res_20_lt <- local.trend(res_20, xlab = "Temps [mois]")
 ```
 
 Deux phases principales sont visibles. La première consiste en une augmentation à partir de début février. La seconde consiste en une diminution qui survient à la transition juillet-août. Une diminution est également observable en janvier, ainsi qu'une légère augmentation début octobre.
+Nous jetons désormais un oeil aux cycles.
+
+```{r}
+extract_res_20 <- extract(res_20_dec, components = "residuals")
+plot(extract_res_20, ylab = "Composante résiduelle", xlab = "Temps [mois]")
+```
+La composante résiduelle de la série étant extraite, cette série est stationnarisée et nous pouvons dès lors réaliser une analyse spectrale.
+```{r}
+spectrum(extract_res_20, spans = c(3, 5), ylab = "Spectre", xlab = "Fréquence", main = "Analyse spectrale - ")
+```
+Le périodogramme lissé détecte la présence de cycles significatifs à ~ 60 et 110 jours, soit bimestriel et quadrimestriel.
 ####Année 2021
 
 ```{r serie_2021}
@@ -173,7 +186,7 @@ plot(res_21_dec, col = 1:3, xlab = "Temps [jours]")
 acf(res_21, main = "Autocorrélation pour l'année 2021")
 ```
 
-La décomposition détermine bien la présence d'une tendance générale dominant la série, mais cette tendance est également variable localement. L'autocorrélation est forte, avec toutes les barres positives et significatives, confirmant la présence d'une tendance générale. Afin de mieux comprendre ces changements de tendance, nous réalisons une analyse par la méthode des sommes cumulées.
+La décomposition détermine bien la présence d'une tendance générale dominant la série, mais cette tendance est également variable localement. L'autocorrélation est forte, avec toutes les barres positives et significatives, confirmant la présence d'une tendance générale. Il ne semble pas y avoir de cycle. Afin de mieux comprendre ces changements de tendance, nous réalisons une analyse par la méthode des sommes cumulées.
 
 ```{r}
 res_21_lt <- local.trend(res_21, xlab = "Temps [mois]")
