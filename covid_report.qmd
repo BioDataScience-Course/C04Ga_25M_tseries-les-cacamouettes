@@ -24,7 +24,7 @@ Les rapports de mobilité [@google_covid19_mobility] ont fourni les données pr�
 # But
 
 <!--% Rédigez le but de ce rapport.-->
-
+L'objectif de cette étude est d'étudier l'impact du Covid-19 sur les déplacements de la population wallone et l'évolution de ces déplacements au cours de cette période de pandémie. A titre comparatif, nous comparons les deux années charnières de cette époque : 2020 et 2021
 
 # Matériel et méthodes
 L'objectif de cette étude est d'étudier l'impact du Covid-19 sur les déplacements de la population wallone. Aussi, cette étude se fait à titre comparatif entre 2020 et 2021.
@@ -402,3 +402,20 @@ L'année 2021 débute avec un taux d'augmentation d'environ 15%, qui grimpe jusq
 En résumé, l'année 2020 connut le plus grand taux d'augmentation du nombre de personnes restant à leur domicile. Une légère diminution était déjà observable en 2021, permise par les progrès médicaux et les premiers effets de l'immunité collective. De plus, pour les deux années confondues, la période estivale s'est avérée être la période avec le taux d'augmentation le plus faible. \## Discussion et Conclusion
 
 <!--% En tenant compte du but de votre carnet de notes et de vos résultats, discutez de résultats et proposez des conclusions à votre analyse en 5 à 10 phrases. -->
+
+Notre étude montre l'impact que le premier confinement et l'arrivée du covid ont eu sur les déplacements des personnes wallonnes. 
+Le 17 mars 2020, une directive inédite marque un tournant dans l'histoire de l'humanité et des déplacements des wallons ; le confinement, déclaré le 17 mars 2020. Marqué par l'interdiction de sortir de chez soi, et tous les magasins et commerces fermés, à part quelques exceptions telles que le secteur allimentaire et pharmaceutique. 
+
+Via nos différentes analyses, nous avons étudié la variation des déplacements pour les commerces et loisirs, pour le secteur pharmaceutique, allimentaire, pour le travail et le lieu de résidence. 
+
+Ainsi, si nous regardons pour chaque type de déplacement : 
+
+- Pour le commerce et les loisirs, la série temporelle pour l'année 2020 est marquée par des phases qui correspondent presque parfaitement aux différentes phases de confinements et déconfinement de cette période. À partir de mi-mars, les commerces, bars, cinémas, théâtres et tout autre lieux de loisirs ferment. Les déplacements vers ces endroits chutent fatalement de manière brutale à cette période. Ensuite, le relâchement en été et la réouverture des bars et commerces (avec distance de sécurité et masques) provoque une nouvelle hausse de déplacement. L'année 2021 n'est quant à elle pas marquée par ces phases de diminution et augmentation de déplacement, montrant qu'à partir de cette année, les déplacement commencent à reprendre leur cours normal des choses (montré également par la tendance globale)
+
+- Pour les lieux de travail, l'année 2020 une tendance locale plus marquée allant de mars/avril à octobre. Cette tendance locale correspond probablement au début du confinement en mars 2020. On peut d'ailleurs observer cette diminution de la fréquentation des lieux de travail dans la série générale. En effet, le confinement a été, pour la plupart des travailleurs, la période de travail à domicile, diminuant ainsi les trajets. 
+
+- Pour les déplacement vers les lieux dans le secteur allimentaire et pharmacie, en 2020, la série présente une chute brutale en début d'année (mars), suivie d’une stabilisation à un niveau inférieur à la normale, puis d’une légère reprise en fin d’année. De nouveau, ces tendances locales montrent l'impact du confinement, bien que ces secteurs soient restés ouverts pendant toute la période de la pandémie. 
+- Enfin, pour les déplacements vers les lieux de résidence, en 2020, au début du mois d'avril, il y a une nette augmentation du nombre de personnes restant chez elles, ce qui correspond effectivement au début du confinement. Cette augmentation diminue ensuite à la transition juin-juillet pour atteindre son taux le plus bas en fin des vacances d'été, où les gens sortaient plus de chez eux pour profiter du beau temps, malgré la pandémie, grâce aux nombreux relâchements qui ont été autorisés à cette période. En 2021, la série montre globalement un retour des personnes hors de chez eux, sans devoir rester toujours à la maison. 
+
+
+Bref, la comparaison de ces deux années charnières nous a permis de montrer que 2020 apparaît comme une année choc et marquante pour les déplacements, présentant des phases marquées de diminutions de ceux-ci, alors que 2021 correspont d'avantage à une année de reprise progressive et de retour à la vie normale, avec une tendance générale à l'augmentation qui domine et qui est plus marquée qu'en 2020. 

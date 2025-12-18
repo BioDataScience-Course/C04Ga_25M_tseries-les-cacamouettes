@@ -614,7 +614,7 @@ spectrum(covid_extract_2021, spans = c(3,5), main = "Périodogramme lissé", yla
 
 Tout comme 2020, deux cycles significatifs sont observés à une fréquence de 50, ce qui signifie un cycle tous les 7.3 jours et un autre pic à une fréquence de 100 jours ce qui signifie un cycle tous les 3.65 jours. Il y a ici, un troisième cycle avec une fréquence d'environ 160 qui se marque. Ce cycle est donc un cycle qui se déroule tous les 2.3 jours.
 
-#### Comparaison lieux de travail 2020-2021
+#### Comparaison 2020-2021 pour les lieux de travail
 
 Si nous nous intéressons à l'année entière, 2020 et 2021 présentent une tendance générale à l'augmentation. De plus, les deux séries ont bien des cycles de fréquence 50 et 100 jours. Avec 2021 qui présente un cycle supplémentaire de fréquence 160. La tendance locale est principalement marquée en 2020 avec une baisse des fréquentations au travail entre avril et octobre.
 
@@ -888,4 +888,21 @@ En résumé, l'année 2020 connut le plus grand taux d'augmentation du nombre de
 
 <!--% Lorsque toutes les analyses sont réalisées, terminez ce bloc-notes avec 3 à 6 phrases de conclusion en rapport avec ce que vous avez observé dans vos analyses. Quels sont les éléments les plus pertinents que vous retenez ? -->
 
-En conclusion,
+En général, pour toutes les variables de déplacement analysées, les analyses montrent que les séries chronologique pour 2020 et 2021 sont similaires dans le fait qu'elles possèdent toutes une nette auto-corrélation et une tendance générale à l'augmentation. Elles possèdent toutes les deux des cycles significatifs (mis à part pour la variable de commerce et loisir, qui ne montraient pas de cycle significatif en 2020, et la variable pharmacie, qui n'en montraient pas en 2021)
+
+Ce qui distingue principalement les deux années, pour toutes ces déplacements ce sont les tendances locales. En effet, l'année 2020 est marquée par le confinement et ses réglementations strictes qui ont nettement impactés le déplacement à des périodes bien précises (début confinement en mi-mars et relâchement du confinement à partir de juin, pour ensuite repartir avec de nouvelles règles resserrées en mi-octobre). 
+
+Ainsi, si nous regardons pour chaque type de déplacement : 
+
+- Pour le commerce et les loisirs, la série temporelle pour l'année 2020 est marquée par des phases qui correspondent presque parfaitement aux différentes phases de confinements et déconfinement de cette période. À partir de mi-mars, les commerces, bars, cinémas, théâtres et tout autre lieux de loisirs ferment. Les déplacements vers ces endroits chutent fatalement de manière brutale à cette période. Ensuite, le relâchement en été et la réouverture des bars et commerces (avec distance de sécurité et masques) provoque une nouvelle hausse de déplacement. L'année 2021 n'est quant à elle pas marquée par ces phases de diminution et augmentation de déplacement, montrant qu'à partir de cette année, les déplacement commencent à reprendre leur cours normal des choses (montré également par la tendance globale)
+
+- Pour les lieux de travail, l'année 2020 une tendance locale plus marquée allant de mars/avril à octobre. Cette tendance locale correspond probablement au début du confinement en mars 2020. On peut d'ailleurs observer cette diminution de la fréquentation des lieux de travail dans la série générale. En effet, le confinement a été, pour la plupart des travailleurs, la période de travail à domicile, diminuant ainsi les trajets. 
+
+- Pour les déplacement vers les lieux dans le secteur allimentaire et pharmacie, en 2020, la série présente une chute brutale en début d'année (mars), suivie d’une stabilisation à un niveau inférieur à la normale, puis d’une légère reprise en fin d’année. De nouveau, ces tendances locales montrent l'impact du confinement, bien que ces secteurs soient restés ouverts pendant toute la période de la pandémie. 
+- Enfin, pour les déplacements vers les lieux de résidence, en 2020, au début du mois d'avril, il y a une nette augmentation du nombre de personnes restant chez elles, ce qui correspond effectivement au début du confinement. Cette augmentation diminue ensuite à la transition juin-juillet pour atteindre son taux le plus bas en fin des vacances d'été, où les gens sortaient plus de chez eux pour profiter du beau temps, malgré la pandémie, grâce aux nombreux relâchements qui ont été autorisés à cette période. En 2021, la série montre globalement un retour des personnes hors de chez eux, sans devoir rester toujours à la maison. 
+
+
+En conclusion, la comparaison de ces deux années charnières nous a permis de montrer que 2020 apparaît comme une année choc et marquante pour les déplacements, présentant des phases marquées de diminutions de ceux-ci, alors que 2021 correspont d'avantage à une année de reprise progressive et de retour à la vie normale, avec une tendance générale à l'augmentation qui domine et qui est plus marquée qu'en 2020. 
+
+
+
