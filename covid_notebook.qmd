@@ -653,7 +653,7 @@ La composante résiduelle de la série étant extraite, cette série est station
 ```{r}
 spectrum(extract_res_20, spans = c(3, 5), ylab = "Spectre", xlab = "Fréquence", main = "Analyse spectrale - ")
 ```
-Le périodogramme lissé détecte la présence de cycles significatifs à ~ 60 et 110 jours, soit bimestriel et quadrimestriel.
+Le périodogramme lissé détecte la présence de cycles significatifs à ~ 60 et 110 jours, soit des cycles bimestriel et quadrimestriel.
 
 
 #### Année 2021
@@ -688,6 +688,18 @@ res_21_lt <- local.trend(res_21, xlab = "Temps [mois]")
 ```
 
 La tendance locale à l'augmentation culmine vers le mois de mai, et une tendance locale à la diminution enchaîne directement, pour stagner en fin d'année.
+
+Nous réalisons désormais une vérification concernant les cycles.
+
+```{r}
+extract_res_21 <- extract(res_21_dec, components = "residuals")
+plot(extract_res_21, ylab = "Composante résiduelle", xlab = "Temps [mois]")
+```
+La composante résiduelle de la série étant extraite, cette série est stationnarisée et nous pouvons dès lors réaliser une analyse spectrale.
+```{r}
+spectrum(extract_res_21, spans = c(3, 5), ylab = "Spectre", xlab = "Fréquence", main = "Analyse spectrale - ")
+```
+Le périodogramme lissé détecte la présence de cycles significatifs à ~ 60, 110 et 160 jours, soit des cycles bimestriel, quadrimestriel et semestriel.
 
 #### Comparaison des années 2020 et 2021
 
