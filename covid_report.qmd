@@ -69,8 +69,12 @@ workplaces =  workplaces_percent_change_from_baseline,
  residential = residential_percent_change_from_baseline) -> covid
 ```
 
+<<<<<<< HEAD
 ###Lieux de travail 
 Les déplacements vers lex lieux de travail seront analysés sur les jours de semaine et de week-end car nous considérons que les déplacements au travail sont susceptibles de se faire également le week-end. Ces déplacements sont représentés par la variable workplaces.
+=======
+###Lieux de travail Les déplacements vers lex lieux de travail seront analysés sur les jours de semaine et de week-end.
+>>>>>>> c95e8e40086b91db17c72d9066fe5caea9273bc2
 
 ####Comparaison générale 2020-2021 lieux de travail
 
@@ -203,8 +207,7 @@ En 2020, la série est marquée par une forte instabilité en début d'année, a
 
 En définitive, 2020 apparaît comme une année de rupture et d'ajustement, dominée par l’impact immédiat de la crise sanitaire, alors que 2021 correspond davantage à une phase d'adaptation et de reprise progressive, caractérisée par une tendance positive plus forte et une dynamique plus homogène. Cette comparaison souligne ainsi le passage d’un régime de choc à un régime de normalisation relative des déplacements vers les commerces alimentaires et les pharmacies.
 
-###Lieux de résidence 
-La population est susceptible de quitter sa résidence tous les jours de la semaine (travail, commerces, ...). Les analyses se feront donc sur les jours de la semaine et jours de weekend sans distinction. ####Année 2020
+###Lieux de résidence La population est susceptible de quitter sa résidence tous les jours de la semaine (travail, commerces, ...). Les analyses se feront donc sur les jours de la semaine et jours de weekend sans distinction. ####Année 2020
 
 ```{r serie_résid_2020}
 res_20 <- ts(window(covid$residential, start = 1, end = 321), start = c(2020, 46), end = c(2020, 366), frequency = 366)
@@ -284,8 +287,7 @@ spectrum(extract_res_21, spans = c(3, 5), ylab = "Spectre", xlab = "Fréquence",
 
 Le périodogramme lissé détecte la présence de cycles significatifs à \~ 60, 110 et 160 jours, soit des cycles bimestriel, quadrimestriel et semestriel.
 
-####Comparaison des années 2020 et 2021 
-Les années 2020 et 2021 sont toutes deux dominées par plusieurs tendances locales. Des cycles bimestriel et quadrimestriel sont visibles chez les deux années. Nous remarquons cependant également la présence d'un cycle semestriel pour l'année 2021.
+####Comparaison des années 2020 et 2021 Les années 2020 et 2021 sont toutes deux dominées par plusieurs tendances locales. Des cycles bimestriel et quadrimestriel sont visibles chez les deux années. Nous remarquons cependant également la présence d'un cycle semestriel pour l'année 2021.
 
 Début février 2020, on observe une augmentation de 30% du nombre de personnes restant à leur domicile. A la transition juin-juillet, la tendance diminue ensuite pour atteindre son taux le plus bas vers le mois d'août, période où la population sortait plus afin de profiter du beau temps. La tendance remonte début octobre, illustrant la reprise du travail via les cours en ligne ou le télé-travail, pour un grand pourcentage de la population.
 
