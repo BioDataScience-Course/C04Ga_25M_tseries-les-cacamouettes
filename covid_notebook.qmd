@@ -83,7 +83,6 @@ Graphique d'auto-correlation
 Retenir les jours de la semaine :
 
 ```{r semaine}
-
 # Copie de la série initiale sous une autre nom
 covidw <- covid
 # Calcul des jours de la semaine
@@ -113,9 +112,20 @@ La variable commerces et loisirs correspond aux déplacements des habitants de l
 #### Année 2020
 
 ```{r serie_shop_2020}
-shop_ts <- ts (covid$shop_leisure, start = c(2020, 46),end = c(2020, 365), frequency = 365 )
-plot (shop_ts, 
-  col= "aquamarine4", 
+#Création de la série globale :
+shop_ts <- ts(
+  covid$residential,
+  start = c(2020, 46),
+  frequency = 365
+)
+#Découpage de l'année 2020 : 
+shop20_ts <- window(
+  shop_ts,
+  start = c(2020, 46),
+  end   = c(2020, 365))
+
+plot (shop20_ts, 
+  col= "cadetblue4", 
   xlab = "Déplacements", 
   ylab = "Temps [mois]", 
   main = "Déplacements vers les commerces et les lieux de loisirs \n durant l'année du covid (2020)")
@@ -126,25 +136,95 @@ Nous pouvons observer que la série comporte du bruit qui peut créer des probl�
 Séparation pour les jours de la semaine :
 
 ```{r ser20_shop_semaine}
-covidw_ts <- ts (covidw$shop_leisure, start = c(2020, 46),end = c(2020, 365), frequency = 365 )
+#découpage de la série globale par semaine : 
+covidw_ts <- ts(
+  covidw$shop_leisure,
+  start = c(2020, 46),
+  frequency = 365)
+
+#sélection pour 2020 
+covidw_ts <- window(
+  covidw_ts,
+  start = c(2020, 46),
+  end   = c(2020, 365))
+
 # Aggrégation par moyenne des valeurs par semaine
-weekshop_2020 <- aggregate(covidw_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
+weekshop_2020 <- aggregate(covidw_ts, 
+  nfrequency = 52,
+  FUN = collapse::fmean, 
+  ts.eps = 1/52)
+
 plot (weekshop_2020, 
   xlab = "Déplacements", 
   ylab = "Temps [mois]", 
-  main = "Série avec uniquement les données pour les semaines")
+  main = "Série hebdomadaire des déplacements pour le commerce et loisirs")
+
+#Vérification que la série hebdomadaire est bien uniquement pour 2020 
+start(weekshop_2020)
+end(weekshop_2020)
+length(weekshop_2020)
 ```
+
+Comme la forme de la série hebdomadaire ressemble fort à la forme de la série originale avec les 3 ans, nous faisons un collage des deux séries hebdomadaires (pour 2020 et pour toutes les années), afin d'être sûr : 
+```{r}
+covidw_all_ts <- ts(
+  covidw$shop_leisure,
+  start = c(2020, 46),
+  frequency = 365
+)
+
+weekshop_all <- aggregate(
+  covidw_all_ts,
+  52,
+  FUN = collapse::fmean,
+  ts.eps = 1/52
+)
+#comparaison de plot 
+plot(weekshop_all, col = "grey", lwd = 1,
+     main = "Comparaison série complète vs 2020",
+     ylab = "Déplacements", xlab = "Temps")
+
+lines(weekshop_2020, col = "red", lwd = 2)
+legend("bottomright",
+       legend = c("Série complète", "Année 2020"),
+       col = c("grey", "red"),
+       lwd = c(1, 2),
+       bty = "n")
+
+```
+
+
 
 Séparation pour les week-end :
 
 ```{r  ser20_shop_weekend}
-covidy_ts <- ts (covidy$shop_leisure, start = c(2020, 46),end = c(2020, 365), frequency = 365 )
-# Aggrégation par moyenne des valeurs par week-end
-weekendshop_2020 <- aggregate(covidy_ts, 52, FUN = collapse::fmean, ts.eps = 1/52)
+#découpage de la série globale pour les weekends : 
+covidy_ts <- ts(
+  covidy$shop_leisure,
+  start = c(2020, 46),
+  frequency = 365)
+
+#sélection pour 2020 
+covidy_ts <- window(
+  covidy_ts,
+  start = c(2020, 46),
+  end   = c(2020, 365))
+
+# Aggrégation par moyenne des valeurs par semaine
+weekendshop_2020 <- aggregate(covidy_ts, 
+  52,
+  FUN = collapse::fmean, 
+  ts.eps = 1/52)
+
 plot (weekendshop_2020, 
   xlab = "Déplacements", 
   ylab = "Temps [mois]", 
-  main = "Série avec uniquement les données pour les weekends")
+  main = "Série hebdomadaire des déplacements pour le commerce et loisirs")
+
+#Vérification que la série hebdomadaire est bien uniquement pour 2020 
+start(weekendshop_2020)
+end(weekendshop_2020)
+length(weekendshop_2020)
 ```
 
 Nous voyons que la sélection des jours de la semaine ou des jours du week-end a permis de réduire grandement le bruit et de mieux visualiser l'allure générale de la courbe de la série. Cependant, entre la semaine et le week-end, la série ne semble pas varier énormément, ce qui signifie que les déplacements pour les lieux de commerces et de loisirs ne varient pas beaucoup de la semaine au weekend. Nous pouvons donc nous poser la question de l'utilité réelle de séparer ces deux parties, ou de garder la série combinant la semaine et le week-end.
@@ -152,10 +232,10 @@ Nous voyons que la sélection des jours de la semaine ou des jours du week-end a
 Réalisons des statistiques glissantes pour avoir la moyenne des différents intervale de temps le long de notre série :
 
 ```{r statslide_shop_20}
-shop_sl <- stat.slide (time (shop_ts), shop_ts, deltat =1/12)
+shop_sl <- stat.slide (time (shop20_ts), shop20_ts, deltat =1/12)
 plot (shop_sl, stat = "mean", leg = TRUE, xlab = "Déplacements", 
   ylab = "Temps [mois]", 
-  main = "Statistiques glissante sur la série d'origine" )
+  main = "Statistiques glissantes sur la série d'origine" )
 lines(shop_ts, col = "gray")
 ```
 
@@ -163,7 +243,7 @@ lines(shop_ts, col = "gray")
 shop_week_sl <- stat.slide (time (weekshop_2020), weekshop_2020, deltat =1/12)
 plot (shop_week_sl, stat = "mean", leg = TRUE, xlab = "Déplacements", 
   ylab = "Temps [mois]", 
-  main = "Statistiques glissante sur la série d'origine")
+  main = "Statistiques glissantes sur la série contenant juste \n les données pour les semaines")
 lines(weekshop_2020, col = "gray")
 ```
 
@@ -171,7 +251,7 @@ lines(weekshop_2020, col = "gray")
 shop_weekend_sl <- stat.slide (time (weekendshop_2020), weekendshop_2020, deltat =1/12)
 plot (shop_weekend_sl, stat = "mean", leg = TRUE, xlab = "Déplacements", 
   ylab = "Temps [mois]", 
-  main = "Statistiques glissante sur la série d'origine")
+  main =  "Statistiques glissantes sur la série contenant juste \n les données pour les weekends")
 lines(weekendshop_2020, col = "gray")
 
 ```
@@ -181,7 +261,7 @@ Nous pouvons voir qu'entre les différentes données filtrées pour une période
 Pour voir la variation entre les séries filtrées pour la semaine et pour le week-end, nous pouvons également réaliser ceci ; 
 
 ```{r superposition}
-plot (shop_ts, 
+plot (shop20_ts, 
   col = "gray", 
   ylab = "Déplacements", 
   xlab = "Temps [mois]", 
@@ -202,7 +282,7 @@ De nouveau, nous voyons que les deux courbes qui isolent respectivement les sema
 Test de l'autocorrelation :
 
 ```{r acf_shop_20}
-acf (shop_ts)
+acf (shop20_ts)
 ```
 
 Le graphique de la fonction d'autocorrelation ne présente pas de cycle, mais toutes barres sont significatives (au dessus de l'enveloppe de confiance à 95%) et positive, ce qui signifie qu'une tendance à l'augmentation domine le signal.
@@ -210,11 +290,11 @@ Le graphique de la fonction d'autocorrelation ne présente pas de cycle, mais to
 Il serait intéressant aussi, au vu de l'aspect général de notre graphique, de regarder si a série présence des tendances locales, différentes phases d'évolution à long terme, croissance et puis décroissance :
 
 ```{r shop20_localtrend}
-shop20_local <- local.trend (shop_ts)
+shop20_local <- local.trend (shop20_ts)
 class (shop20_local)
 ```
 
-Effectivement, comme nous l'avions anticipé, les sommes cumulées (ligne rouge) forment un U assez net et deux pics bien marqué de chaque côté de ce V. Nous avons donc présence de plusieurs phases dans cette série : une croissance, suivit d'une décroissance marquée, puis d'une croissance aussi marquée, et enfin une légère décroissance. Les points de ruptures correspondant à ces changement de phases sont environ : au 73e jour, au 146e jour, et au 292e jour jour, et un ralentissement au 328e jour. Si nous convertissons ces données de jours en mois : Il y a eu une augmentation des déplacement jusqu'en mi-mars (14 mars environ). - À partir de mi-mars, le taux de déplacement vers les commerces et lieux de loisirs chute drastiquement, jusque fin mai. - Puis, à partir de la fin du mois de mai jusqu'en mi-octobre, les déplacement vers les commerces et loisirs augmentent progressivement. - Après la mi-octobre, on observe une nouvelle baisse des déplacements, plus progressive, pour ensuite se stabiliser (et peut-être monter très légerement) à la fin novembre.
+Effectivement, comme nous l'avions anticipé, les sommes cumulées (ligne rouge) forment un U assez net et deux pics bien marqué de chaque côté. Nous avons donc présence de plusieurs phases dans cette série : une croissance, suivit d'une décroissance marquée, puis d'une croissance aussi marquée, et enfin une légère décroissance. Les points de ruptures correspondant à ces changement de phases sont environ : au 73e jour, au 146e jour, et au 292e jour jour, et un ralentissement au 328e jour. Si nous convertissons ces données de jours en mois : Il y a eu une augmentation des déplacement jusqu'en mi-mars (14 mars environ). - À partir de mi-mars, le taux de déplacement vers les commerces et lieux de loisirs chute drastiquement, jusque fin mai. - Puis, à partir de la fin du mois de mai jusqu'en mi-octobre, les déplacement vers les commerces et loisirs augmentent progressivement. - Après la mi-octobre, on observe une nouvelle baisse des déplacements, plus progressive, pour ensuite se stabiliser (et peut-être monter très légerement) à la fin novembre.
 
 ```{r}
 #chunk pour avoir les valeurs précises des jours correspondant aux ruptures dans la courbe de local trend (code aidé par ingtelligence artificielle, à ne pas prendre en compte pour la correction si pas autorisé, réalisé juste par simple curiosité et désir de rendre l'analyse plus solide)
@@ -240,14 +320,24 @@ rupture_times <- time_trend[ruptures_filt]
 rupture_times
 ```
 
-Vérifions tout de même la tendance générale de cette série en la décomposant :
+
+Vérifions tout de même s'il y a présence également d'une tendance générale. Pour cela, nous réalisons une EVF qui permettra de nous dire si la série est dominée par un signal de tendance générale, de cycle ou autre. Cela permettra de nous confirmer la présence de la tendance générale, s'il y en a bien une. 
 
 ```{r}
-
+shop20_evf <- tsd (shop20_ts, method = "evf", lag = 80, axes = 1)
+plot (shop20_evf, col = 1:3)
 ```
 
 #### Année 2021
 
+```{r serie_shop_2021}
+shop21_ts <- ts (window(covid$residential, start = 322, end = 686),start = c(2021, 1), end = c(2021, 365), frequency = 365 )
+plot (shop21_ts, 
+  col= "tan3", 
+  xlab = "Déplacements", 
+  ylab = "Temps [mois]", 
+  main = "Déplacements vers les commerces et les lieux de loisirs \n durant l'année 2021")
+```
 
 ### Lieux de travail
 
