@@ -256,12 +256,13 @@ La variable Lieux de travail correspond aux déplacements de la population wallo
 #### Année 2020
 
 ```{r serie_travail_2020}
-ts_work<- ts(window(covid$workplaces, start = 1, end = 321),start = c(2020, 46), end = c(2020, 366), frequency = 366)
+ts_work<- ts(covid$workplaces, start = c(2020,46),frequency = 365)
+ts_work <- window(ts_work, start = c(2020,46), end = c(2020,365))
 class(ts_work)
 plot(ts_work, xlab = "Temps [mois]", ylab = "Déplacements", main = "Année 2020 - Déplacements vers le lieu de travail")
 tsp(ts_work)
 ```
-
+La série montre une chute des déplacements au travail à partir de mars avant de remonter progressivement jusqu'en août. Ensuite cela diminue à nouveau jusqu'au mois de septembre pour remonter ensuite en début décembre. Enfin, une autre rechute brève et forte apparait en fin d'année pour ensuite remonter et se stabiliser.  
 
 ```{r acf_travail_2020 }
 acf(ts_work, main = "Graphique d'autocorrélation 2020")
@@ -277,7 +278,7 @@ Le graphique de la tendance locale montre un diminution à partir du mois d'avri
 Nous réalisons une décomposition de la série afin d'analyser cette dernière plus en détail :
 
 ```{r evftravail_2020}
-covidw2020 <- tsd(covidwork_2020, method = "evf", lag = 5, axes = 1)
+covidw2020 <- tsd(ts_work, method = "evf", lag = 5, axes = 1)
 plot(covidw2020,col = 1:3, main = "Filtrage par les valeurs propres", ylab = "Série", xlab = "Temps [semaines]")
 ```
 Les résidus semblent indiquer qu'il n'y a aucun cycle. De manière générale, lorsque l'on observe la composante filtrée, bien qu'au début de la série il y ait une diminution importante des fréquentations au travail, le reste de la série semble présenter une tendance générale croissante. Nous vérifions s'il existe une tendance générale significative :
@@ -287,7 +288,7 @@ mts_2020 <- tseries(covidw2020)
 trend.test(mts_2020[,"filtered"])
 ```
 
-La p-value étant inférieure au seuil \alpha de 5%,nous rejetons H0. Il y a donc une tendance générale qui est d'ailleurs croissante car la valeur de \rho est positive.
+La p-value étant supérieure au seuil \alpha de 5%,nous ne rejetons pas H0. Il n'y a donc pas de tendance générale.
 
 
 
@@ -296,12 +297,9 @@ Pour être certains que les séries ne présentent aucun cycles, nous décidons 
 La méthode des différences est employées pour éliminer la tendance tout en conservant les potentiels cycles.
 
 ```{r cycle_semaine_weekend_2020}
-covid_ts20 <- ts(covid$workplaces, start = c(2020, 46), frequency = 366, end = c(2020, 365))
-covidwhole2020 <- tsd(covid_ts20, method = "diff", lag = 3 , times = 1)
-extract_whole_20 <- extract(covidwhole2020, components = "residuals")
+extract_whole_20 <- extract(covidw2020, components = "residuals")
 plot(extract_whole_20)
 spectrum(extract_whole_20, spans= c(3,5))
-time(covid_ts20)
 ```
 
 Deux cycles significatifs sont observés en 2020. Un pic à une fréquence de 50, ce qui signifie un cycle tous les 7,3 jours et un autre pic à une fréquence de 100 jours ce qui signifie un cycle tous les 3,65 jours.
@@ -310,7 +308,8 @@ Deux cycles significatifs sont observés en 2020. Un pic à une fréquence de 50
 
 ```{r serie_travail_2021}
 # La série temporelle est créée (début le 1er janvier 2021)
- covidw_ts21 <-ts(window(covid$workplaces, start = 322, end = 686),start = c(2021, 1), end = c(2021, 366), frequency = 366)
+covidw_ts21 <- window(covid$workplaces, start = 322, end = 686) 
+covidw_ts21 <-ts(covidw_ts21, start = c(2021, 1), end = c(2021, 366), frequency = 366)
 class(covidw_ts21)
 plot(covidw_ts21, xlab = "Temps [mois]", ylab = "Déplacements", main = "Année 2021 - Déplacements vers le lieu de travail")
 ```
@@ -354,7 +353,7 @@ Tout comme 2020, deux cycles significatifs sont observés en 2021. Un pic à une
 
 #### Comparaison lieux de travail 2020-2021
 
-Si nous nous intéressons à l'année entière, tant 2020 que 2021, les deux séries présentent une tendance générale à l'augmentation ainsi que des cycles de fréquence 50 et 100 jours. La tendance locale est principalement marquée en 2020 avec une baisse des fréquentations au travail entre avril et octobre.
+Si nous nous intéressons à l'année entière, en 2020 la série ne présente pas de tendance générale contrairement à 2021 qui a une tendance générale à l'augmentation. Par contre, les deux séries ont bien des cycles de fréquence 50 et 100 jours. La tendance locale est principalement marquée en 2020 avec une baisse des fréquentations au travail entre avril et octobre.
 
 ### Alimentation et pharmacies
 
