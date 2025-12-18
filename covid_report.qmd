@@ -1,5 +1,5 @@
 ---
-title: "___"
+title: "Étude de l'évolution temporelle des déplacements de la population wallonne durant la période de crise sanitaire"
 author: "Abraham Romane, Dechèvres Florine, Desterke Margot, Viseur Zoé"
 format:
   pdf:
@@ -25,7 +25,10 @@ Les rapports de mobilité [@google_covid19_mobility] ont fourni les données pr�
 
 <!--% Rédigez le but de ce rapport.-->
 
+
 # Matériel et méthodes
+L'objectif de cette étude est d'étudier l'impact du Covid-19 sur les déplacements de la population wallone. Aussi, cette étude se fait à titre comparatif entre 2020 et 2021.
+
 
 <!--% Cette section doit comprendre deux parties. La première partie doit expliciter le données employées et la seconde traiter des analyses réalisées et des logiciels employés.-->
 
@@ -152,6 +155,7 @@ spectrum(covid_extract_2021, col = "tan3",spans = c(3,5), main = "Périodogramme
 
 Les années 2020 et 2021 présentent deux cycles significatifs de fréquence 50, ce qui correspond à un cycle de 7.3 jours, et un autre cycle de fréquence 100 ce qui correspond à un cycle de 3.65 jours. 2021 présente un cycle significatif supplémentaire qui a une fréquence de 160, ce qui correspond à un cycle de 2.3 jours.
 
+
 #### Comparaison des années 2020 et 2021 
 En résumé, 2020 diffère de 2021 de part la présence d'une tendance locale plus marquée allant de mars/avril à octobre. Cette tendance locale correspond probablement au début du confinement en mars 2020. On peut d'ailleurs observer cette diminution de la fréquentation des lieux de travail dans la série générale.
 
@@ -173,7 +177,26 @@ plot(grocery_pharma_ts, ylab = "déplacement supermarchés et pharmacies", xlab 
 
 Ce graphique illustre les déplacements vers les supermarchés et les pharmacies pendant l'année 2020 en plein contexte de pandémie de covid. On observe une chute abrupte en début d'année dans la série. Par la suite, la série connaît une phase de stabilisation autour d'une tendance négative, avant de montrer une légère remontée en fin d'année. On note aussi un pic le 11 mars, quelques jours précédant la chute drastique qui coïncide avec l'annonce officielle de pandémie par l'OMS.
 
-Décomposons la série + Analysons la tendance générale :
+####Année 2021
+
+```{r serie grocery_pharma2021}
+grocery_pharma_ts2 <-  ts(window(covid$grocery_pharma, start = 322, end = 686),start = c(2021, 1), end = c(2021, 365), frequency = 366)
+plot(grocery_pharma_ts2, ylab = "déplacement supermarchés et pharmacies", xlab = "temps [mois]", main = "Déplacement supermarchés et pharmacies en 2021")
+```
+
+Ce graphique illustre les variations des déplacements vers les supermarchés et les pharmacies pendant l'année 2021 en pleine crise du Covid. À première analyse, la série ne montre pas de pic apparent. Effectivement, la série présente une augmentation au début de l'année, paraît stable par la suite avant d'entamer une nouvelle montée en fin d'année.
+
+Analysons la tendance locale pour 2021 :
+
+```{r}
+grocerypharma_local_2021 <- local.trend(grocery_pharma_ts2)
+ 
+plot(grocerypharma_local_2021)
+```
+
+Bien que le test de tendance mette en évidence une tendance générale fortement croissante sur l’ensemble de l’année 2021, l’analyse des tendances locales révèle une dynamique plus contrastée. En effet, l’année se décompose en deux phases distinctes : une baisse structurelle en début d’année, suivie d’une rupture de tendance au printemps et d’un redressement progressif jusqu’à la fin de l’année. La tendance globale positive observée est ainsi principalement portée par cette phase de reprise, tandis que les chocs ponctuels identifiés n’altèrent pas la dynamique générale du changement de régime.
+
+Décomposons les séries + Analysons la tendance générale :
 
 ```{r}
 grocery_pharma_ts2020 <- tsd(grocery_pharma_ts, method = "average", type = "additive", order = 26, times = 3)
@@ -186,6 +209,7 @@ trend.test(grocerypharma_2020f)
 On observe clairement l’existence d’une tendance générale dans l’évolution des déplacements vers les commerces alimentaires en 2020. Le test de tendance met en évidence une p-value inférieure au seuil de 5 % (p-value = 2.2\^-16), ce qui conduit au rejet de l’hypothèse nulle d’absence de tendance. Il existe donc une tendance globale statistiquement significative.
 
 Le coefficient de tendance \rho est positif et relativement élevé (\rho = 0,702), indiquant une tendance marquée et globalement croissante sur la période étudiée. L’analyse de la série filtrée montre cependant une dynamique contrastée : une chute importante est observée en début d’année, suivie d’une reprise progressive qui se traduit par une tendance générale à la hausse sur l’ensemble de l’année 2020.
+
 
 Analysons le reste :
 
@@ -220,15 +244,15 @@ L’analyse de la composante filtrée met en évidence une évolution globalemen
 
 Par ailleurs, le test de tendance confirme l’existence d’une tendance générale significative, avec une p-value largement inférieure à 5 % (p-value = 2.2\^-16), conduisant au rejet de l’hypothèse nulle. Les déplacements vers les commerces alimentaires et les pharmacies suivent ainsi une tendance globale fortement croissante en 2021. Le coefficient de tendance \rho, égal à 0,928, est nettement plus élevé que celui observé en 2020, ce qui traduit une tendance encore plus marquée sur cette année.
 
-Analysons la tendance locale :
+Analysons les résidus pour 2020 :
 
-```{r}
-grocerypharma_local_2021 <- local.trend(grocery_pharma_ts2)
- 
-plot(grocerypharma_local_2021)
+```{r residuals2020gp}
+grocerypharma_res_2020 <- extract(grocery_pharma_ts2020, components = "residuals")
+plot(grocerypharma_res_2020)
+spectrum(grocerypharma_res_2020, spans = c(3,5))
 ```
 
-Bien que le test de tendance mette en évidence une tendance générale fortement croissante sur l’ensemble de l’année 2021, l’analyse des tendances locales révèle une dynamique plus contrastée. En effet, l’année se décompose en deux phases distinctes : une baisse structurelle en début d’année, suivie d’une rupture de tendance au printemps et d’un redressement progressif jusqu’à la fin de l’année. La tendance globale positive observée est ainsi principalement portée par cette phase de reprise, tandis que les chocs ponctuels identifiés n’altèrent pas la dynamique générale du changement de régime.
+En se basant sur le periodogramme lissé, il est possible d'observer que la série comporte plusieurs pics locaux. Plusieurs pics notables indiquent un cycle régulier avec une fréquence de 10, 55, 100, 140 et 170.Cela indique que nous avons cinq cycles : un de 36,5 jours, un autre de 6,6 jours, un troisième de 3,65 jours, un quatrième de 2,6 jours et enfin un dernier de 2,15 jours.
 
 #### Comparaison 2020 et 2021
 
