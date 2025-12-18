@@ -69,9 +69,7 @@ workplaces =  workplaces_percent_change_from_baseline,
  residential = residential_percent_change_from_baseline) -> covid
 ```
 
-###Lieux de travail
-Les déplacements vers lex lieux de travail seront analysés sur les jours de semaine et de week-end.
-####Comparaison générale 2020-2021 lieux de travail
+###Lieux de travail Les déplacements vers lex lieux de travail seront analysés sur les jours de semaine et de week-end. ####Comparaison générale 2020-2021 lieux de travail
 
 ```{r tstravail_2020_2021}
 ts_work20<- ts(covid$workplaces, start = c(2020,46),frequency = 365)
@@ -82,18 +80,19 @@ ts_work21 <- ts(covid$workplaces, start = c(2020, 46), frequency = 365)
 ts_work21 <- window(ts_work21, start = c(2021, 1), end = c(2021, 365), frequency = 366)
 plot(ts_work21, col = "tan3", xlab = "Temps [mois]", ylab = "Déplacements", main = "Année 2021 - Déplacements vers le lieu de travail")
 ```
+
 De manière générale, les déplacements au travail en 2020 et 2021 n'ont pas la même allure. En 2020, la chute des fréquentations au travail qui débute fin mars/début avril est remarquable contrairement à 2021 où cela est plus stable. De plus, il semble y avoir des cycles au sein des deux années, ce que nous vérifierons. 2020 semble présenter plus de variations contrairement à 2021 qui semble plus stable.
 
 ####Tendances locales
+
 ```{r tendance_locale_202021work}
 local.trend(ts_work20)
 local.trend(ts_work21)
 ```
-En 2020, une tendance locale se marque entre mars/avril et octobre.
-En 2021, une tendance locale se marque de avril à juillet et une autre se marque de juillet à octobre.
 
-####Décomposition des séries
-Décomposons les séries pour les analyser plus en détail :
+En 2020, une tendance locale se marque entre mars/avril et octobre. En 2021, une tendance locale se marque de avril à juillet et une autre se marque de juillet à octobre.
+
+####Décomposition des séries Décomposons les séries pour les analyser plus en détail :
 
 ```{r evftravail_2020_21}
 covidw2020 <- tsd(ts_work20, method = "evf", lag = 5, axes = 1)
@@ -102,7 +101,8 @@ plot(covidw2020,col = 1:3, main = "Filtrage par les valeurs propres", ylab = "S�
 covidw2021 <- tsd(ts_work21, method = "evf", lag = 10, axes = 1)
 plot(covidw2021, col = 1:3, main = "Filtrage par les valeurs propres", ylab = "Série", xlab = "Temps [semaines]")
 ```
-La composante filtrée montre également une baisse des fréquentations au travail en mars/avril durant l'année 2020. La composante filtrée de l'année 2021 ne montre pas de variations aussi marquées. Les résidus semblent ne montrer aucun cycle. 
+
+La composante filtrée montre également une baisse des fréquentations au travail en mars/avril durant l'année 2020. La composante filtrée de l'année 2021 ne montre pas de variations aussi marquées. Les résidus semblent ne montrer aucun cycle.
 
 Vérifions s'il existe une tendance générale en 2020 et 2021 :
 
@@ -112,10 +112,11 @@ trend.test(mts_2020[,"filtered"])
 mtsw_2021 <- tseries(covidw2021)
 trend.test(mtsw_2021[,"filtered"])
 ```
-Pour 2020, la p-value étant supérieure au seuil \alpha de 5%,nous ne rejetons pas H0. Il n'y a donc pas de tendance générale.
-Pour 2021, la p value étant inférieur à \alpha au seuil de 5%, la tendance générale est donc significative. De plus elle est croissante car la valeur de \rho est positive.
+
+Pour 2020, la p-value étant supérieure au seuil \alpha de 5%,nous ne rejetons pas H0. Il n'y a donc pas de tendance générale. Pour 2021, la p value étant inférieur à \alpha au seuil de 5%, la tendance générale est donc significative. De plus elle est croissante car la valeur de \rho est positive.
 
 Vérifions maintenant si des cycles existent en 2020 et 2021 :
+
 ```{r residtravail_2020}
 covid_extract_2020 <- extract(covidw2020, components = "residuals")
 spectrum(covid_extract_2020, col = "cadetblue4", spans= c(3,5), main = "Périodogramme lissé-2020", ylab = "spectre", xlab = "Fréquence")
@@ -123,14 +124,10 @@ spectrum(covid_extract_2020, col = "cadetblue4", spans= c(3,5), main = "Périodo
 covid_extract_2021 <-extract(covidw2021, components = "residuals")
 spectrum(covid_extract_2021, col = "tan3",spans = c(3,5), main = "Périodogramme lissé-2021", ylab = "spectre", xlab = "Fréquence")
 ```
-Les années 2020 et 2021 présentent deux cycles significatifs de fréquence 50, ce qui correspond à un cycle de 7.3 jours, et un autre cycle de fréquence 100 ce qui correspond à un cycle de 3.65 jours. 2021 présente un cycle significatif supplémentaire qui a une fréquence de 160, ce qui correspond à un cycle de 2.3 jours.
-####Comparaison des années 2020 et 2021
-En résumé, 2020 diffère de 2021 de part la présence d'une tendance locale plus marquée allant de mars/avril à octobre. Il n'y a pas de tendance générale en 2020 mais il y en a bien une en 2021 qui est croissante. Enfin, il y a des cycles d'environ sept et quatre jours en 2020 et 2021, ainsi qu'un cycle d'environ deux jours en 2021.
 
+Les années 2020 et 2021 présentent deux cycles significatifs de fréquence 50, ce qui correspond à un cycle de 7.3 jours, et un autre cycle de fréquence 100 ce qui correspond à un cycle de 3.65 jours. 2021 présente un cycle significatif supplémentaire qui a une fréquence de 160, ce qui correspond à un cycle de 2.3 jours. ####Comparaison des années 2020 et 2021 En résumé, 2020 diffère de 2021 de part la présence d'une tendance locale plus marquée allant de mars/avril à octobre. Il n'y a pas de tendance générale en 2020 mais il y en a bien une en 2021 qui est croissante. Enfin, il y a des cycles d'environ sept et quatre jours en 2020 et 2021, ainsi qu'un cycle d'environ deux jours en 2021.
 
-###Lieux de résidence
-La population est susceptible de quitter sa résidence tous les jours de la semaine (travail, commerces, ...). Les analyses se feront donc sur les jours de la semaine et jours de weekend sans distinction.
-####Année 2020
+###Lieux de résidence La population est susceptible de quitter sa résidence tous les jours de la semaine (travail, commerces, ...). Les analyses se feront donc sur les jours de la semaine et jours de weekend sans distinction. ####Année 2020
 
 ```{r serie_résid_2020}
 res_20 <- ts(window(covid$residential, start = 1, end = 321), start = c(2020, 46), end = c(2020, 366), frequency = 366)
@@ -156,19 +153,20 @@ La décomposition nous apprend qu'une tendance générale domine la série. Le g
 res_20_lt <- local.trend(res_20, xlab = "Temps [mois]")
 ```
 
-Deux phases principales sont visibles. La première consiste en une augmentation à partir de début février. La seconde consiste en une diminution qui survient à la transition juillet-août. Une diminution est également observable en janvier, ainsi qu'une légère augmentation début octobre.
-Nous jetons désormais un oeil aux cycles.
+Deux phases principales sont visibles. La première consiste en une augmentation à partir de début février. La seconde consiste en une diminution qui survient à la transition juillet-août. Une diminution est également observable en janvier, ainsi qu'une légère augmentation début octobre. Nous jetons désormais un oeil aux cycles.
 
 ```{r extract_2020}
 extract_res_20 <- extract(res_20_dec, components = "residuals")
 plot(extract_res_20, ylab = "Composante résiduelle", xlab = "Temps [mois]")
 ```
+
 La composante résiduelle de la série étant extraite, cette série est stationnarisée et nous pouvons dès lors réaliser une analyse spectrale.
+
 ```{r spec_2020}
 spectrum(extract_res_20, spans = c(3, 5), ylab = "Spectre", xlab = "Fréquence", main = "Analyse spectrale - ")
 ```
-Le périodogramme lissé détecte la présence de cycles significatifs à ~ 60 et 110 jours, soit des cycles bimestriel et quadrimestriel.
-####Année 2021
+
+Le périodogramme lissé détecte la présence de cycles significatifs à \~ 60 et 110 jours, soit des cycles bimestriel et quadrimestriel. ####Année 2021
 
 ```{r serie_2021}
 res_21 <- ts(window(covid$residential, start = 322, end = 686),start = c(2021, 1), end = c(2021, 365), frequency = 366)
@@ -200,19 +198,19 @@ Finalement, nous jetons un oeil aux cycles.
 extract_res_21 <- extract(res_21_dec, components = "residuals")
 plot(extract_res_21, ylab = "Composante résiduelle", xlab = "Temps [mois]")
 ```
+
 La composante résiduelle de la série étant extraite, cette série est stationnarisée et nous pouvons dès lors réaliser une analyse spectrale.
+
 ```{r spec_2021}
 spectrum(extract_res_21, spans = c(3, 5), ylab = "Spectre", xlab = "Fréquence", main = "Analyse spectrale - ")
 ```
-Le périodogramme lissé détecte la présence de cycles significatifs à ~ 60, 110 et 160 jours, soit des cycles bimestriel, quadrimestriel et semestriel.
-####Comparaison des années 2020 et 2021
-Les années 2020 et 2021 sont toutes deux dominées par plusieurs tendances locales. Des cycles bimestriel et quadrimestriel sont visibles chez les deux années. Nous remarquons cependant également la présence d'un cycle semestriel pour l'année 2021.
+
+Le périodogramme lissé détecte la présence de cycles significatifs à \~ 60, 110 et 160 jours, soit des cycles bimestriel, quadrimestriel et semestriel. ####Comparaison des années 2020 et 2021 Les années 2020 et 2021 sont toutes deux dominées par plusieurs tendances locales. Des cycles bimestriel et quadrimestriel sont visibles chez les deux années. Nous remarquons cependant également la présence d'un cycle semestriel pour l'année 2021.
 
 Début février 2020, on observe une augmentation de 30% du nombre de personnes restant à leur domicile. A la transition juin-juillet, la tendance diminue ensuite pour atteindre son taux le plus bas vers le mois d'août, période où la population sortait plus afin de profiter du beau temps. La tendance remonte début octobre, illustrant la reprise du travail via les cours en ligne ou le télé-travail, pour un grand pourcentage de la population.
 
 L'année 2021 débute avec un taux d'augmentation d'environ 15%, qui grimpe jusqu'à culminer au mois de mai. On observe ensuite une forte chute de l'augmentation qui finit par atteindre un pallier en fin d'année. Cette brusque diminution résulte de l'allègement des mesures relatives à la pandémie, avec notamment la reprise totale des cours en présentiel pour les étudiants.
 
-En résumé, l'année 2020 connut le plus grand taux d'augmentation du nombre de personnes restant à leur domicile. Une légère diminution était déjà observable en 2021, permise par les progrès médicaux et les premiers effets de l'immunité collective. De plus, pour les deux années confondues, la période estivale s'est avérée être la période avec le taux d'augmentation le plus faible.
-## Discussion et Conclusion
+En résumé, l'année 2020 connut le plus grand taux d'augmentation du nombre de personnes restant à leur domicile. Une légère diminution était déjà observable en 2021, permise par les progrès médicaux et les premiers effets de l'immunité collective. De plus, pour les deux années confondues, la période estivale s'est avérée être la période avec le taux d'augmentation le plus faible. \## Discussion et Conclusion
 
 <!--% En tenant compte du but de votre carnet de notes et de vos résultats, discutez de résultats et proposez des conclusions à votre analyse en 5 à 10 phrases. -->

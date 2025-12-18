@@ -654,7 +654,7 @@ La courbe présente une évolution très marquée en plusieurs phases, avec une 
 ```{r autocorrélation2021gp}
 acf(grocery_pharma_ts2)
 ```
-L'autocorrélation de 2020 de 2021 reflète principalement une stabilisation sans cycles visibles. La tendance générale semble être constante.
+Le graphique d'autocorrélation de 2021 indique essentiellement une stabilisation sans cycles évidents. La tendance générale semble être constante.
 
 Décomposons la série :
 
@@ -663,7 +663,7 @@ grocery_pharma_ts2021 <- tsd(grocery_pharma_ts2, method = "average", type = "add
 plot(grocery_pharma_ts2021, col = 1:3)
 ```
 
-La composante filtrée met en évidence une hausse marquée en début d’année, suivie d’une phase de stabilisation jusqu’à la fin de la période. Les résidus sont globalement centrés autour de zéro et ne présentent pas de cycle identifiable, bien que quelques valeurs extrêmes apparaissent ponctuellement.
+La composante filtrée révèle une progression plutôt lente et constante en début d'année, puis une période de stabilisation jusqu'à la fin de la période, bien qu'une légère augmentation soit perceptible en toute fin d'année. Les résidus sont généralement répartis autour de zéro et n'affichent aucun cycle discernable, bien que certaines valeurs extrêmes se manifestent occasionnellement.
 
 Analysons la tendance générale :
 
@@ -673,7 +673,7 @@ acf(mts_grocerypharma_2021[, "filtered"])
 trend.test(mts_grocerypharma_2021[, "filtered"])
 ```
 
-Comme pour la série 2020, dans celle de 2021 la p-value du test de tendance est inférieure à 5 % (p-value = 2.2\^-16), ce qui conduit au rejet de l’hypothèse nulle. Il existe donc une tendance générale significative et hautement croissante des déplacements vers les commerces alimentaires en 2021. De plus, la valeur du coefficient rho est plus faible (rho = 0,928), suggérant une tendance plus prononcée qu’en 2020.
+Comme pour la série 2020, dans celle de 2021 la p-value du test de tendance est inférieure à 5 % (p-value = 2.2\^-16), ce qui conduit au rejet de l’hypothèse nulle. Il existe donc une tendance générale significative et hautement croissante des déplacements vers les commerces alimentaires et les pharmacies en 2021. De plus, la valeur du coefficient rho est plus élevée (rho = 0,928), suggérant une tendance plus prononcée qu’en 2020.
 
 ```{r residuals2021gp}
 grocerypharma_res_2021 <- extract(grocery_pharma_ts2021, compoenents = "residuals")
@@ -693,7 +693,7 @@ Le graphique montre clairement deux phases sur l’année 2021. En début d’an
 
 #### Comparaison 2020 et 2021
 
-En 2020, la série des déplacements vers les commerces alimentaires et pharmacies est fortement marquée par le choc du début de la crise sanitaire. On observe une chute brutale dès février–mars, suivie d’une stabilisation à un niveau inférieur à la normale, puis d’une légère reprise en fin d’année. La décomposition met en évidence une tendance générale croissante sur l’ensemble de l’année, mais celle-ci masque une forte rupture initiale. Les résidus présentent plusieurs cycles significatifs, suggérant une structure périodique plus marquée en 2020, probablement liée aux alternances de restrictions et de comportements d’adaptation. Le CUSUM confirme une phase de dégradation rapide suivie d’un ajustement progressif, sans véritable retour au niveau initial.
+En 2020, la série des déplacements vers les commerces alimentaires et pharmacies est fortement marquée par le choc du début de la crise sanitaire. On observe une chute brutale en début d'année (mars), suivie d’une stabilisation à un niveau inférieur à la normale, puis d’une légère reprise en fin d’année. La décomposition met en évidence une tendance générale croissante sur l’ensemble de l’année, mais celle-ci masque une forte rupture initiale. Les résidus présentent plusieurs cycles significatifs, suggérant une structure périodique plus marquée en 2020, probablement liée aux alternances de restrictions et de comportements d’adaptation. Le CUSUM confirme une phase de dégradation rapide suivie d’un ajustement progressif, sans véritable retour au niveau initial.
 
 En 2021, en revanche, aucune chute brutale n’est observée en début d’année. La série est croissante dès le début, puis elle se stabilise au cours de l’année avant de connaître une nouvelle hausse en fin de période. La tendance estimée est significative et plus marquée qu’en 2020, traduisant une dynamique de reprise plus régulière. Les résidus sont globalement centrés autour de zéro et ne présentent pas de cycle significatif, indiquant une série plus stable et mieux structurée. Le CUSUM met en évidence une phase de redressement à partir du printemps, sans choc initial comparable à celui observé en 2020.
 
