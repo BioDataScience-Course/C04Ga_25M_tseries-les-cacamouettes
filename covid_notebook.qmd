@@ -304,30 +304,6 @@ Si nous convertissons ces données de jours en mois :
 - Puis, à partir du début du mois de juin jusqu'en mi-octobre, les déplacement vers les commerces et loisirs augmentent progressivement. 
 - Après la mi-octobre, on observe une nouvelle baisse des déplacements, plus progressive, pour ensuite se stabiliser (et peut-être monter très légerement) à la fin novembre. 
 
-```{r}
-#chunk pour avoir les valeurs précises des jours correspondant aux ruptures dans la courbe de local trend (code aidé par ingtelligence artificielle, à ne pas prendre en compte pour la correction si pas autorisé, réalisé juste par simple curiosité et désir de rendre l'analyse plus solide)
-localtrend <- shop20_local
-time_trend <- time(localtrend)
-
-# Dérivée Calcul de la dérivée, pour détecter les variations de tendances locales
-d_trend <- diff(localtrend)
-
-# Lissage de la dérivée (moyenne mobile) pour éliminer le bruit et éviter d'avoir trop de valeurs de ruptures, et garder que les principales
-d_trend_smooth <- stats::filter(d_trend, rep(1/7, 7), sides = 2)
-
-# Détection des changements de signe : <0 : décroissante, >0 : croissante. Les changements dans ces signes montrent donc le point de changement de phase dans la 
-sign_change <- diff(sign(d_trend_smooth))
-ruptures <- which(sign_change != 0) + 1
-
-# Filtrage des ruptures trop proches (de nouveau pour ne garder que les points de ruptures les plus importants dans la série )
-#min_gap <- 10
-#ruptures_filt <- ruptures[c(TRUE, diff(ruptures) > min_gap)]
-
-# Temps des ruptures 
-rupture_times <- time_trend[ruptures_filt]
-rupture_times
-```
-
 
 Vérifions tout de même s'il y a présence également d'une tendance générale. Pour cela, nous réalisons une EVF qui permettra de nous dire si la série est dominée par un signal de tendance générale, de cycle ou autre. Cela permettra de nous confirmer la présence de la tendance générale, s'il y en a bien une. 
 
@@ -339,17 +315,17 @@ plot (shop20_evf, col = 1:3,
 ```
 On peut voir un signal beaucoup plus propre apparaître, qui pourrait correspondre au signal d'une tendance générale 
 
-```{r}
+```{r test_tendance_shop20}
 shop_evffilter <- extract (shop20_evf, components = "filtered")
-plot (shop_tfilter)
+plot (shop_evffilter)
 plot (trend.test(shop_evffilter, R = 100))
 ```
 
 Autre moyen de filtrer la tendance générale : 
 
 ```{r shop20_filtrage_average}
-shop_mb <- tsd (shop20_ts, method = "average", order = 60, times = 1)
-plot (shop_mb)
+shop_mb <- tsd (shop20_ts, method = "average", order = 50, times = 1)
+plot (shop_mb, col = 1:3)
 ```
 
 ```{r}
@@ -361,14 +337,14 @@ plot (trend.test(shop_tfilter, R = 100))
 ```
 Nous pouvons voir que la valeur de p est inférieur au seuil alpha de 5%, nous rejetons H0, il y a une tendance générale significative à l'augmentation dans cette série. 
 
-Analyse des résidus : 
+Pour être sûr qu'il n'y avait pas de cycle dans la série, nous réalisons une analyse spectracle des résidus :  
 ```{r}
-shop_residual <- extract (shop20_evf, components = "residuals")
+shop_residual <- extract (shop_mb, components = "residuals")
 plot (shop_residual)
 acf (shop_residual)
 spectrum (shop_residual, spans = c(3,5))
 ```
-Aucun cycle significatif n'était présent dans cette série ??
+Les résidus ne présentent pas de cycle significatifs 
 
 #### Année 2021
 
@@ -487,9 +463,36 @@ Etrangement,les sommes cumulées (ligne rouge) forment un U assez net, ce qui ne
 - une diminution marquée qui commence à la première observation de 2021 et s'arrête au 146e jour, soit à peu près en fin mai de cette année (donc dans les environs du 26 mai)
 - Une augmentation tout aussi marquée jusque la fin d'année 2021. 
 
-Avant de prendre ces résultats pour acquis : décomposont notre série pour vérifier qu'il n'y a pas également une tendance générale qui domine  : 
+Avant de prendre ces résultats pour acquis : décomposons notre série pour vérifier qu'il n'y a pas également une tendance générale qui domine  : 
 
+```{r shop21_filtrage_evf}
+shop21_evf <- tsd (shop21_ts, method = "evf", lag = 30, axes = 1)
+plot (shop21_evf, col = 1:3, 
+  xlab = "Temps", 
+  main = "Filtrage de la série 2021 par valeur propre")
+```
 
+Une tendance générale à l'augmentation semble dominer la série. 
+Pour en être sûr, nous réalisons un test de bootstrap afin de vérifier que cette tendance soit bien significative. 
+
+```{r test_tendance_shop20}
+shop21_filtered <- extract (shop21_evf, components = "filtered")
+plot (trend.test(shop21_filtered, R = 100))
+```
+Nous pouvons voir que la tendance générale à l'augmentation pour cette série est significative au seuil alpha de 5%, et nous rejetons donc H0. La tendance générale qui domine le signal dans cette série est donc significative. 
+
+Pour vérifier la présence ou l'absence de cycle dans les résidus, nous réalisons une analyse spectrale : 
+
+```{r}
+shop21_residual <- extract (shop21_evf, components = "residuals")
+plot (shop21_residual, xlab = "Temps [mois]", main = "Résidus de la décomposition de la série des déplacements en 2021")
+acf (shop21_residual, main = "Autocorrelation des résidus")
+spectrum (shop21_residual, spans = c(3,5), main = "Analyse spectrale des résidus")
+```
+Plusieurs cycles significatifs sont présents dans cette série. 
+- Un pic à une fréquence de 50, ce qui signifie 50 cycles en une année, donc un cycle d'à pe u près 7 jours 
+- Un pic à une fréquence de 100, ce qui signifie un cycle d'à peu près 3 jours et demi 
+- Un pic à une fréquence de 150,
 
 ### Lieux de travail
 
@@ -554,19 +557,19 @@ plot(ts_work21, xlab = "Temps [mois]", ylab = "Déplacements", main = "Année 20
 La série ne semble pas présenter de grosses chutes liées aux déplacements vers les lieux de travail si ce n'est quelques chutes aigües et brèves à certains moments de l'année.
 
 ```{r acf_travail_2021 }
-acf(covidw_ts21, main = "Graphique d'autocorrélation 2021")
+acf(ts_work21, main = "Graphique d'autocorrélation 2021")
 ```
-Ce graphique d'autocorrélation ne semble pas non plus avoir de cycles ni de tendance avec seulement quelques barres significatives.
+Ce graphique d'autocorrélation ne semble pas non plus avoir de cycles ni de tendance générale avec seulement quelques barres significatives.
 
 ```{r tendance_locale_2021work}
-local.trend(covidw_ts21) 
+local.trend(ts_work21) 
 ```
 Il semble y avoir deux tendances locales, une première entre avril et juillet 2021. Une seconde se situe entre juillet et octobre. 
 
 Nous décomposons la série afin de l'analyser plus en détail :
 
 ```{r evftravail_2021}
-covidw2021 <- tsd(covidw_ts21, method = "evf", lag = 10, axes = 1)
+covidw2021 <- tsd(ts_work21, method = "evf", lag = 50, axes = 1)
 plot(covidw2021, col = 1:3, main = "Filtrage par les valeurs propres", ylab = "Série", xlab = "Temps [semaines]")
 ```
 La composante filtrée ne montre pas de tendance claire. De plus, les résidus ne semblent pas montrer de cycle.
