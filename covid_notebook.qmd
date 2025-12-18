@@ -685,12 +685,12 @@ Au niveau de la série filtrée, on observe une chute suivit d'une tendance gén
 Analysons la tendance générale :
 
 ```{r trend2020gp}
-mts_grocerypharma_2020 <- tseries(grocery_pharma_ts2020)
-acf(mts_grocerypharma_2020[, "filtered"])
-trend.test(mts_grocerypharma_2020[, "filtered"])
+grocerypharma_2020f <- extract(grocery_pharma_ts2020, components = "filtered")
+acf(grocerypharma_2020f)
+trend.test(grocerypharma_2020f)
 ```
 
-La p-value du test de tendance est inférieure à 5 % (p-value = 2.2\^-16), ce qui conduit au rejet de l’hypothèse nulle. Il existe donc une tendance générale significative et croissante des déplacements vers les commerces alimentaires en 2020. La valeur du coefficient de tendance rho est positive et égale à 0,702, indiquant une tendance marquée.
+La p-value du test de tendance est inférieure à 5 % (p-value = 2.2\^-16), ce qui conduit au rejet de l’hypothèse nulle. Il existe donc une tendance générale significative et croissante des déplacements vers les commerces alimentaires en 2020. La valeur du coefficient de tendance \rho est positive et égale à 0,701, indiquant une tendance marquée.
 
 Analysons les résidus :
 
@@ -730,9 +730,9 @@ La composante filtrée révèle une progression plutôt lente et constante en d�
 Analysons la tendance générale :
 
 ```{r trend2021gp}
-mts_grocerypharma_2021 <- tseries(grocery_pharma_ts2021)
-acf(mts_grocerypharma_2021[, "filtered"])
-trend.test(mts_grocerypharma_2021[, "filtered"])
+grocerypharma_2021f <- extract(grocery_pharma_ts2021, components = "filtered")
+acf(grocerypharma_2021f)
+trend.test(grocerypharma_2021f)
 ```
 
 Comme pour la série 2020, dans celle de 2021 la p-value du test de tendance est inférieure à 5 % (p-value = 2.2\^-16), ce qui conduit au rejet de l’hypothèse nulle. Il existe donc une tendance générale significative et hautement croissante des déplacements vers les commerces alimentaires et les pharmacies en 2021. De plus, la valeur du coefficient rho est plus élevée (rho = 0,928), suggérant une tendance plus prononcée qu’en 2020.
