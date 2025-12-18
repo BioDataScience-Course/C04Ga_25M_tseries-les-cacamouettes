@@ -69,12 +69,9 @@ workplaces =  workplaces_percent_change_from_baseline,
  residential = residential_percent_change_from_baseline) -> covid
 ```
 
-<<<<<<< HEAD
+
 ###Lieux de travail 
 Les déplacements vers lex lieux de travail seront analysés sur les jours de semaine et de week-end car nous considérons que les déplacements au travail sont susceptibles de se faire également le week-end. Ces déplacements sont représentés par la variable workplaces.
-=======
-###Lieux de travail Les déplacements vers lex lieux de travail seront analysés sur les jours de semaine et de week-end.
->>>>>>> c95e8e40086b91db17c72d9066fe5caea9273bc2
 
 ####Comparaison générale 2020-2021 lieux de travail
 
@@ -114,10 +111,10 @@ La composante filtrée montre également une baisse des fréquentations au trava
 Vérifions s'il existe une tendance générale en 2020 et 2021 :
 
 ```{r comparaison tendance 2020_21}
-mts_2020 <- tseries(covidw2020)
-trend.test(mts_2020[,"filtered"])
-mtsw_2021 <- tseries(covidw2021)
-trend.test(mtsw_2021[,"filtered"])
+extract_2020 <- extract(covidw2020, components = "filtered")
+trend.test(extract_2020)
+extract_2021 <- extract(covidw2021, components = "filtered")
+trend.test(extract_2021)
 ```
 Autant pour 2020 que 2021, la p value étant inférieur à \alpha au seuil de 5%, la tendance générale est donc significative. De plus elle est croissante car la valeur de \rho est positive.
 
@@ -134,7 +131,11 @@ spectrum(covid_extract_2021, col = "tan3",spans = c(3,5), main = "Périodogramme
 Les années 2020 et 2021 présentent deux cycles significatifs de fréquence 50, ce qui correspond à un cycle de 7.3 jours, et un autre cycle de fréquence 100 ce qui correspond à un cycle de 3.65 jours. 2021 présente un cycle significatif supplémentaire qui a une fréquence de 160, ce qui correspond à un cycle de 2.3 jours.
 
 ####Comparaison des années 2020 et 2021
-En résumé, 2020 diffère de 2021 de part la présence d'une tendance locale plus marquée allant de mars/avril à octobre. Il n'y a pas de tendance générale en 2020 mais il y en a bien une en 2021 qui est croissante. Enfin, il y a des cycles d'environ sept et quatre jours en 2020 et 2021, ainsi qu'un cycle d'environ deux jours en 2021.
+En résumé, 2020 diffère de 2021 de part la présence d'une tendance locale plus marquée allant de mars/avril à octobre. Cette tendance locale correspond probablement au début du confinement en mars 2020. On peut d'ailleurs observer cette diminution de la fréquentation des lieux de travail dans la série générale.
+
+Concernant les tendances générales, les deux années présentent une tendance générale croissante qui est plus significative pour 2021 que 2020. La tendance générale croissante en 2020 peut sembler étonnante étant donné que 2020 fut l'année la plus touchée par le confinement le plus strict. Cependant, comme la composante filtrée montre que les déplacements vers les lieux de travail augmentent le reste de l'année, cela reste compréhensible. 
+
+Enfin, il y a des cycles d'environ sept et quatre jours en 2020 et 2021, ainsi qu'un cycle d'environ deux jours en 2021. Ces cycles pourraient s'expliquer de par les périodes où le confinement se faisait de manière alternée une semaine sur deux voire un jour sur deux dans le but de diviser la population en deux groupes et ainsi, limiter la propagation du virus.
 
 
 #### alimentation et pharmacies
