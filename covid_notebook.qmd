@@ -613,7 +613,7 @@ A cette étape, il est encore très difficile d'interpréter la série chronolog
 acf(res_20, main = "Autocorrélation pour l'année 2020")
 ```
 
-L'autocorrélation est forte. Toutes les barres sont significatives et positives. De plus, on distingue une décroissance, révélant une tendance générale à la diminution. Afin de diminuer le bruit, décomposons la série avec un filtrage par les valeurs propres, pour déterminer quelle composante a la plus forte variance.
+L'autocorrélation est forte. Toutes les barres sont significatives et positives. De plus, on distingue une décroissance, révélant une tendance générale à la diminution. Il ne semble pas y avoir de cycle. Afin de diminuer le bruit, décomposons la série avec un filtrage par les valeurs propres, pour déterminer quelle composante a la plus forte variance.
 
 ```{r tsd_2020}
 res_20_dec <- tsd(res_20, method = "evf", lag = 20, axes = 1)
@@ -627,6 +627,19 @@ res_20_lt <- local.trend(res_20, xlab = "Temps [mois]")
 ```
 
 On observe bien deux phases principales : une augmentation à partir du mois d'avril, suivie d'une diminution à la transition juin-juillet. Une nouvelle augmentation est également observable début octobre.
+
+Nous réalisons désormais une vérification concernant les cycles.
+
+```{r}
+extract_res_20 <- extract(res_20_dec, components = "residuals")
+plot(extract_res_20, ylab = "Composante résiduelle", xlab = "Temps [mois]")
+```
+La composante résiduelle de la série étant extraite, cette série est stationnarisée et nous pouvons dès lors réaliser une analyse spectrale.
+```{r}
+spectrum(extract_res_20, spans = c(3, 5), ylab = "Spectre", xlab = "Fréquence", main = "Analyse spectrale - ")
+```
+Le périodogramme lissé détecte la présence de cycles significatifs à ~ 60 et 110 jours, soit bimestriel et quadrimestriel.
+
 
 #### Année 2021
 
@@ -646,7 +659,7 @@ tsp(res_21)
 acf(res_21, main = "Autocorrélation pour l'année 2021")
 ```
 
-On observe une autocorrélation, avec des barres toutes positives et significatives. Décomposons la série avec un filtrage par les valeurs propres pour réduire le bruit.
+On observe une autocorrélation, avec des barres toutes positives et significatives. Il ne semble pas y avoir de cycle. Décomposons la série avec un filtrage par les valeurs propres pour réduire le bruit.
 
 ```{r tsd_2021}
 res_21_dec <- tsd(res_21, method = "evf", lag = 20, axes = 1)
