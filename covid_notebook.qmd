@@ -1,5 +1,5 @@
 ---
-title: "___"
+title: "Étude de l'évolution temporelle des déplacements de la population wallonne durant la période de crise sanitaire"
 author: "Abraham Romane, Dechèvres Florine, Desterke Margot, Viseur Zoé"
 format:
   html:

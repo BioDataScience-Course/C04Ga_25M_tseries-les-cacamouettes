@@ -1,5 +1,5 @@
 ---
-title: "___"
+title: "Étude de l'évolution temporelle des déplacements de la population wallonne durant la période de crise sanitaire"
 author: "Abraham Romane, Dechèvres Florine, Desterke Margot, Viseur Zoé"
 format:
   pdf:
@@ -24,7 +24,7 @@ Les rapports de mobilité [@google_covid19_mobility] ont fourni les données pr�
 ## But
 
 <!--% Rédigez le but de ce rapport.-->
-
+L'objectif de cette étude est d'étudier l'impact du Covid-19 sur les déplacements de la population wallone. Aussi, cette étude se fait à titre comparatif entre 2020 et 2021.
 ## Matériel et méthodes
 
 <!--% Cette section doit comprendre deux parties. La première partie doit expliciter le données employées et la seconde traiter des analyses réalisées et des logiciels employés.-->
