@@ -696,7 +696,7 @@ Le périodogramme lissé détecte la présence de cycles significatifs à ~ 60, 
 
 #### Comparaison des années 2020 et 2021
 
-Que ce soit pour 2020 ou 2021, on observe une nette autocorrélation, et une tendance domine la série chronologique.
+Que ce soit pour 2020 ou 2021, on observe une nette autocorrélation, et une tendance domine la série chronologique. Des cycles bimestriels et quadrimestriels sont visibles pour les deux années. L'année 2021 contient également un cycle semestriel.
 
 Début du mois d'avril 2020, on observe une nette augmentation (+ 30%) du nombre de personnes restant chez elles : c'est le début de la quarantaine. Cette augmentation diminue ensuite à la transition juin-juillet pour atteindre son taux le plus bas en fin des vacances d'été, où les gens sortaient plus de chez eux pour profiter du beau temps, malgré la pandémie. Début octobre, la tendance remonte, illustrant la reprise des cours en ligne et du télétravail d'un grand pourcentage de la population.
 
