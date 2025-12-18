@@ -131,7 +131,7 @@ La population est susceptible de quitter sa résidence tous les jours de la sema
 ####Année 2020
 
 ```{r serie_résid_2020}
-res_20 <- ts(window(covid$residential, start = 1, end = 321),start = c(2020, 46), end = c(2020, 366), frequency = 366)
+res_20 <- ts(window(covid$residential, start = 1, end = 321), start = c(2020, 46), end = c(2020, 366), frequency = 366)
 plot(res_20, xlab = "Temps [mois]", ylab = "Evolution du nombre de personnes [%]", main = "Lieux de résidence - 2020")
 ```
 

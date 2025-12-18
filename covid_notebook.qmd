@@ -631,7 +631,7 @@ On observe bien deux phases principales : une augmentation à partir du mois d'a
 #### Année 2021
 
 ```{r serie_2021}
-res_21 <- ts(window(covid$residential, start = 322, end = 686),start = c(2021, 1), end = c(2021, 365), frequency = 366)
+res_21 <- ts(window(covid$residential, start = 322, end = 686),start = c(2021, 1), end = c(2021, 365), frequency = 365)
 class(res_21)
 ```
 
