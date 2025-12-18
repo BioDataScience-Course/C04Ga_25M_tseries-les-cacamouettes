@@ -523,7 +523,7 @@ Le graphique de la tendance locale montre un diminution à partir du mois d'avri
 Nous réalisons une décomposition de la série afin d'analyser cette dernière plus en détail :
 
 ```{r evftravail_2020}
-covidw2020 <- tsd(ts_work, method = "evf", lag = 70, axes = 1)
+covidw2020 <- tsd(ts_work, method = "evf", lag = 20, axes = 1)
 plot(covidw2020,col = 1:3, main = "Filtrage par les valeurs propres", ylab = "Série", xlab = "Temps [semaines]")
 ```
 Les résidus semblent indiquer qu'il n'y a aucun cycle. De manière générale, lorsque l'on observe la composante filtrée, bien qu'au début de la série il y ait une diminution importante des fréquentations au travail, le reste de la série semble présenter une tendance générale croissante. Nous vérifions s'il existe une tendance générale significative :
@@ -532,7 +532,8 @@ Les résidus semblent indiquer qu'il n'y a aucun cycle. De manière générale, 
 extract_2020 <- extract(covidw2020, components = "filtered")
 trend.test(extract_2020)
 ```
-La p-value étant supérieure au seuil \alpha de 5%,nous ne rejetons pas H0. Il n'y a donc pas de tendance générale.
+La p value étant inférieure à \alpha au seuil de 5%, la tendance générale est donc significative. De plus elle est croissante car la valeur de \rho est positive.
+
 
 Pour être certains que les séries ne présentent aucun cycles, nous décidons d'analyser leur potentielle présence avec une analyse spectrale :
 
@@ -569,7 +570,7 @@ Il semble y avoir deux tendances locales, une première entre avril et juillet 2
 Nous décomposons la série afin de l'analyser plus en détail :
 
 ```{r evftravail_2021}
-covidw2021 <- tsd(ts_work21, method = "evf", lag = 70, axes = 1)
+covidw2021 <- tsd(ts_work21, method = "evf", lag = 20, axes = 1)
 plot(covidw2021, col = 1:3, main = "Filtrage par les valeurs propres", ylab = "Série", xlab = "Temps [semaines]")
 ```
 La composante filtrée ne montre pas de tendance claire. De plus, les résidus ne semblent pas montrer de cycle.
@@ -578,11 +579,11 @@ La composante filtrée ne montre pas de tendance claire. De plus, les résidus n
 Nous allons vérifier si il existe une tendance générale dans la série. Par contre il ne semble pas y avoir de cycles.
 
 ```{r tendancetravail_2021}
-extract_2021 <- extract(covidw2021)
+extract_2021 <- extract(covidw2021, components = "filtered")
 trend.test(extract_2021)
 ```
 
-La p value étant inférieur à \alpha au seuil de 5%, la tendance générale est donc significative. De plus elle est croissante car la valeur de \rho est positive.
+La p value étant inférieure à \alpha au seuil de 5%, la tendance générale est donc significative. De plus elle est croissante car la valeur de \rho est positive.
 
 ```{r residtravail_2021}
  covid_extract_2021 <-extract(covidw2021, components = "residuals")
@@ -593,7 +594,7 @@ Tout comme 2020, deux cycles significatifs sont observés à une fréquence de 5
 
 #### Comparaison lieux de travail 2020-2021
 
-Si nous nous intéressons à l'année entière, en 2020 la série ne présente pas de tendance générale contrairement à 2021 qui a une tendance générale à l'augmentation. Par contre, les deux séries ont bien des cycles de fréquence 50 et 100 jours. Avec 2021 qui présente un cycle supplémentaire de fréquence 160. La tendance locale est principalement marquée en 2020 avec une baisse des fréquentations au travail entre avril et octobre.
+Si nous nous intéressons à l'année entière, 2020 et 2021 présentent une tendance générale à l'augmentation. De plus, les deux séries ont bien des cycles de fréquence 50 et 100 jours. Avec 2021 qui présente un cycle supplémentaire de fréquence 160. La tendance locale est principalement marquée en 2020 avec une baisse des fréquentations au travail entre avril et octobre.
 
 ### Alimentation et pharmacies
 
