@@ -293,15 +293,15 @@ Il serait intéressant aussi, au vu de l'aspect général de notre graphique, de
 
 ```{r shop20_localtrend}
 shop20_local <- local.trend (shop20_ts, xlab = "Temps [mois]", ylab = "Déplacements", main = "Tendances locales de la série 2020 \n sur le déplacement vers les commerces et loisirs")
-class (shop20_local)
+abline (v = c(2020.2, 2020.43, 2020.8, 2021.0), col = "red", lty = 2)
 ```
 
 Effectivement, comme nous l'avions anticipé, les sommes cumulées (ligne rouge) forment un U assez net et deux pics bien marqué de chaque côté de ce U. Nous avons donc présence de plusieurs phases dans cette série : une croissance, suivit d'une décroissance marquée, puis d'une croissance aussi marquée, et enfin une légère décroissance. 
-Les points de ruptures correspondant à ces changement de phases sont environ : au 73e jour, au 146e jour, et au 292e jour jour, et un ralentissement au 328e jour. 
+Les points de ruptures correspondant à ces changement de phases sont environ : au 73e jour, au 156e jour, et au 292e jour jour, et un ralentissement au 328e jour. 
 Si nous convertissons ces données de jours en mois : 
 - Il y a eu une augmentation des déplacement jusqu'en mi-mars (14 mars environ). 
-- À partir de mi-mars, le taux de déplacement vers les commerces et lieux de loisirs chute drastiquement, jusque fin mai.
-- Puis, à partir de la fin du mois de mai jusqu'en mi-octobre, les déplacement vers les commerces et loisirs augmentent progressivement. 
+- À partir de mi-mars, le taux de déplacement vers les commerces et lieux de loisirs chute drastiquement, jusque début juin (aux environs du 5 juin).
+- Puis, à partir du début du mois de juin jusqu'en mi-octobre, les déplacement vers les commerces et loisirs augmentent progressivement. 
 - Après la mi-octobre, on observe une nouvelle baisse des déplacements, plus progressive, pour ensuite se stabiliser (et peut-être monter très légerement) à la fin novembre. 
 
 ```{r}
@@ -331,10 +331,44 @@ rupture_times
 
 Vérifions tout de même s'il y a présence également d'une tendance générale. Pour cela, nous réalisons une EVF qui permettra de nous dire si la série est dominée par un signal de tendance générale, de cycle ou autre. Cela permettra de nous confirmer la présence de la tendance générale, s'il y en a bien une. 
 
-```{r}
-shop20_evf <- tsd (shop20_ts, method = "evf", lag = 80, axes = 1)
-plot (shop20_evf, col = 1:3)
+```{r shop20_filtrage_evf}
+shop20_evf <- tsd (shop20_ts, method = "evf", lag = 100, axes = 1)
+plot (shop20_evf, col = 1:3, 
+  xlab = "Temps", 
+  main = "Filtrage de la série 2020 par valeur propre")
 ```
+On peut voir un signal beaucoup plus propre apparaître, qui pourrait correspondre au signal d'une tendance générale 
+
+```{r}
+shop_evffilter <- extract (shop20_evf, components = "filtered")
+plot (shop_tfilter)
+plot (trend.test(shop_evffilter, R = 100))
+```
+
+Autre moyen de filtrer la tendance générale : 
+
+```{r shop20_filtrage_average}
+shop_mb <- tsd (shop20_ts, method = "average", order = 60, times = 1)
+plot (shop_mb)
+```
+
+```{r}
+shop_tfilter <- extract (shop_mb, components = "filtered")
+plot (shop_tfilter)
+```
+```{r test_tendance_shop20}
+plot (trend.test(shop_tfilter, R = 100))
+```
+Nous pouvons voir que la valeur de p est inférieur au seuil alpha de 5%, nous rejetons H0, il y a une tendance générale significative à l'augmentation dans cette série. 
+
+Analyse des résidus : 
+```{r}
+shop_residual <- extract (shop20_evf, components = "residuals")
+plot (shop_residual)
+acf (shop_residual)
+spectrum (shop_residual, spans = c(3,5))
+```
+Aucun cycle significatif n'était présent dans cette série ??
 
 #### Année 2021
 
