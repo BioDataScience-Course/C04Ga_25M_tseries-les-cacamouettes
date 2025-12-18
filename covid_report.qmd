@@ -126,10 +126,12 @@ spectrum(covid_extract_2021, col = "tan3",spans = c(3,5), main = "Périodogramme
 Les années 2020 et 2021 présentent deux cycles significatifs de fréquence 50, ce qui correspond à un cycle de 7.3 jours, et un autre cycle de fréquence 100 ce qui correspond à un cycle de 3.65 jours. 2021 présente un cycle significatif supplémentaire qui a une fréquence de 160, ce qui correspond à un cycle de 2.3 jours.
 
 
-###Lieux de résidence La population est susceptible de quitter sa résidence tous les jours de la semaine (travail, commerces, ...). Les analyses se feront donc sur les jours de la semaine et jours de weekend sans distinction. ####Année 2020
+###Lieux de résidence
+La population est susceptible de quitter sa résidence tous les jours de la semaine (travail, commerces, ...). Les analyses se feront donc sur les jours de la semaine et jours de weekend sans distinction.
+####Année 2020
 
 ```{r serie_résid_2020}
-res_20 <- ts(window(covid$residential, start = 1, end = 321),start = c(2020, 46), end = c(2020, 366), frequency = 366)
+res_20 <- ts(window(covid$residential, start = 1, end = 321), start = c(2020, 46), end = c(2020, 366), frequency = 366)
 plot(res_20, xlab = "Temps [mois]", ylab = "Evolution du nombre de personnes [%]", main = "Lieux de résidence - 2020")
 ```
 
@@ -152,7 +154,8 @@ La décomposition nous apprend qu'une tendance générale domine la série. Le g
 res_20_lt <- local.trend(res_20, xlab = "Temps [mois]")
 ```
 
-Deux phases principales sont visibles. La première consiste en une augmentation à partir de début février. La seconde consiste en une diminution qui survient à la transition juillet-août. Une diminution est également observable en janvier, ainsi qu'une légère augmentation début octobre. ####Année 2021
+Deux phases principales sont visibles. La première consiste en une augmentation à partir de début février. La seconde consiste en une diminution qui survient à la transition juillet-août. Une diminution est également observable en janvier, ainsi qu'une légère augmentation début octobre.
+####Année 2021
 
 ```{r serie_2021}
 res_21 <- ts(window(covid$residential, start = 322, end = 686),start = c(2021, 1), end = c(2021, 365), frequency = 366)
@@ -176,12 +179,15 @@ La décomposition détermine bien la présence d'une tendance générale dominan
 res_21_lt <- local.trend(res_21, xlab = "Temps [mois]")
 ```
 
-Nous observons deux phases principales. La première consiste en une augmentation, culminant vers le mois de mai. La deuxième consiste en une diminution. Nous remarquons également que la courbe stagne en fin d'année. ####Comparaison des années 2020 et 2021 Les années 2020 et 2021 sont toutes deux dominées par plusieurs tendances locales.
+Nous observons deux phases principales. La première consiste en une augmentation, culminant vers le mois de mai. La deuxième consiste en une diminution. Nous remarquons également que la courbe stagne en fin d'année.
+####Comparaison des années 2020 et 2021
+Les années 2020 et 2021 sont toutes deux dominées par plusieurs tendances locales.
 
 Début février 2020, on observe une augmentation de 30% du nombre de personnes restant à leur domicile. A la transition juin-juillet, la tendance diminue ensuite pour atteindre son taux le plus bas vers le mois d'août, période où la population sortait plus afin de profiter du beau temps. La tendance remonte début octobre, illustrant la reprise du travail via les cours en ligne ou le télé-travail, pour un grand pourcentage de la population.
 
 L'année 2021 débute avec un taux d'augmentation d'environ 15%, qui grimpe jusqu'à culminer au mois de mai. On observe ensuite une forte chute de l'augmentation qui finit par atteindre un pallier en fin d'année. Cette brusque diminution résulte de l'allègement des mesures relatives à la pandémie, avec notamment la reprise totale des cours en présentiel pour les étudiants.
 
-En résumé, l'année 2020 connut le plus grand taux d'augmentation du nombre de personnes restant à leur domicile. Une légère diminution était déjà observable en 2021, permise par les progrès médicaux et les premiers effets de l'immunité collective. De plus, pour les deux années confondues, la période estivale s'est avérée être la période avec le taux d'augmentation le plus faible. \## Discussion et Conclusion
+En résumé, l'année 2020 connut le plus grand taux d'augmentation du nombre de personnes restant à leur domicile. Une légère diminution était déjà observable en 2021, permise par les progrès médicaux et les premiers effets de l'immunité collective. De plus, pour les deux années confondues, la période estivale s'est avérée être la période avec le taux d'augmentation le plus faible.
+## Discussion et Conclusion
 
 <!--% En tenant compte du but de votre carnet de notes et de vos résultats, discutez de résultats et proposez des conclusions à votre analyse en 5 à 10 phrases. -->
