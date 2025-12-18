@@ -186,7 +186,7 @@ plot(res_21_dec, col = 1:3, xlab = "Temps [jours]")
 acf(res_21, main = "Autocorrélation pour l'année 2021")
 ```
 
-La décomposition détermine bien la présence d'une tendance générale dominant la série, mais cette tendance est également variable localement. L'autocorrélation est forte, avec toutes les barres positives et significatives, confirmant la présence d'une tendance générale. Il ne semble pas y avoir de cycle. Afin de mieux comprendre ces changements de tendance, nous réalisons une analyse par la méthode des sommes cumulées.
+La décomposition détermine bien la présence d'une tendance générale dominant la série, mais cette tendance est également variable localement. L'autocorrélation est forte, avec toutes les barres positives et significatives, confirmant la présence d'une tendance générale. Afin de mieux comprendre ces changements de tendance, nous réalisons une analyse par la méthode des sommes cumulées.
 
 ```{r lt_2021}
 res_21_lt <- local.trend(res_21, xlab = "Temps [mois]")
