@@ -135,7 +135,7 @@ Les années 2020 et 2021 présentent deux cycles significatifs de fréquence 50,
 L'évolution des déplacements de la population wallonne vers les commerces alimentaires et pharmacies est représentée par la variable grocery_pharma. Ces déplacements sont indispensables et par conséquent moins affectés par les limitations que d'autres catégories de mobilité. Nous étudions cette série pour les années 2020 et 2021.
 
 ```{r serie grocery_pharma2020}
-grocery_pharma_ts <- ts(covidw$grocery_pharma, start = c(2020, 46), frequency = 365,end = c(2020, 365))
+grocery_pharma_ts <- ts(covid$grocery_pharma, start = c(2020, 46), frequency = 365,end = c(2020, 365))
 plot(grocery_pharma_ts, ylab = "déplacement supermarchés et pharmacies", xlab = "temps [mois]", main = "Déplacement supermarchés et pharmacies en 2020")
 ```
 
