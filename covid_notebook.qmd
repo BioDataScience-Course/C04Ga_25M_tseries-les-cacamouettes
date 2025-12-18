@@ -504,11 +504,11 @@ Plusieurs cycles significatifs sont présents dans cette série. - Un pic de fr�
 
 #### Comparaison 2020 20201
 
-La série, qui mesure les variations de déplacement vers les commerces et les lieux de loisirs au cours du temps, est très différente entre l'année 2020 et 2021. 
+La série, qui mesure les variations de déplacement vers les commerces et les lieux de loisirs au cours du temps, est très différente entre l'année 2020 et 2021.
 
-En effet, en 2020, la série est caractérisée par des tendances locales assez marquées, qui divisent l'année en plusieurs phases de croissance et de décroissance. Une tendance générale à l'augmentation se profile également, étant significative, mais moins marquée et visible sur la série brute de la série. Pas de cycles de déplacements significatifs sont présents au cours de cette année 2020. 
+En effet, en 2020, la série est caractérisée par des tendances locales assez marquées, qui divisent l'année en plusieurs phases de croissance et de décroissance. Une tendance générale à l'augmentation se profile également, étant significative, mais moins marquée et visible sur la série brute de la série. Pas de cycles de déplacements significatifs sont présents au cours de cette année 2020.
 
-Au contraire, pour l'année 2021, la série n'est pas marquée par autant de phases de croissance et de décroissance coupant l'année, 
+Au contraire, pour l'année 2021, la série n'est pas marquée par autant de phases de croissance et de décroissance coupant l'année,
 
 ### Lieux de travail
 
