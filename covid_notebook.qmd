@@ -287,16 +287,11 @@ Les résidus semblent indiquer qu'il n'y a aucun cycle. De manière générale, 
 mts_2020 <- tseries(covidw2020)
 trend.test(mts_2020[,"filtered"])
 ```
-
 La p-value étant supérieure au seuil \alpha de 5%,nous ne rejetons pas H0. Il n'y a donc pas de tendance générale.
 
+Pour être certains que les séries ne présentent aucun cycles, nous décidons d'analyser leur potentielle présence avec une analyse spectrale :
 
-
-Pour être certains que les séries ne présentent aucun cycles, nous décidons d'analyser la potentielle présence de cycle en tenant compte, à la fois des jours de semaine et de weekend :
-
-La méthode des différences est employées pour éliminer la tendance tout en conservant les potentiels cycles.
-
-```{r cycle_semaine_weekend_2020}
+```{r residtravail_2020}
 extract_whole_20 <- extract(covidw2020, components = "residuals")
 plot(extract_whole_20)
 spectrum(extract_whole_20, spans= c(3,5))
@@ -349,11 +344,11 @@ La p value étant inférieur à \alpha au seuil de 5%, la tendance générale es
 plot(covid_extract_2021, ylab = "Résidus", xlab = "Temps [mois]")
 spectrum(covid_extract_2021, spans = c(3,5), main = "Périodogramme lissé", ylab = "spectre", xlab = "frequency")
 ```
-Tout comme 2020, deux cycles significatifs sont observés en 2021. Un pic à une fréquence de 50, ce qui signifie un cycle tous les 7,3 jours et un autre pic à une fréquence de 100 jours ce qui signifie un cycle tous les 3,65 jours.
+Tout comme 2020, deux cycles significatifs sont observés à une fréquence de 50, ce qui signifie un cycle tous les 7.3 jours et un autre pic à une fréquence de 100 jours ce qui signifie un cycle tous les 3.65 jours. Il y a ici, un troisième cycle avec une fréquence d'environ 160 qui se marque. Ce cycle est donc un cycle qui se déroule tous les 2.3 jours.
 
 #### Comparaison lieux de travail 2020-2021
 
-Si nous nous intéressons à l'année entière, en 2020 la série ne présente pas de tendance générale contrairement à 2021 qui a une tendance générale à l'augmentation. Par contre, les deux séries ont bien des cycles de fréquence 50 et 100 jours. La tendance locale est principalement marquée en 2020 avec une baisse des fréquentations au travail entre avril et octobre.
+Si nous nous intéressons à l'année entière, en 2020 la série ne présente pas de tendance générale contrairement à 2021 qui a une tendance générale à l'augmentation. Par contre, les deux séries ont bien des cycles de fréquence 50 et 100 jours. Avec 2021 qui présente un cycle supplémentaire de fréquence 160. La tendance locale est principalement marquée en 2020 avec une baisse des fréquentations au travail entre avril et octobre.
 
 ### Alimentation et pharmacies
 
